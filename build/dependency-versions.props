@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <AppCore_Shared_Version>1.0.0-alpha.55</AppCore_Shared_Version>
+    <AppCore_DI_Version>1.0.0-alpha.47</AppCore_DI_Version>
+    <AppCore_Logging_Version>1.0.0-alpha.26</AppCore_Logging_Version>
+  </PropertyGroup>
+</Project>

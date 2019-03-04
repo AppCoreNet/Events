@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <RestoreSources>
+      $(ExtraRestoreSources);
+      $(RestoreSources);
+      https://api.nuget.org/v3/index.json;
+      https://www.myget.org/F/appcorenet/api/v3/index.json
+    </RestoreSources>
+
+    <!-- CI build restore sources -->
+    <RestoreSources Condition=" '$(CI)' == 'true' ">
+      https://ci.appveyor.com/nuget/appcorenet-shared;
+      https://ci.appveyor.com/nuget/appcorenet-dependencyinjection;
+      https://ci.appveyor.com/nuget/appcorenet-logging;
+      $(RestoreSources)
+    </RestoreSources>
+	
+    <!-- local build restore sources -->
+    <LocalPackageDirectory Condition=" '$(LocalPackageDirectory)' == '' ">$(MSBuildThisFileDirectory)/../../Packages</LocalPackageDirectory>
+    <RestoreSources Condition=" '$(CI)' != 'true' And Exists($(LocalPackageDirectory)) ">
+      $(LocalPackageDirectory);
+      $(RestoreSources)
+    </RestoreSources>
+  </PropertyGroup>
+  
+</Project>
