@@ -8,8 +8,8 @@ image:
 - Ubuntu
 
 cache:
-  - '%USERPROFILE%\.nuget\packages -> **\*.csproj'
-  - '/home/appveyor/.nuget/packages -> **/*.csproj'
+  - '%USERPROFILE%\.nuget\packages -> **\*.csproj, **\*.props, **\*.targets'
+  - '/home/appveyor/.nuget/packages -> **/*.csproj, **/*.props, **/*.targets'
 
 nuget:
   disable_publish_on_pr: true
