@@ -1,0 +1,15 @@
+parameters:
+  configuration: 'Debug'
+  
+steps:
+- pwsh: ./build.ps1 -Properties @{Configuration='${{ parameters.configuration }}'}
+  displayName: Build
+- pwsh: ./test.ps1 -Properties @{Configuration='${{ parameters.configuration }}'; OutputDir='$(Build.ArtifactStagingDirectory)'}
+  displayName: Run Tests
+- task: PublishTestResults@2
+  displayName: Publish Test Results
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '$(Build.ArtifactStagingDirectory)/test-results/*.trx'
+    failTaskOnFailedTests: true
+    buildConfiguration: ${{ parameters.configuration }}
