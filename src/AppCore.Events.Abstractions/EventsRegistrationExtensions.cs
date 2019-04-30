@@ -14,7 +14,7 @@ namespace AppCore.DependencyInjection
     /// <summary>
     /// Provides extension methods to configure the <see cref="IEventsFacility"/>.
     /// </summary>
-    public static class EventsFacilityBuilderExtensions
+    public static class EventsRegistrationExtensions
     {
         /// <summary>
         /// Configure the default lifetime of event components.
@@ -40,14 +40,14 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddEventHandlers(
+        public static IFacilityBuilder<IEventsFacility> AddHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
 
             return builder.AddExtension(
-                new DelegateRegistrationFacilityExtension(
+                new RegistrationFacilityExtension<IEventsFacility>(
                     typeof(IEventHandler<>),
                     (r,f) =>
                     {
@@ -63,14 +63,14 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddPreEventHandlers(
+        public static IFacilityBuilder<IEventsFacility> AddPreHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
 
             return builder.AddExtension(
-                new DelegateRegistrationFacilityExtension(
+                new RegistrationFacilityExtension<IEventsFacility>(
                     typeof(IPreEventHandler<>),
                     (r,f) =>
                     {
@@ -86,14 +86,14 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddPostEventHandlers(
+        public static IFacilityBuilder<IEventsFacility> AddPostHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
 
             return builder.AddExtension(
-                new DelegateRegistrationFacilityExtension(
+                new RegistrationFacilityExtension<IEventsFacility>(
                     typeof(IPostEventHandler<>),
                     (r,f) =>
                     {
@@ -109,14 +109,14 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddEventBehaviors(
+        public static IFacilityBuilder<IEventsFacility> AddBehaviors(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
 
             return builder.AddExtension(
-                new DelegateRegistrationFacilityExtension(
+                new RegistrationFacilityExtension<IEventsFacility>(
                     typeof(IEventPipelineBehavior<>),
                     (r,f) =>
                     {
