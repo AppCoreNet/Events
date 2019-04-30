@@ -6,7 +6,7 @@ using AppCore.Logging;
 
 namespace AppCore.Events.Logging
 {
-    internal static class EventLoggingBehaviorLoggerExtensions
+    internal static class EventLoggingExtensions
     {
         private static readonly LoggerEventDelegate<object> _eventHandling =
             LoggerEvent.Define<object>(
