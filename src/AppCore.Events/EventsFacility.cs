@@ -27,6 +27,11 @@ namespace AppCore.DependencyInjection
                     .WithLifetime(Lifetime)
                     .IfNoneRegistered();
 
+            registry.Register<IEventContextFactory>()
+                    .Add<EventContextFactory>()
+                    .PerContainer()
+                    .IfNoneRegistered();
+
             registry.Register<IEventDescriptorFactory>()
                     .Add<EventDescriptorFactory>()
                     .PerContainer()

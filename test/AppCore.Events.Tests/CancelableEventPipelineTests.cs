@@ -38,10 +38,17 @@ namespace AppCore.Events
             container.Resolve(typeof(IEnumerable<IEventHandler<CancelableTestEvent>>))
                      .Returns(new[] { handler });
 
-            var pipeline = new EventPublisher(
-                container,
-                new EventDescriptorFactory(new[] {new CancelableEventMetadataProvider()}),
-                accessor);
+            var metadata = new Dictionary<string, object>();
+            new CancelableEventMetadataProvider().GetMetadata(typeof(CancelableTestEvent), metadata);
+
+            var contextFactory = Substitute.For<IEventContextFactory>();
+            contextFactory.CreateContext(Arg.Any<CancelableTestEvent>())
+                          .Returns(
+                              ci => new EventContext<CancelableTestEvent>(
+                                  new EventDescriptor(typeof(CancelableTestEvent), metadata),
+                                  ci.ArgAt<CancelableTestEvent>(0)));
+
+            var pipeline = new EventPublisher(container, contextFactory, accessor);
 
             Func<Task> invoke = async ()=>
             {

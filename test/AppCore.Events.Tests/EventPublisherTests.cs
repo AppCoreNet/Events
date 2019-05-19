@@ -17,14 +17,17 @@ namespace AppCore.Events
 {
     public class EventPublisherTests
     {
-        private readonly IEventDescriptorFactory _descriptorFactory;
+        private readonly IEventContextFactory _contextFactory;
         private readonly IEventContextAccessor _accessor;
 
         public EventPublisherTests()
         {
-            _descriptorFactory = Substitute.For<IEventDescriptorFactory>();
-            _descriptorFactory.CreateDescriptor(Arg.Any<Type>())
-                              .Returns(ci => new EventDescriptor(ci.ArgAt<Type>(0), new Dictionary<string, object>()));
+            _contextFactory = Substitute.For<IEventContextFactory>();
+            _contextFactory.CreateContext(Arg.Any<TestEvent>())
+                              .Returns(
+                                  ci => new EventContext<TestEvent>(
+                                      new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>()),
+                                      ci.ArgAt<TestEvent>(0)));
 
             _accessor = Substitute.For<IEventContextAccessor>();
         }
@@ -48,7 +51,7 @@ namespace AppCore.Events
                              handler2
                          });
 
-            var pipeline = new EventPublisher(container, _descriptorFactory);
+            var pipeline = new EventPublisher(container, _contextFactory);
 
             var @event = new TestEvent();
             var token = new CancellationToken();
@@ -110,7 +113,7 @@ namespace AppCore.Events
             container.Resolve(typeof(IEnumerable<IEventHandler<TestEvent>>))
                      .Returns(Enumerable.Empty<IEventHandler<TestEvent>>());
 
-            var pipeline = new EventPublisher(container, _descriptorFactory);
+            var pipeline = new EventPublisher(container, _contextFactory);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await pipeline.PublishAsync(@event, token);
@@ -147,7 +150,7 @@ namespace AppCore.Events
             container.Resolve(typeof(IEnumerable<IEventPipelineBehavior<TestEvent>>))
                      .Returns(Enumerable.Empty<IEventPipelineBehavior<TestEvent>>());
 
-            var pipeline = new EventPublisher(container, _descriptorFactory, _accessor);
+            var pipeline = new EventPublisher(container, _contextFactory, _accessor);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await pipeline.PublishAsync(@event, token);
