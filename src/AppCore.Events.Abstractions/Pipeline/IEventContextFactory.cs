@@ -1,5 +1,5 @@
 ﻿// Licensed under the MIT License.
-// Copyright (c) 2018 the AppCore .NET project.
+// Copyright (c) 2019 the AppCore .NET project.
 
 namespace AppCore.Events.Pipeline
 {

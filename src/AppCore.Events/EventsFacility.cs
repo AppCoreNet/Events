@@ -22,25 +22,10 @@ namespace AppCore.DependencyInjection
         /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry)
         {
-            registry.Register<IEventPublisher>()
-                    .Add<EventPublisher>()
+            registry.Register(typeof(IEventPipeline<>))
+                    .Add(typeof(EventPipeline<>))
                     .WithLifetime(Lifetime)
                     .IfNoneRegistered();
-
-            registry.Register<IEventContextFactory>()
-                    .Add<EventContextFactory>()
-                    .PerContainer()
-                    .IfNoneRegistered();
-
-            registry.Register<IEventDescriptorFactory>()
-                    .Add<EventDescriptorFactory>()
-                    .PerContainer()
-                    .IfNoneRegistered();
-
-            registry.Register<IEventMetadataProvider>()
-                    .Add<CancelableEventMetadataProvider>()
-                    .PerContainer()
-                    .IfNotRegistered();
 
             registry.Register(typeof(IEventPipelineBehavior<>))
                     .Add(typeof(CancelableEventBehavior<>))
@@ -56,6 +41,26 @@ namespace AppCore.DependencyInjection
                     .Add(typeof(PostEventHandlerBehavior<>))
                     .WithLifetime(Lifetime)
                     .IfNotRegistered();
+
+            registry.Register<IEventMetadataProvider>()
+                    .Add<CancelableEventMetadataProvider>()
+                    .PerContainer()
+                    .IfNotRegistered();
+
+            registry.Register<IEventDescriptorFactory>()
+                    .Add<EventDescriptorFactory>()
+                    .PerContainer()
+                    .IfNoneRegistered();
+
+            registry.Register<IEventContextFactory>()
+                    .Add<EventContextFactory>()
+                    .PerContainer()
+                    .IfNoneRegistered();
+
+            registry.Register<IEventPublisher>()
+                    .Add<EventPublisher>()
+                    .WithLifetime(Lifetime)
+                    .IfNoneRegistered();
         }
     }
 }
