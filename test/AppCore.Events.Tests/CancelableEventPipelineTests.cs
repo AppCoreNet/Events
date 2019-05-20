@@ -1,11 +1,10 @@
 ﻿// Licensed under the MIT License.
-// Copyright (c) 2018 the AppCore .NET project.
+// Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 using FluentAssertions;
@@ -19,8 +18,6 @@ namespace AppCore.Events
         [Fact]
         public void CancelThrowsOperationCanceledException()
         {
-            var accessor = Substitute.For<IEventContextAccessor>();
-
             var handler = Substitute.For<IEventHandler<CancelableTestEvent>>();
             handler.When(
                        h => h.HandleAsync(Arg.Any<IEventContext<CancelableTestEvent>>(), Arg.Any<CancellationToken>()))
@@ -28,24 +25,30 @@ namespace AppCore.Events
                        ci => ci.ArgAt<IEventContext<CancelableTestEvent>>(0)
                                .Cancel());
 
-            var container = Substitute.For<IContainer>();
-            container.Resolve(typeof(IEnumerable<IEventPipelineBehavior<CancelableTestEvent>>))
-                     .Returns(
-                         new[]
-                         {
-                             new CancelableEventBehavior<CancelableTestEvent>()
-                         });
-            container.Resolve(typeof(IEnumerable<IEventHandler<CancelableTestEvent>>))
-                     .Returns(new[] { handler });
+            var metadata = new Dictionary<string, object>();
+            new CancelableEventMetadataProvider().GetMetadata(typeof(CancelableTestEvent), metadata);
 
-            var pipeline = new EventPublisher(
-                container,
-                new EventDescriptorFactory(new[] {new CancelableEventMetadataProvider()}),
-                accessor);
+            var contextFactory = Substitute.For<IEventContextFactory>();
+            contextFactory.CreateContext(Arg.Any<CancelableTestEvent>())
+                          .Returns(
+                              ci => new EventContext<CancelableTestEvent>(
+                                  new EventDescriptor(typeof(CancelableTestEvent), metadata),
+                                  ci.ArgAt<CancelableTestEvent>(0)));
+
+            var pipeline = new EventPipeline<CancelableTestEvent>(
+                new[]
+                {
+                    new CancelableEventBehavior<CancelableTestEvent>()
+                },
+                new[] {handler});
+
+            var @event = new CancelableTestEvent();
+
+            var eventContext = (IEventContext<CancelableTestEvent>) contextFactory.CreateContext(@event);
 
             Func<Task> invoke = async ()=>
             {
-                await pipeline.PublishAsync(new CancelableTestEvent(), CancellationToken.None);
+                await pipeline.PublishAsync(eventContext, CancellationToken.None);
             };
 
             invoke.Should()

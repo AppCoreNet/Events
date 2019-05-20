@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 
 namespace AppCore.Events
@@ -16,7 +15,7 @@ namespace AppCore.Events
     /// </summary>
     public class EventPublisher : IEventPublisher
     {
-        private readonly IEventDescriptorFactory _eventDescriptorFactory;
+        private readonly IEventContextFactory _eventContextFactory;
         private readonly IEventContextAccessor _eventContextAccessor;
         private readonly IContainer _container;
 
@@ -24,18 +23,18 @@ namespace AppCore.Events
         /// Initializes a new instance of the <see cref="EventPublisher"/> class.
         /// </summary>
         /// <param name="container">The <see cref="IContainer"/> used to resolve handlers and behaviors.</param>
-        /// <param name="eventDescriptorFactory">The factory for <see cref="EventDescriptor"/>'s.</param>
+        /// <param name="eventContextFactory">The factory for <see cref="IEventContext"/>'s.</param>
         /// <param name="eventContextAccessor">The accessor for the current <see cref="IEventContext"/>.</param>
         /// <exception cref="ArgumentNullException">Argument <paramref name="container"/> is <c>null</c>.</exception>
         public EventPublisher(
             IContainer container,
-            IEventDescriptorFactory eventDescriptorFactory,
+            IEventContextFactory eventContextFactory,
             IEventContextAccessor eventContextAccessor = null)
         {
-            Ensure.Arg.NotNull(eventDescriptorFactory, nameof(eventDescriptorFactory));
+            Ensure.Arg.NotNull(eventContextFactory, nameof(eventContextFactory));
             Ensure.Arg.NotNull(container, nameof(container));
 
-            _eventDescriptorFactory = eventDescriptorFactory;
+            _eventContextFactory = eventContextFactory;
             _eventContextAccessor = eventContextAccessor;
             _container = container;
         }
@@ -46,16 +45,15 @@ namespace AppCore.Events
             Ensure.Arg.NotNull(@event, nameof(@event));
 
             Type eventType = @event.GetType();
-            EventDescriptor eventDescriptor = _eventDescriptorFactory.CreateDescriptor(eventType);
-            IEventContext eventContext = EventContextFactory.CreateEventContext(eventDescriptor, @event);
+            IEventContext eventContext = _eventContextFactory.CreateContext(@event);
             
             if (_eventContextAccessor != null)
                 _eventContextAccessor.EventContext = eventContext;
 
             try
             {
-                IEventPipeline pipeline = EventPipelineFactory.CreateEventPipeline(eventType, _container);
-                await pipeline.InvokeAsync(eventContext, cancellationToken)
+                var pipeline = (IEventPipeline) _container.Resolve(typeof(IEventPipeline<>).MakeGenericType(eventType));
+                await pipeline.PublishAsync(eventContext, cancellationToken)
                               .ConfigureAwait(false);
             }
             finally
