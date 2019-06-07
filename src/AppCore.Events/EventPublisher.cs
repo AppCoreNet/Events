@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
+using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 
 namespace AppCore.Events
@@ -15,28 +16,32 @@ namespace AppCore.Events
     /// </summary>
     public class EventPublisher : IEventPublisher
     {
+        private readonly IContainer _container;
+        private readonly IEventDescriptorFactory _eventDescriptorFactory;
         private readonly IEventContextFactory _eventContextFactory;
         private readonly IEventContextAccessor _eventContextAccessor;
-        private readonly IContainer _container;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPublisher"/> class.
         /// </summary>
         /// <param name="container">The <see cref="IContainer"/> used to resolve handlers and behaviors.</param>
+        /// <param name="eventDescriptorFactory">The factory for <see cref="EventDescriptor"/>.</param>
         /// <param name="eventContextFactory">The factory for <see cref="IEventContext"/>'s.</param>
         /// <param name="eventContextAccessor">The accessor for the current <see cref="IEventContext"/>.</param>
         /// <exception cref="ArgumentNullException">Argument <paramref name="container"/> is <c>null</c>.</exception>
         public EventPublisher(
             IContainer container,
+            IEventDescriptorFactory eventDescriptorFactory,
             IEventContextFactory eventContextFactory,
             IEventContextAccessor eventContextAccessor = null)
         {
             Ensure.Arg.NotNull(eventContextFactory, nameof(eventContextFactory));
             Ensure.Arg.NotNull(container, nameof(container));
 
+            _container = container;
+            _eventDescriptorFactory = eventDescriptorFactory;
             _eventContextFactory = eventContextFactory;
             _eventContextAccessor = eventContextAccessor;
-            _container = container;
         }
 
         /// <inheritdoc />
@@ -45,7 +50,9 @@ namespace AppCore.Events
             Ensure.Arg.NotNull(@event, nameof(@event));
 
             Type eventType = @event.GetType();
-            IEventContext eventContext = _eventContextFactory.CreateContext(@event);
+
+            EventDescriptor eventDescriptor = _eventDescriptorFactory.CreateDescriptor(eventType);
+            IEventContext eventContext = _eventContextFactory.CreateContext(eventDescriptor, @event);
             
             if (_eventContextAccessor != null)
                 _eventContextAccessor.EventContext = eventContext;

@@ -15,17 +15,22 @@ namespace AppCore.Events
 {
     public class EventPublisherTests
     {
+        private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
         private readonly IEventContextAccessor _accessor;
 
         public EventPublisherTests()
         {
+            _descriptorFactory = Substitute.For<IEventDescriptorFactory>();
+            _descriptorFactory.CreateDescriptor(typeof(TestEvent))
+                              .Returns(new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>()));
+
             _contextFactory = Substitute.For<IEventContextFactory>();
-            _contextFactory.CreateContext(Arg.Any<TestEvent>())
+            _contextFactory.CreateContext(Arg.Any<EventDescriptor>(),Arg.Any<TestEvent>())
                               .Returns(
                                   ci => new EventContext<TestEvent>(
-                                      new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>()),
-                                      ci.ArgAt<TestEvent>(0)));
+                                      ci.ArgAt<EventDescriptor>(0),
+                                      ci.ArgAt<TestEvent>(1)));
 
             _accessor = Substitute.For<IEventContextAccessor>();
         }
@@ -40,7 +45,7 @@ namespace AppCore.Events
             container.Resolve(typeof(IEventPipeline<TestEvent>))
                      .Returns(pipeline);
 
-            var publisher = new EventPublisher(container, _contextFactory, _accessor);
+            var publisher = new EventPublisher(container, _descriptorFactory, _contextFactory, _accessor);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await publisher.PublishAsync(@event, token);
@@ -59,7 +64,7 @@ namespace AppCore.Events
             container.Resolve(typeof(IEventPipeline<TestEvent>))
                      .Returns(pipeline);
 
-            var publisher = new EventPublisher(container, _contextFactory, _accessor);
+            var publisher = new EventPublisher(container, _descriptorFactory, _contextFactory, _accessor);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await publisher.PublishAsync(@event, token);
