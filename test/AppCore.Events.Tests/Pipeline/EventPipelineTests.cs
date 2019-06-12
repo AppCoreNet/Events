@@ -114,5 +114,27 @@ namespace AppCore.Events.Pipeline
                 .Should()
                 .Be(behavior2);
         }
+
+        [Fact]
+        public async Task AssignsEventContext()
+        {
+            var handler = Substitute.For<IEventHandler<TestEvent>>();
+            var accessor = Substitute.For<IEventContextAccessor>();
+            var @event = new TestEvent();
+            var context = Substitute.For<IEventContext<TestEvent>>();
+            context.Event.Returns(@event);
+            
+            var pipeline = new EventPipeline<TestEvent>(
+                Enumerable.Empty<IEventPipelineBehavior<TestEvent>>(),
+                new[] { handler }, accessor);
+
+            await pipeline.PublishAsync(context, CancellationToken.None);
+
+            accessor.Received(1)
+                    .EventContext = context;
+
+            accessor.Received(1)
+                    .EventContext = null;
+        }
     }
 }

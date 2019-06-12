@@ -36,25 +36,6 @@ namespace AppCore.Events
         }
 
         [Fact]
-        public async Task AssignsEventContext()
-        {
-            var pipeline = Substitute.For<IEventPipeline<TestEvent>>();
-
-            var container = Substitute.For<IContainer>();
-
-            container.Resolve(typeof(IEventPipeline<TestEvent>))
-                     .Returns(pipeline);
-
-            var publisher = new EventPublisher(container, _descriptorFactory, _contextFactory, _accessor);
-            var @event = new TestEvent();
-            var token = new CancellationToken();
-            await publisher.PublishAsync(@event, token);
-
-            _accessor.Received(1)
-                     .EventContext = Arg.Is<EventContext<TestEvent>>(e => e.Event == @event);
-        }
-
-        [Fact]
         public async Task PublishesEventOnPipeline()
         {
             var pipeline = Substitute.For<IEventPipeline<TestEvent>>();
@@ -64,7 +45,7 @@ namespace AppCore.Events
             container.Resolve(typeof(IEventPipeline<TestEvent>))
                      .Returns(pipeline);
 
-            var publisher = new EventPublisher(container, _descriptorFactory, _contextFactory, _accessor);
+            var publisher = new EventPublisher(container, _descriptorFactory, _contextFactory);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await publisher.PublishAsync(@event, token);
