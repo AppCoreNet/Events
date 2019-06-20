@@ -32,8 +32,9 @@ namespace AppCore.Events
             IEventDescriptorFactory descriptorFactory,
             IEventContextFactory contextFactory)
         {
-            Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
             Ensure.Arg.NotNull(container, nameof(container));
+            Ensure.Arg.NotNull(descriptorFactory, nameof(descriptorFactory));
+            Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
 
             _container = container;
             _descriptorFactory = descriptorFactory;
