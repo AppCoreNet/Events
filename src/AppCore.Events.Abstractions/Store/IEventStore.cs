@@ -26,18 +26,18 @@ namespace AppCore.Events.Store
         /// </summary>
         /// <remarks>
         /// The number of events read may be less than the requested count if fewer events are available.
-        /// The operation waits until at least one event with the specified <paramref name="startSequenceNo"/> is available
+        /// The operation waits until at least one event with the specified <paramref name="offset"/> is available
         /// or the timeout has elapsed.
         /// </remarks>
         /// <param name="streamName">The name of the event stream.</param>
-        /// <param name="startSequenceNo">The sequence number of the first event to read.</param>
+        /// <param name="offset">The offset of the first event to read. Specify <c>-1</c> to read from the start.</param>
         /// <param name="maxCount">The maximum number of events to read.</param>
         /// <param name="timeout">The timeout for the read operation.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous write operation.</returns>
         Task<IEnumerable<IEventContext>> ReadAsync(
             string streamName,
-            long startSequenceNo,
+            long offset,
             int maxCount,
             TimeSpan timeout,
             CancellationToken cancellationToken);

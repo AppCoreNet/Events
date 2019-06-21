@@ -11,14 +11,14 @@ namespace AppCore.Events.Store
     public static class EventStoreContextExtensions
     {
         /// <summary>
-        /// Gets a value indicating whether the event is persisted.
+        /// Gets a value indicating whether the event was read from a store.
         /// </summary>
         /// <param name="context">The <see cref="IEventContext"/>.</param>
-        /// <returns><c>true</c> if the event is persisted; <c>false</c> otherwise.</returns>
-        public static bool IsPersisted(this IEventContext context)
+        /// <returns><c>true</c> if the event was read from a store; <c>false</c> otherwise.</returns>
+        public static bool IsFromEventStore(this IEventContext context)
         {
             Ensure.Arg.NotNull(context, nameof(context));
-            return context.TryGetFeature(out IEventStoreFeature feature) && feature.IsPersisted;
+            return context.HasFeature<IEventStoreFeature>();
         }
 
         /// <summary>
@@ -31,6 +31,18 @@ namespace AppCore.Events.Store
             Ensure.Arg.NotNull(context, nameof(context));
             return context.GetFeature<IEventStoreFeature>()
                           .Store;
+        }
+
+        /// <summary>
+        /// Gets the offset of the event in the store.
+        /// </summary>
+        /// <param name="context">The <see cref="IEventContext"/>.</param>
+        /// <returns>The offset of the event.</returns>
+        public static long GetEventStoreOffset(this IEventContext context)
+        {
+            Ensure.Arg.NotNull(context, nameof(context));
+            return context.GetFeature<IEventStoreFeature>()
+                          .Offset;
         }
     }
 }

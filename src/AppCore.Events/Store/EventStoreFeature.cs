@@ -12,19 +12,20 @@ namespace AppCore.Events.Store
         public IEventStore Store { get; }
 
         /// <inheritdoc />
-        public bool IsPersisted { get; }
+        public long Offset { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStoreFeature"/> class.
         /// </summary>
         /// <param name="store">The <see cref="IEventStore"/> of the event.</param>
-        /// <param name="isPersisted"><c>true</c> if event is read from a store.</param>
-        public EventStoreFeature(IEventStore store, bool isPersisted)
+        /// <param name="offset">The offset of the event.</param>
+        public EventStoreFeature(IEventStore store, long offset)
         {
             Ensure.Arg.NotNull(store, nameof(store));
+            Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
 
             Store = store;
-            IsPersisted = isPersisted;
+            Offset = offset;
         }
     }
 }

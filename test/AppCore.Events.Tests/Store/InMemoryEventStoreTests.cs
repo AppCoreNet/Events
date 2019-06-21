@@ -16,39 +16,36 @@ namespace AppCore.Events.Store
 {
     public class InMemoryEventStoreTests
     {
+        private IEventContext<TestEvent> CreateEventContext(TestEvent @event, EventDescriptor descriptor = null)
+        {
+            var features = new Dictionary<Type, object>();
+
+            var eventContext = Substitute.For<IEventContext<TestEvent>>();
+            ((IEventContext) eventContext).Event.Returns(@event);
+            eventContext.Features.Returns(features);
+            eventContext.Event.Returns(@event);
+            eventContext.EventDescriptor.Returns(
+                descriptor ?? new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>()));
+
+            return eventContext;
+        }
+
         private IEventContextFactory CreateEventContextFactory()
         {
             var factory = Substitute.For<IEventContextFactory>();
             factory.CreateContext(Arg.Any<EventDescriptor>(), Arg.Any<TestEvent>())
                    .Returns(
-                       ci =>
-                       {
-                           var c = Substitute.For<IEventContext<TestEvent>>();
-                           ((IEventContext) c).Event.Returns(ci.ArgAt<TestEvent>(1));
-                           c.Event.Returns(ci.ArgAt<TestEvent>(1));
-                           c.EventDescriptor.Returns(ci.ArgAt<EventDescriptor>(0));
-                           return (IEventContext) c;
-                       });
+                       ci => (IEventContext) CreateEventContext(
+                           ci.ArgAt<TestEvent>(1),
+                           ci.ArgAt<EventDescriptor>(0)));
 
             return factory;
-        }
-
-        private IEventContext<TestEvent> CreateEventContext(TestEvent @event)
-        {
-            var eventContext = Substitute.For<IEventContext<TestEvent>>();
-            ((IEventContext) eventContext).Event.Returns(@event);
-            eventContext.Event.Returns(@event);
-            eventContext.EventDescriptor.Returns(
-                new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>()));
-
-            return eventContext;
         }
 
         [Fact]
         public async Task ReadAsyncReturnsEmptyAfterTimeoutElapsed()
         {
-            var contextFactory = Substitute.For<IEventContextFactory>();
-            var store = new InMemoryEventStore(contextFactory);
+            var store = new InMemoryEventStore(CreateEventContextFactory());
 
             IEnumerable<IEventContext> result = await store.ReadAsync(
                 string.Empty,
@@ -64,8 +61,7 @@ namespace AppCore.Events.Store
         [Fact]
         public async Task ReadAsyncReturnsAvailableEvents()
         {
-            var contextFactory = Substitute.For<IEventContextFactory>();
-            var store = new InMemoryEventStore(contextFactory);
+            var store = new InMemoryEventStore(CreateEventContextFactory());
 
             var @event = new TestEvent();
             IEventContext<TestEvent> eventContext = CreateEventContext(@event);
@@ -84,10 +80,30 @@ namespace AppCore.Events.Store
         }
 
         [Fact]
+        public async Task ReadAsyncReturnsAvailableEventsFromStart()
+        {
+            var store = new InMemoryEventStore(CreateEventContextFactory());
+
+            var @event = new TestEvent();
+            IEventContext<TestEvent> eventContext = CreateEventContext(@event);
+
+            await store.WriteAsync(new[] {eventContext}, CancellationToken.None);
+
+            IEnumerable<IEventContext> result = await store.ReadAsync(
+                string.Empty,
+                -1,
+                2,
+                TimeSpan.FromMilliseconds(100),
+                CancellationToken.None);
+
+            result.Should()
+                  .HaveCount(1);
+        }
+
+        [Fact]
         public async Task ReadAsyncWaitsForEvents()
         {
-            var contextFactory = Substitute.For<IEventContextFactory>();
-            var store = new InMemoryEventStore(contextFactory);
+            var store = new InMemoryEventStore(CreateEventContextFactory());
 
             var @event = new TestEvent();
             IEventContext<TestEvent> eventContext = CreateEventContext(@event);
@@ -116,7 +132,7 @@ namespace AppCore.Events.Store
         }
 
         [Fact]
-        public async Task ReadAsyncWaitsForEventsBySequence()
+        public async Task ReadAsyncWaitsForEventsByOffset()
         {
             var store = new InMemoryEventStore(CreateEventContextFactory());
 
@@ -154,6 +170,38 @@ namespace AppCore.Events.Store
                   .Event
                   .Should()
                   .Be(event2);
+        }
+
+        [Fact]
+        public async Task ReadAsyncAddsEventStoreFeature()
+        {
+            var store = new InMemoryEventStore(CreateEventContextFactory());
+
+            var @event = new TestEvent();
+            IEventContext<TestEvent> eventContext = CreateEventContext(@event);
+
+            await store.WriteAsync(new[] {eventContext}, CancellationToken.None);
+
+            IEnumerable<IEventContext> result = await store.ReadAsync(
+                string.Empty,
+                0,
+                2,
+                TimeSpan.FromMilliseconds(100),
+                CancellationToken.None);
+
+            IEventContext context = result.First();
+
+            context.HasFeature<IEventStoreFeature>()
+                   .Should()
+                   .BeTrue();
+
+            context.GetEventStore()
+                   .Should()
+                   .Be(store);
+
+            context.GetEventStoreOffset()
+                   .Should()
+                   .Be(0);
         }
     }
 }

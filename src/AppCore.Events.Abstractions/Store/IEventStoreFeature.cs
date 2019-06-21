@@ -17,8 +17,8 @@ namespace AppCore.Events.Store
         IEventStore Store { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the event was read from the store.
+        /// Gets the offset of the event.
         /// </summary>
-        bool IsPersisted { get; }
+        long Offset { get; }
     }
 }

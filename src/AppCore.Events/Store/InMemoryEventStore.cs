@@ -27,15 +27,15 @@ namespace AppCore.Events.Store
 
         private class EventData
         {
-            public int SequenceNo { get; }
+            public int Offset { get; }
 
             public EventDescriptor Descriptor { get; }
 
             public IEvent Event { get; }
 
-            public EventData(int sequenceNo, EventDescriptor descriptor, IEvent @event)
+            public EventData(int offset, EventDescriptor descriptor, IEvent @event)
             {
-                SequenceNo = sequenceNo;
+                Offset = offset;
                 Descriptor = descriptor;
                 Event = @event;
             }
@@ -43,25 +43,25 @@ namespace AppCore.Events.Store
 
         private class EventDataStream
         {
+            private readonly IEventStore _store;
             private readonly IEventContextFactory _contextFactory;
             private readonly object _syncObject = new object();
             private readonly List<EventData> _events = new List<EventData>();
             private readonly Queue<TaskCompletionSource<bool>> _taskCompletionSources =
                 new Queue<TaskCompletionSource<bool>>();
-            private int _nextSequenceNo;
-            private readonly EventStoreFeature _eventStoreFeature;
+            private int _nextOffset;
 
             public EventDataStream(IEventStore store, IEventContextFactory contextFactory)
             {
+                _store = store;
                 _contextFactory = contextFactory;
-                _eventStoreFeature = new EventStoreFeature(store, true);
             }
 
             public Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
             {
                 lock (_syncObject)
                 {
-                    _events.AddRange(events.Select(e => new EventData(_nextSequenceNo++, e.EventDescriptor, e.Event)));
+                    _events.AddRange(events.Select(e => new EventData(_nextOffset++, e.EventDescriptor, e.Event)));
 
                     // notify all readers
                     TaskCompletionSource<bool>[] sources = _taskCompletionSources.ToArray(); 
@@ -73,7 +73,7 @@ namespace AppCore.Events.Store
                 return _completedTask;
             }
 
-            public async Task<IEnumerable<IEventContext>> ReadAsync(long startSequenceNo, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
+            public async Task<IEnumerable<IEventContext>> ReadAsync(long offset, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
             {
                 CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 cts.CancelAfter(timeout);
@@ -84,10 +84,13 @@ namespace AppCore.Events.Store
                     lock (_syncObject)
                     {
                         EventData lastEvent = _events.LastOrDefault();
-                        if (lastEvent?.SequenceNo >= startSequenceNo)
+                        if (lastEvent != null && (offset == -1 || lastEvent.Offset >= offset))
                         {
                             EventData firstEvent = _events.First();
-                            int startIndex = (int) startSequenceNo - firstEvent.SequenceNo;
+                            if (offset == -1)
+                                offset = firstEvent.Offset;
+
+                            int startIndex = (int) offset - firstEvent.Offset;
                             int count = Math.Min(maxCount, _events.Count - startIndex);
 
                             var result = new List<IEventContext>(count);
@@ -98,7 +101,9 @@ namespace AppCore.Events.Store
                                     currentEvent.Descriptor,
                                     currentEvent.Event);
 
-                                currentEventContext.AddFeature<IEventStoreFeature>(_eventStoreFeature);
+                                currentEventContext.AddFeature<IEventStoreFeature>(
+                                    new EventStoreFeature(_store, currentEvent.Offset));
+
                                 result.Add(currentEventContext);
                             }
 
@@ -130,12 +135,12 @@ namespace AppCore.Events.Store
             _contextFactory = contextFactory;
         }
 
-        private EventDataStream GetStream(string topic)
+        private EventDataStream GetStream(string streamName)
         {
-            if (topic == null)
-                topic = string.Empty;
+            if (streamName == null)
+                streamName = string.Empty;
 
-            return _streams.GetOrAdd(topic, t => new EventDataStream(this, _contextFactory));
+            return _streams.GetOrAdd(streamName, t => new EventDataStream(this, _contextFactory));
         }
 
         /// <inheritdoc />
@@ -165,17 +170,17 @@ namespace AppCore.Events.Store
         /// <inheritdoc />
         public async Task<IEnumerable<IEventContext>> ReadAsync(
             string streamName,
-            long startSequenceNo,
+            long offset,
             int maxCount,
             TimeSpan timeout,
             CancellationToken cancellationToken)
         {
-            Ensure.Arg.InRange(startSequenceNo, 0, long.MaxValue, nameof(startSequenceNo));
+            Ensure.Arg.InRange(offset, -1, long.MaxValue, nameof(offset));
             Ensure.Arg.InRange(maxCount, 0, int.MaxValue, nameof(maxCount));
 
             EventDataStream queue = GetStream(streamName);
 
-            return await queue.ReadAsync(startSequenceNo, maxCount, timeout, cancellationToken)
+            return await queue.ReadAsync(offset, maxCount, timeout, cancellationToken)
                               .ConfigureAwait(false);
         }
     }

@@ -38,7 +38,7 @@ namespace AppCore.Events.Store
             EventPipelineDelegate<TEvent> next,
             CancellationToken cancellationToken)
         {
-            if ((!context.TryGetFeature(out IEventStoreFeature feature) || !feature.IsPersisted) && ShouldStoreEvent(context))
+            if (!context.IsFromEventStore() && ShouldStoreEvent(context))
             {
                 await _store.WriteAsync(new[] {context}, cancellationToken)
                             .ConfigureAwait(false);
