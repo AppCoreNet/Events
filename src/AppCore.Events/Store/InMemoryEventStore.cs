@@ -1,5 +1,5 @@
 ﻿// Licensed under the MIT License.
-// Copyright (c) 2018 the AppCore .NET project.
+// Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
 using System.Collections.Concurrent;
@@ -13,6 +13,9 @@ using AppCore.Events.Pipeline;
 
 namespace AppCore.Events.Store
 {
+    /// <summary>
+    /// Provides an event store which stores events in-memory.
+    /// </summary>
     public class InMemoryEventStore : IEventStore
     {
         private static readonly Task _completedTask = Task.FromResult(true);
@@ -117,6 +120,10 @@ namespace AppCore.Events.Store
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InMemoryEventStore"/> class.
+        /// </summary>
+        /// <param name="contextFactory">The factory used to create instances of <see cref="IEventContext"/>.</param>
         public InMemoryEventStore(IEventContextFactory contextFactory)
         {
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));

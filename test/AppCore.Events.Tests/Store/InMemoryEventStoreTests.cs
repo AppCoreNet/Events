@@ -116,7 +116,7 @@ namespace AppCore.Events.Store
         }
 
         [Fact]
-        public async Task ReadAsyncWaitsForEventsWithSequence()
+        public async Task ReadAsyncWaitsForEventsBySequence()
         {
             var store = new InMemoryEventStore(CreateEventContextFactory());
 
@@ -130,7 +130,7 @@ namespace AppCore.Events.Store
                         string.Empty,
                         1,
                         2,
-                        TimeSpan.FromSeconds(60),
+                        TimeSpan.FromSeconds(1),
                         CancellationToken.None);
                 });
 

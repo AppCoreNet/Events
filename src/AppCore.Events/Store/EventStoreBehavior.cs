@@ -9,11 +9,19 @@ using AppCore.Events.Pipeline;
 
 namespace AppCore.Events.Store
 {
+    /// <summary>
+    /// Event pipeline behavior which stores events.
+    /// </summary>
+    /// <typeparam name="TEvent">The type of the event.</typeparam>
     public class EventStoreBehavior<TEvent> : IEventPipelineBehavior<TEvent>
         where TEvent : IEvent
     {
         private readonly IEventStore _store;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStoreBehavior{TEvent}"/> class.
+        /// </summary>
+        /// <param name="store">The <see cref="IEventStore"/>.</param>
         public EventStoreBehavior(IEventStore store)
         {
             Ensure.Arg.NotNull(store, nameof(store));
