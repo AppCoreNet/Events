@@ -121,7 +121,7 @@ namespace AppCore.Events.Store
                     // wait for next events to appear or elapsed timeout
                     using (cts.Token.Register(() => taskCompletionSource.TrySetResult(false)))
                     {
-                        if (!await taskCompletionSource.Task.ConfigureAwait(false))
+                        if (!await taskCompletionSource.Task.ConfigureAwait(true))
                             return Enumerable.Empty<IEventContext>();
                     }
 
