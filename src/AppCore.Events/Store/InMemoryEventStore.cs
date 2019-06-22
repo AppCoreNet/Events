@@ -16,7 +16,7 @@ namespace AppCore.Events.Store
     /// <summary>
     /// Provides an event store which stores events in-memory.
     /// </summary>
-    public class InMemoryEventStore : IEventStore
+    public class InMemoryEventStore : ICommittableEventStore
     {
         private static readonly Task _completedTask = Task.FromResult(true);
 
@@ -50,6 +50,7 @@ namespace AppCore.Events.Store
             private readonly Queue<TaskCompletionSource<bool>> _taskCompletionSources =
                 new Queue<TaskCompletionSource<bool>>();
             private int _nextOffset;
+            private int _committedOffset = -1;
 
             public EventDataStream(IEventStore store, IEventContextFactory contextFactory)
             {
@@ -83,6 +84,9 @@ namespace AppCore.Events.Store
                     TaskCompletionSource<bool> taskCompletionSource;
                     lock (_syncObject)
                     {
+                        if (offset == -2)
+                            offset = _committedOffset;
+
                         EventData lastEvent = _events.LastOrDefault();
                         if (lastEvent != null && (offset == -1 || lastEvent.Offset >= offset))
                         {
@@ -122,6 +126,16 @@ namespace AppCore.Events.Store
                     }
 
                 } while (true);
+            }
+
+            public Task CommitAsync(long offset, CancellationToken cancellationToken)
+            {
+                lock (_syncObject)
+                {
+                    _committedOffset = (int) offset;
+                }
+
+                return _completedTask;
             }
         }
 
@@ -175,13 +189,21 @@ namespace AppCore.Events.Store
             TimeSpan timeout,
             CancellationToken cancellationToken)
         {
-            Ensure.Arg.InRange(offset, -1, long.MaxValue, nameof(offset));
+            Ensure.Arg.InRange(offset, -2, long.MaxValue, nameof(offset));
             Ensure.Arg.InRange(maxCount, 0, int.MaxValue, nameof(maxCount));
 
             EventDataStream queue = GetStream(streamName);
-
             return await queue.ReadAsync(offset, maxCount, timeout, cancellationToken)
                               .ConfigureAwait(false);
+        }
+
+        public async Task CommitAsync(string streamName, long offset, CancellationToken cancellationToken)
+        {
+            Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
+
+            EventDataStream queue = GetStream(streamName);
+            await queue.CommitAsync(offset, cancellationToken)
+                       .ConfigureAwait(false);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace AppCore.Events.Store
         Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Reads for events from the store.
+        /// Reads events from the store.
         /// </summary>
         /// <remarks>
         /// The number of events read may be less than the requested count if fewer events are available.
@@ -42,4 +42,10 @@ namespace AppCore.Events.Store
             TimeSpan timeout,
             CancellationToken cancellationToken);
     }
+
+    public interface ICommittableEventStore : IEventStore
+    {
+        Task CommitAsync(string streamName, long offset, CancellationToken cancellationToken);
+    }
+
 }

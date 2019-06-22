@@ -27,6 +27,46 @@ namespace AppCore.DependencyInjection
         }
 
         /// <summary>
+        /// Registers background task for publishing pending events from the store.
+        /// </summary>
+        /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
+        /// <returns>The passed builder to allow chaining.</returns>
+        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> UseBackgroundPublisher(
+            this IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> builder)
+        {
+            Ensure.Arg.NotNull(builder, nameof(builder));
+            builder.AddExtension(
+                new RegistrationFacilityExtension<IEventsFacility, IEventStorePublisher>(
+                    (r, f) =>
+                    {
+                        r.Add<EventStorePublisher>()
+                         .IfNoneRegistered()
+                         .WithLifetime(f.Lifetime);
+                    }));
+
+            builder.AddExtension(
+                new RegistrationFacilityExtension<IEventsFacility, IBackgroundTask>(
+                    (r, f) =>
+                    {
+                        if (f.Lifetime == ComponentLifetime.Singleton)
+                        {
+                            r.Add<EventStorePublisherTask>()
+                             .IfNotRegistered()
+                             .PerContainer();
+                        }
+                        else
+                        {
+                            r.Add<ScopedEventStorePublisherTask>()
+                             .IfNotRegistered()
+                             .WithLifetime(f.Lifetime);
+                        }
+                    }));
+
+            return builder;
+        }
+
+
+        /// <summary>
         /// Registers in-memory event store.
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
