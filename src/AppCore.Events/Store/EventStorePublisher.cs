@@ -27,7 +27,7 @@ namespace AppCore.Events.Store
 
             IEnumerable<IEventContext> events = await _store.ReadAsync(
                 streamName,
-                -1,
+                -2,
                 64,
                 Timeout.InfiniteTimeSpan,
                 cancellationToken);
