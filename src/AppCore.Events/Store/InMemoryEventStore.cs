@@ -85,7 +85,7 @@ namespace AppCore.Events.Store
                     lock (_syncObject)
                     {
                         if (offset == -2)
-                            offset = _committedOffset;
+                            offset = _committedOffset + 1;
 
                         EventData lastEvent = _events.LastOrDefault();
                         if (lastEvent != null && (offset == -1 || lastEvent.Offset >= offset))
