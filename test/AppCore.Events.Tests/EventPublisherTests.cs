@@ -45,7 +45,7 @@ namespace AppCore.Events
             container.Resolve(typeof(IEventPipeline<TestEvent>))
                      .Returns(pipeline);
 
-            var publisher = new EventPublisher(container, _descriptorFactory, _contextFactory);
+            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, container);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await publisher.PublishAsync(@event, token);

@@ -6,21 +6,38 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.DependencyInjection;
+using AppCore.Diagnostics;
 using AppCore.Events.Pipeline;
 
 namespace AppCore.Events.Store
 {
+    /// <inheritdoc />
     public class EventStorePublisher : IEventStorePublisher
     {
         private readonly IEventStore _store;
-        private readonly IContainer _container;
+        private readonly EventPipelineResolver _pipelineResolver;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStorePublisher"/> class.
+        /// </summary>
+        /// <param name="store">The event store to use.</param>
+        /// <param name="container">The <see cref="IContainer"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
         public EventStorePublisher(IEventStore store, IContainer container)
         {
+            Ensure.Arg.NotNull(store, nameof(store));
+            Ensure.Arg.NotNull(container, nameof(container));
+
             _store = store;
-            _container = container;
+            _pipelineResolver = new EventPipelineResolver(container);
         }
 
+        private IEventPipeline ResolvePipeline(IEventContext eventContext)
+        {
+            Type eventType = eventContext.EventDescriptor.EventType;
+            return _pipelineResolver.Resolve(eventType);
+        }
+
+        /// <inheritdoc />
         public async Task PublishPendingAsync(CancellationToken cancellationToken)
         {
             string streamName = string.Empty;
@@ -32,18 +49,10 @@ namespace AppCore.Events.Store
                 Timeout.InfiniteTimeSpan,
                 cancellationToken);
 
-            var pipelines = new Dictionary<Type, IEventPipeline>();
-
             long lastOffset = -1;
             foreach (IEventContext eventContext in events)
             {
-                Type eventType = eventContext.EventDescriptor.EventType;
-                if (!pipelines.TryGetValue(eventType, out IEventPipeline pipeline))
-                {
-                    pipeline = (IEventPipeline) _container.Resolve(typeof(IEventPipeline<>).MakeGenericType(eventType));
-                    pipelines.Add(eventType, pipeline);
-                }
-
+                IEventPipeline pipeline = ResolvePipeline(eventContext);
                 await pipeline.PublishAsync(eventContext, cancellationToken);
                 lastOffset = eventContext.GetEventStoreOffset();
             }

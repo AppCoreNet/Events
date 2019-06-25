@@ -11,6 +11,11 @@ namespace AppCore.Events.Store
     /// </summary>
     public interface IEventStorePublisher
     {
+        /// <summary>
+        /// Published pending events from the store.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous publish operation.</returns>
         Task PublishPendingAsync(CancellationToken cancellationToken);
     }
 }

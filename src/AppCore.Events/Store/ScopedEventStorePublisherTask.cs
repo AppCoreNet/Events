@@ -4,6 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.DependencyInjection;
+using AppCore.Diagnostics;
 
 namespace AppCore.Events.Store
 {
@@ -13,6 +14,7 @@ namespace AppCore.Events.Store
 
         public ScopedEventStorePublisherTask(IContainer container)
         {
+            Ensure.Arg.NotNull(container, nameof(container));
             _container = container;
         }
 

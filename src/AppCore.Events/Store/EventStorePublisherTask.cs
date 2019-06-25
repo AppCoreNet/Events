@@ -3,6 +3,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using AppCore.Diagnostics;
 
 namespace AppCore.Events.Store
 {
@@ -12,6 +13,7 @@ namespace AppCore.Events.Store
 
         public EventStorePublisherTask(IEventStorePublisher publisher)
         {
+            Ensure.Arg.NotNull(publisher, nameof(publisher));
             _publisher = publisher;
         }
 

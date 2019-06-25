@@ -28,11 +28,17 @@ namespace AppCore.Events.Store
             _store = store;
         }
 
+        /// <summary>
+        /// Can be overridden to get a value indicating whether the event should be stored.
+        /// </summary>
+        /// <param name="context">The context of the event.</param>
+        /// <returns><c>true</c> if the event should be stored; <c>false</c> otherwise.</returns>
         protected virtual bool ShouldStoreEvent(IEventContext<TEvent> context)
         {
             return context.EventDescriptor.GetMetadata(EventStoreMetadataKeys.PersistentMetadataKey, false);
         }
 
+        /// <inheritdoc />
         public async Task HandleAsync(
             IEventContext<TEvent> context,
             EventPipelineDelegate<TEvent> next,

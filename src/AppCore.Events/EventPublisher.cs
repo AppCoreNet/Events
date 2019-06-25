@@ -16,29 +16,29 @@ namespace AppCore.Events
     /// </summary>
     public class EventPublisher : IEventPublisher
     {
-        private readonly IContainer _container;
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
+        private readonly EventPipelineResolver _pipelineResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPublisher"/> class.
         /// </summary>
-        /// <param name="container">The <see cref="IContainer"/> used to resolve handlers and behaviors.</param>
         /// <param name="descriptorFactory">The factory for <see cref="EventDescriptor"/>.</param>
         /// <param name="contextFactory">The factory for <see cref="IEventContext"/>'s.</param>
+        /// <param name="container">The <see cref="IContainer"/> used to resolve handlers and behaviors.</param>
         /// <exception cref="ArgumentNullException">Argument <paramref name="container"/> is <c>null</c>.</exception>
         public EventPublisher(
-            IContainer container,
             IEventDescriptorFactory descriptorFactory,
-            IEventContextFactory contextFactory)
+            IEventContextFactory contextFactory,
+            IContainer container)
         {
-            Ensure.Arg.NotNull(container, nameof(container));
             Ensure.Arg.NotNull(descriptorFactory, nameof(descriptorFactory));
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
+            Ensure.Arg.NotNull(container, nameof(container));
 
-            _container = container;
             _descriptorFactory = descriptorFactory;
             _contextFactory = contextFactory;
+            _pipelineResolver = new EventPipelineResolver(container);
         }
 
         /// <inheritdoc />
@@ -51,7 +51,7 @@ namespace AppCore.Events
             EventDescriptor eventDescriptor = _descriptorFactory.CreateDescriptor(eventType);
             IEventContext eventContext = _contextFactory.CreateContext(eventDescriptor, @event);
             
-            var pipeline = (IEventPipeline) _container.Resolve(typeof(IEventPipeline<>).MakeGenericType(eventType));
+            IEventPipeline pipeline = _pipelineResolver.Resolve(eventType);
             await pipeline.PublishAsync(eventContext, cancellationToken)
                           .ConfigureAwait(false);
         }

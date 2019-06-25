@@ -30,7 +30,11 @@ namespace AppCore.Events.Store
         /// or the timeout has elapsed.
         /// </remarks>
         /// <param name="streamName">The name of the event stream.</param>
-        /// <param name="offset">The offset of the first event to read. Specify <c>-1</c> to read from the start.</param>
+        /// <param name="offset">
+        ///     The offset of the first event to read.
+        ///     Specify <c>-1</c> to read from the start.
+        ///     Specify <c>-2</c> to read from last committed offset.
+        /// </param>
         /// <param name="maxCount">The maximum number of events to read.</param>
         /// <param name="timeout">The timeout for the read operation.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
@@ -42,10 +46,4 @@ namespace AppCore.Events.Store
             TimeSpan timeout,
             CancellationToken cancellationToken);
     }
-
-    public interface ICommittableEventStore : IEventStore
-    {
-        Task CommitAsync(string streamName, long offset, CancellationToken cancellationToken);
-    }
-
 }
