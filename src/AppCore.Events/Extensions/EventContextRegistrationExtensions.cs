@@ -1,5 +1,5 @@
 ﻿// Licensed under the MIT License.
-// Copyright (c) 2018 the AppCore .NET project.
+// Copyright (c) 2018,2019 the AppCore .NET project.
 
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
@@ -20,7 +20,7 @@ namespace AppCore.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityBuilder{TFacility}"/>.</param>
         /// <returns>The passed <paramref name="builder"/>.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, EventContextExtension> AddEventContextAccessor(
+        public static IFacilityBuilder<IEventsFacility> UseEventContextAccessor(
             this IFacilityBuilder<IEventsFacility> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
