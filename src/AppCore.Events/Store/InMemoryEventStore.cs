@@ -197,6 +197,7 @@ namespace AppCore.Events.Store
                               .ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         public async Task CommitAsync(string streamName, long offset, CancellationToken cancellationToken)
         {
             Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));

@@ -1,7 +1,6 @@
 ﻿// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +16,6 @@ namespace AppCore.Events
     {
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
-        private readonly IEventContextAccessor _accessor;
 
         public EventPublisherTests()
         {
@@ -31,8 +29,6 @@ namespace AppCore.Events
                                   ci => new EventContext<TestEvent>(
                                       ci.ArgAt<EventDescriptor>(0),
                                       ci.ArgAt<TestEvent>(1)));
-
-            _accessor = Substitute.For<IEventContextAccessor>();
         }
 
         [Fact]
