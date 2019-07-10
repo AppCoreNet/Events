@@ -1,6 +1,7 @@
 ﻿// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
+using System;
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
 using AppCore.Events;
@@ -18,12 +19,14 @@ namespace AppCore.DependencyInjection
         /// Registers event store behavior.
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
+        /// <param name="configure">The delegate which is invoked to configure the extension.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> WithEventStore(
-            this IFacilityBuilder<IEventsFacility> builder)
+        public static IFacilityBuilder<IEventsFacility> UseEventStore(
+            this IFacilityBuilder<IEventsFacility> builder,
+            Action<IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension>> configure = null)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
-            return builder.AddExtension<EventStoreExtension>();
+            return builder.AddExtension(configure);
         }
 
         /// <summary>
@@ -31,55 +34,29 @@ namespace AppCore.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> UseBackgroundPublisher(
+        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> WithBackgroundPublisher(
             this IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
-            builder.AddExtension(
-                new RegistrationFacilityExtension<IEventsFacility, IEventStorePublisher>(
-                    (r, f) =>
-                    {
-                        r.Add<EventStorePublisher>()
-                         .IfNoneRegistered()
-                         .WithLifetime(f.Lifetime);
-                    }));
-
-            builder.AddExtension(
-                new RegistrationFacilityExtension<IEventsFacility, IBackgroundTask>(
-                    (r, f) =>
-                    {
-                        if (f.Lifetime == ComponentLifetime.Singleton)
-                        {
-                            r.Add<EventStorePublisherTask>()
-                             .IfNotRegistered()
-                             .PerContainer();
-                        }
-                        else
-                        {
-                            r.Add<ScopedEventStorePublisherTask>()
-                             .IfNotRegistered()
-                             .WithLifetime(f.Lifetime);
-                        }
-                    }));
-
+            builder.Extension.RegisterBackgroundPublisher = true;
             return builder;
         }
-
 
         /// <summary>
         /// Registers in-memory event store.
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> UseInMemory(
+        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> WithInMemoryStore(
             this IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
-            builder.AddExtension(
-                new RegistrationFacilityExtension<IEventsFacility, IEventStore>(
-                    (r, f) => r.Add<InMemoryEventStore>()
-                               .IfNoneRegistered()
-                               .PerContainer()));
+
+            builder.Extension.RegistrationCallbacks.Add(
+                (r, f) => r.Register<IEventStore>()
+                           .Add<InMemoryEventStore>()
+                           .IfNoneRegistered()
+                           .PerContainer());
 
             return builder;
         }
