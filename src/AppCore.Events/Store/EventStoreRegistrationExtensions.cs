@@ -26,7 +26,7 @@ namespace AppCore.DependencyInjection
             Action<IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension>> configure = null)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
-            return builder.AddExtension(configure);
+            return builder.Add(configure);
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace AppCore.DependencyInjection
             this IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
-            builder.Extension.RegisterBackgroundPublisher = true;
+            builder.Configure((f,e) => e.RegisterBackgroundPublisher = true);
             return builder;
         }
 
@@ -52,11 +52,12 @@ namespace AppCore.DependencyInjection
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
 
-            builder.Extension.RegistrationCallbacks.Add(
-                (r, f) => r.Register<IEventStore>()
-                           .Add<InMemoryEventStore>()
-                           .IfNoneRegistered()
-                           .PerContainer());
+            builder.Configure(
+                (f, e) => e.RegistrationCallbacks.Add(
+                    (r, f2) => r.Register<IEventStore>()
+                                .Add<InMemoryEventStore>()
+                                .IfNoneRegistered()
+                                .PerContainer()));
 
             return builder;
         }
