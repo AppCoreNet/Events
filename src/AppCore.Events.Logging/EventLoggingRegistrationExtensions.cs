@@ -23,7 +23,7 @@ namespace AppCore.DependencyInjection
             this IFacilityBuilder<IEventsFacility> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
-            return builder.AddExtension<EventLoggingExtension>();
+            return builder.Add<EventLoggingExtension>();
         }
     }
 }
