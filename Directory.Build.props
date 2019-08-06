@@ -4,7 +4,7 @@
     <Company>The AppCore .NET project</Company>
     <Product>AppCore Events Framework</Product>
     <Copyright>Copyright (c) 2018,2019 the AppCore project</Copyright>
-    <VersionPrefix>1.0.0</VersionPrefix>
+    <Version>1.0.0</Version>
     <PackageLicenseUrl>https://github.com/AppCoreNet/Events/blob/dev/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/AppCoreNet/Events</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -16,8 +16,9 @@
     -->
   </PropertyGroup>
 
-  <Import Project="./build/version.props" />
-  <Import Project="./build/netfx.props" />
+  <Import Project="./build/shared/dotnet/common.props" />
+  <Import Project="./build/shared/dotnet/netfx.props" />
+
   <Import Project="./build/sources.props" />
   <Import Project="./build/dependency-versions.props" />
 
