@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net452;netstandard1.0;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <Description>AppCore event JSON formatter.</Description>
+    <RootNamespace>AppCore.Events.Formatters</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="AppCore.Events.Formatters.NewtonsoftJson.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AppCore.Diagnostics.Sources" Version="$(AppCore_Shared_Version)">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.Events.Abstractions.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Abstractions", "src\AppCore.Events.Abstractions\AppCore.Events.Abstractions.csproj", "{609D2506-8909-4814-929F-59BC262E5913}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Logging", "src\AppCore.Events.Logging\AppCore.Events.Logging.csproj", "{30A20DAF-1CA8-4538-9489-A0238A583BC5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Tests", "test\AppCore.Events.Tests\AppCore.Events.Tests.csproj", "{E0698B78-612C-44EB-81D4-E2BA9EDCB933}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Formatters.NewtonsoftJson", "src\AppCore.Events.Formatters.NewtonsoftJson\AppCore.Events.Formatters.NewtonsoftJson.csproj", "{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E0698B78-612C-44EB-81D4-E2BA9EDCB933}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0698B78-612C-44EB-81D4-E2BA9EDCB933}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0698B78-612C-44EB-81D4-E2BA9EDCB933}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
