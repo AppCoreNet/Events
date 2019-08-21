@@ -16,7 +16,7 @@ namespace AppCore.DependencyInjection
         /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry, IEventsFacility facility)
         {
-            registry.Register<IEventContextTextFormatter>()
+            registry.Register<IEventContextFormatter>()
                     .Add<NewtonsoftJsonFormatter>()
                     .IfNotRegistered()
                     .PerContainer();

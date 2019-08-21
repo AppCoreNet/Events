@@ -13,7 +13,7 @@ namespace AppCore.Events.Formatters
     /// <summary>
     /// Provides a Newtonsoft.Json based event context formatter.
     /// </summary>
-    public class NewtonsoftJsonFormatter : IEventContextTextFormatter
+    public class NewtonsoftJsonFormatter : IEventContextFormatter
     {
         private const string _contentType = "application/json";
 
@@ -41,9 +41,9 @@ namespace AppCore.Events.Formatters
         }
 
         /// <inheritdoc />
-        public void Write(TextWriter writer, IEventContext context)
+        public void Write(Stream stream, IEventContext context)
         {
-            Ensure.Arg.NotNull(writer, nameof(writer));
+            Ensure.Arg.NotNull(stream, nameof(stream));
             Ensure.Arg.NotNull(context, nameof(context));
 
             var serializedEvent = new JsonSerializedEvent
@@ -53,15 +53,17 @@ namespace AppCore.Events.Formatters
                 Metadata = context.EventDescriptor.Metadata
             };
 
-            _serializer.Serialize(writer, serializedEvent);
+            _serializer.Serialize(new StreamWriter(stream), serializedEvent);
         }
 
         /// <inheritdoc />
-        public IEventContext Read(TextReader reader)
+        public IEventContext Read(Stream stream)
         {
-            Ensure.Arg.NotNull(reader, nameof(reader));
+            Ensure.Arg.NotNull(stream, nameof(stream));
 
-            var serializedEvent = (JsonSerializedEvent) _serializer.Deserialize(reader, typeof(JsonSerializedEvent));
+            var serializedEvent = (JsonSerializedEvent) _serializer.Deserialize(
+                new StreamReader(stream),
+                typeof(JsonSerializedEvent));
 
             IEventContext result = _contextFactory.CreateContext(
                 new EventDescriptor(serializedEvent.Event.GetType(), serializedEvent.Metadata),

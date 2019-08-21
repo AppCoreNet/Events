@@ -8,7 +8,7 @@ namespace AppCore.Events.Formatters
     /// <summary>
     /// Represents a formatter for <see cref="IEventContext"/>.
     /// </summary>
-    public interface IEventContextTextFormatter
+    public interface IEventContextFormatter
     {
         /// <summary>
         /// Gets the content type supported by the formatter.
@@ -18,15 +18,15 @@ namespace AppCore.Events.Formatters
         /// <summary>
         /// Serializes the specified <paramref name="context"/>.
         /// </summary>
-        /// <param name="writer">The <see cref="TextWriter"/> where the context is serialized to.</param>
+        /// <param name="stream">The <see cref="Stream"/> where the context is serialized to.</param>
         /// <param name="context">The <see cref="IEventContext"/> to serialize.</param>
-        void Write(TextWriter writer, IEventContext context);
+        void Write(Stream stream, IEventContext context);
 
         /// <summary>
-        /// Deserializes a <see cref="IEventContext"/> from the specified <paramref name="reader"/>.
+        /// Deserializes a <see cref="IEventContext"/> from the specified <paramref name="stream"/>.
         /// </summary>
-        /// <param name="reader">The <see cref="TextReader"/> where the context is deserialized from.</param>
+        /// <param name="stream">The <see cref="Stream"/> where the context is deserialized from.</param>
         /// <returns>The <see cref="IEventContext"/>.</returns>
-        IEventContext Read(TextReader reader);
+        IEventContext Read(Stream stream);
     }
 }
