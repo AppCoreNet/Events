@@ -19,7 +19,7 @@ namespace AppCore.DependencyInjection
         /// Registers logging event pipeline behavior.
         /// </summary>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> UseLogging(
+        public static IFacilityBuilder<IEventsFacility> AddLogging(
             this IFacilityBuilder<IEventsFacility> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
