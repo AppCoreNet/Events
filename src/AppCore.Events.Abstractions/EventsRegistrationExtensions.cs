@@ -40,7 +40,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddHandlers(
+        public static IFacilityBuilder<IEventsFacility> UseHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
@@ -63,7 +63,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddPreHandlers(
+        public static IFacilityBuilder<IEventsFacility> UsePreHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
@@ -86,7 +86,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddPostHandlers(
+        public static IFacilityBuilder<IEventsFacility> UsePostHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
@@ -109,7 +109,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddBehaviors(
+        public static IFacilityBuilder<IEventsFacility> UseBehaviors(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {

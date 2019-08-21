@@ -20,7 +20,7 @@ namespace AppCore.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityBuilder{TFacility}"/>.</param>
         /// <returns>The passed <paramref name="builder"/>.</returns>
-        public static IFacilityBuilder<IEventsFacility> UseEventContextAccessor(
+        public static IFacilityBuilder<IEventsFacility> AddContextAccessor(
             this IFacilityBuilder<IEventsFacility> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
