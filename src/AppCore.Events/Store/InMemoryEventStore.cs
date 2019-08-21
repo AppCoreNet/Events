@@ -74,7 +74,7 @@ namespace AppCore.Events.Store
                 return _completedTask;
             }
 
-            public async Task<IEnumerable<IEventContext>> ReadAsync(long offset, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
+            public async Task<IEnumerable<IEventContext>> ReadAsync(EventOffset offset, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
             {
                 CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 cts.CancelAfter(timeout);
@@ -84,17 +84,17 @@ namespace AppCore.Events.Store
                     TaskCompletionSource<bool> taskCompletionSource;
                     lock (_syncObject)
                     {
-                        if (offset == -2)
+                        if (offset.Value == -2)
                             offset = _committedOffset + 1;
 
                         EventData lastEvent = _events.LastOrDefault();
-                        if (lastEvent != null && (offset == -1 || lastEvent.Offset >= offset))
+                        if (lastEvent != null && (offset.Value == -1 || lastEvent.Offset >= offset.Value))
                         {
                             EventData firstEvent = _events.First();
                             if (offset == -1)
                                 offset = firstEvent.Offset;
 
-                            int startIndex = (int) offset - firstEvent.Offset;
+                            int startIndex = (int) offset.Value - firstEvent.Offset;
                             int count = Math.Min(maxCount, _events.Count - startIndex);
 
                             var result = new List<IEventContext>(count);
@@ -184,12 +184,11 @@ namespace AppCore.Events.Store
         /// <inheritdoc />
         public async Task<IEnumerable<IEventContext>> ReadAsync(
             string streamName,
-            long offset,
+            EventOffset offset,
             int maxCount,
             TimeSpan timeout,
             CancellationToken cancellationToken)
         {
-            Ensure.Arg.InRange(offset, -2, long.MaxValue, nameof(offset));
             Ensure.Arg.InRange(maxCount, 0, int.MaxValue, nameof(maxCount));
 
             EventDataStream queue = GetStream(streamName);

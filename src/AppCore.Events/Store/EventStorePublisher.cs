@@ -15,19 +15,23 @@ namespace AppCore.Events.Store
     public class EventStorePublisher : IEventStorePublisher
     {
         private readonly IEventStore _store;
+        private readonly IEventStorePublisherOffset _storeOffset;
         private readonly EventPipelineResolver _pipelineResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStorePublisher"/> class.
         /// </summary>
         /// <param name="store">The event store to use.</param>
+        /// <param name="storeOffset">Used to load/save the current event offset.</param>
         /// <param name="container">The <see cref="IContainer"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
-        public EventStorePublisher(IEventStore store, IContainer container)
+        public EventStorePublisher(IEventStore store, IEventStorePublisherOffset storeOffset, IContainer container)
         {
             Ensure.Arg.NotNull(store, nameof(store));
+            Ensure.Arg.NotNull(storeOffset, nameof(storeOffset));
             Ensure.Arg.NotNull(container, nameof(container));
 
             _store = store;
+            _storeOffset = storeOffset;
             _pipelineResolver = new EventPipelineResolver(container);
         }
 
@@ -42,9 +46,12 @@ namespace AppCore.Events.Store
         {
             string streamName = string.Empty;
 
+            EventOffset offset = await _storeOffset.GetNextOffset(cancellationToken)
+                                                   .ConfigureAwait(false);
+
             IEnumerable<IEventContext> events = await _store.ReadAsync(
                 streamName,
-                -2,
+                offset,
                 64,
                 Timeout.InfiniteTimeSpan,
                 cancellationToken);
@@ -53,13 +60,22 @@ namespace AppCore.Events.Store
             foreach (IEventContext eventContext in events)
             {
                 IEventPipeline pipeline = ResolvePipeline(eventContext);
-                await pipeline.PublishAsync(eventContext, cancellationToken);
+                await pipeline.PublishAsync(eventContext, cancellationToken)
+                              .ConfigureAwait(false);
+
                 lastOffset = eventContext.GetEventStoreOffset();
             }
 
-            if (lastOffset != -1 && _store is ICommittableEventStore committableEventStore)
+            if (lastOffset != -1)
             {
-                await committableEventStore.CommitAsync(streamName, lastOffset, cancellationToken);
+                if (_store is ICommittableEventStore committableStore)
+                {
+                    await committableStore.CommitAsync(streamName, lastOffset, cancellationToken)
+                                          .ConfigureAwait(false);
+                }
+
+                await _storeOffset.CommitOffset(lastOffset, cancellationToken)
+                                  .ConfigureAwait(false);
             }
         }
     }

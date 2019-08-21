@@ -35,6 +35,11 @@ namespace AppCore.Events.Store
 
             if (RegisterBackgroundPublisher)
             {
+                registry.Register<IEventStorePublisherOffset>()
+                        .Add<InMemoryEventStorePublisherOffset>()
+                        .IfNoneRegistered()
+                        .PerContainer();
+
                 registry.Register<IEventStorePublisher>()
                         .Add<EventStorePublisher>()
                         .IfNoneRegistered()
