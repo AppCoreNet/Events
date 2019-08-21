@@ -53,7 +53,8 @@ namespace AppCore.Events.Formatters
                 Metadata = context.EventDescriptor.Metadata
             };
 
-            _serializer.Serialize(new StreamWriter(stream), serializedEvent);
+            using (var writer = new StreamWriter(stream))
+                _serializer.Serialize(writer, serializedEvent);
         }
 
         /// <inheritdoc />
@@ -61,9 +62,13 @@ namespace AppCore.Events.Formatters
         {
             Ensure.Arg.NotNull(stream, nameof(stream));
 
-            var serializedEvent = (JsonSerializedEvent) _serializer.Deserialize(
-                new StreamReader(stream),
-                typeof(JsonSerializedEvent));
+            JsonSerializedEvent serializedEvent;
+            using (var reader = new StreamReader(stream))
+            {
+                serializedEvent = (JsonSerializedEvent) _serializer.Deserialize(
+                    reader,
+                    typeof(JsonSerializedEvent));
+            }
 
             IEventContext result = _contextFactory.CreateContext(
                 new EventDescriptor(serializedEvent.Event.GetType(), serializedEvent.Metadata),
