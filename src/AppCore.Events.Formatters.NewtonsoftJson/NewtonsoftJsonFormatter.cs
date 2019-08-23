@@ -15,13 +15,11 @@ namespace AppCore.Events.Formatters
     /// </summary>
     public class NewtonsoftJsonFormatter : IEventContextFormatter
     {
-        private const string _contentType = "application/json";
-
         private readonly IEventContextFactory _contextFactory;
         private readonly JsonSerializer _serializer;
 
         /// <inheritdoc />
-        public string ContentType => _contentType;
+        public string ContentType => "application/json";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NewtonsoftJsonFormatter"/> class.
