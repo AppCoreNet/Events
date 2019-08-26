@@ -89,6 +89,7 @@ namespace AppCore.Events.Pipeline
             catch (Exception error)
             {
                 _logger.PipelineFailed(typeof(TEvent), stopwatch.Elapsed, error);
+                throw;
             }
         }
 
