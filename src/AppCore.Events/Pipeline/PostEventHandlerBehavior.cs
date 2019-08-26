@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
+using AppCore.Logging;
 
 namespace AppCore.Events.Pipeline
 {
@@ -16,17 +18,22 @@ namespace AppCore.Events.Pipeline
     public class PostEventHandlerBehavior<TEvent> : IEventPipelineBehavior<TEvent>
         where TEvent : IEvent
     {
-        private readonly IEnumerable<IPostEventHandler<TEvent>> _handlers;
+        private readonly List<IPostEventHandler<TEvent>> _handlers;
+        private readonly ILogger<PostEventHandlerBehavior<TEvent>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostEventHandlerBehavior{TEvent}"/> class.
         /// </summary>
         /// <param name="handlers">An <see cref="IEnumerable{T}"/> of <see cref="IPostEventHandler{TEvent}"/>s.</param>
+        /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
         /// <exception cref="ArgumentNullException">Argument <paramref name="handlers"/> is <c>null</c>.</exception>
-        public PostEventHandlerBehavior(IEnumerable<IPostEventHandler<TEvent>> handlers)
+        public PostEventHandlerBehavior(IEnumerable<IPostEventHandler<TEvent>> handlers, ILogger<PostEventHandlerBehavior<TEvent>> logger)
         {
             Ensure.Arg.NotNull(handlers, nameof(handlers));
-            _handlers = handlers;
+            Ensure.Arg.NotNull(logger, nameof(logger));
+
+            _handlers = handlers.ToList();
+            _logger = logger;
         }
 
         /// <inheritdoc />
@@ -37,6 +44,8 @@ namespace AppCore.Events.Pipeline
         {
             await next(context, cancellationToken)
                 .ConfigureAwait(false);
+
+            _logger.InvokingPostEventHandlers(typeof(TEvent), _handlers.Count);
 
             foreach (IPostEventHandler<TEvent> handler in _handlers)
             {

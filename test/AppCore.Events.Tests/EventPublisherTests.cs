@@ -65,7 +65,7 @@ namespace AppCore.Events
             await publisher.PublishAsync(@event, token);
 
             await pipeline.Received(1)
-                          .PublishAsync(
+                          .ProcessAsync(
                               Arg.Is<IEventContext>(c => c.Event == @event),
                               Arg.Is(token));
         }
