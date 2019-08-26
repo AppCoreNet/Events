@@ -1,11 +1,13 @@
 ﻿// Licensed under the MIT License.
-// Copyright (c) 2018 the AppCore .NET project.
+// Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
+using AppCore.Logging;
 
 namespace AppCore.Events.Pipeline
 {
@@ -16,17 +18,24 @@ namespace AppCore.Events.Pipeline
     public class PreEventHandlerBehavior<TEvent> : IEventPipelineBehavior<TEvent>
         where TEvent : IEvent
     {
-        private readonly IEnumerable<IPreEventHandler<TEvent>> _handlers;
+        private readonly List<IPreEventHandler<TEvent>> _handlers;
+        private readonly ILogger<PreEventHandlerBehavior<TEvent>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PreEventHandlerBehavior{TEvent}"/> class.
         /// </summary>
         /// <param name="handlers">An <see cref="IEnumerable{T}"/> of <see cref="IPreEventHandler{TEvent}"/>s.</param>
+        /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
         /// <exception cref="ArgumentNullException">Argument <paramref name="handlers"/> is <c>null</c>.</exception>
-        public PreEventHandlerBehavior(IEnumerable<IPreEventHandler<TEvent>> handlers)
+        public PreEventHandlerBehavior(
+            IEnumerable<IPreEventHandler<TEvent>> handlers,
+            ILogger<PreEventHandlerBehavior<TEvent>> logger)
         {
             Ensure.Arg.NotNull(handlers, nameof(handlers));
-            _handlers = handlers;
+            Ensure.Arg.NotNull(logger, nameof(logger));
+
+            _handlers = handlers.ToList();
+            _logger = logger;
         }
 
         /// <inheritdoc />
@@ -35,6 +44,8 @@ namespace AppCore.Events.Pipeline
             EventPipelineDelegate<TEvent> next,
             CancellationToken cancellationToken)
         {
+            _logger.InvokingPreEventHandlers(typeof(TEvent), _handlers.Count);
+
             foreach (IPreEventHandler<TEvent> handler in _handlers)
             {
                 await handler.OnHandlingAsync(context, cancellationToken)

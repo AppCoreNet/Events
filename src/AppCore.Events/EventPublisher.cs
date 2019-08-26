@@ -53,7 +53,7 @@ namespace AppCore.Events
             try
             {
                 var pipeline = (IEventPipeline) _container.Resolve(typeof(IEventPipeline<>).MakeGenericType(eventType));
-                await pipeline.PublishAsync(eventContext, cancellationToken)
+                await pipeline.ProcessAsync(eventContext, cancellationToken)
                               .ConfigureAwait(false);
             }
             finally

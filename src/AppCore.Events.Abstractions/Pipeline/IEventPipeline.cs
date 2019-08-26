@@ -12,12 +12,12 @@ namespace AppCore.Events.Pipeline
     public interface IEventPipeline
     {
         /// <summary>
-        /// Publishes an event.
+        /// Processes an event.
         /// </summary>
         /// <param name="context">The event context.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous event operation.</returns>
-        Task PublishAsync(IEventContext context, CancellationToken cancellationToken);
+        Task ProcessAsync(IEventContext context, CancellationToken cancellationToken);
     }
 
     /// <inheritdoc />
@@ -25,11 +25,11 @@ namespace AppCore.Events.Pipeline
         where TEvent : IEvent
     {
         /// <summary>
-        /// Publishes an event.
+        /// Processes an event.
         /// </summary>
         /// <param name="context">The event context.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous event operation.</returns>
-        Task PublishAsync(IEventContext<TEvent> context, CancellationToken cancellationToken);
+        Task ProcessAsync(IEventContext<TEvent> context, CancellationToken cancellationToken);
     }
 }
