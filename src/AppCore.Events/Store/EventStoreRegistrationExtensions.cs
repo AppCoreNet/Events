@@ -21,7 +21,7 @@ namespace AppCore.DependencyInjection
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <param name="configure">The delegate which is invoked to configure the extension.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityBuilder<IEventsFacility> UseEventStore(
+        public static IFacilityBuilder<IEventsFacility> AddEventStore(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension>> configure = null)
         {

@@ -19,6 +19,12 @@ namespace AppCore.DependencyInjection
         /// </summary>
         public ComponentLifetime Lifetime { get; set; } = ComponentLifetime.Scoped;
 
+        protected override void RegisterComponentsCore(IComponentRegistry registry)
+        {
+            RegisterExtensionComponents(registry);
+            RegisterComponents(registry);
+        }
+
         /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry)
         {
