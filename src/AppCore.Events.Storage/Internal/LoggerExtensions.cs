@@ -12,19 +12,19 @@ namespace AppCore.Events.Storage
             LoggerEvent.Define<string, long>(
                 LogLevel.Trace,
                 LogEventIds.ReadingEvents,
-                "Reading events from stream {streamName} at offset {streamOffset}.");
+                "Reading events from stream '{streamName}' at offset #{streamOffset}.");
 
         private static readonly LoggerEventDelegate<int, string, long, long> _publishingEvents =
             LoggerEvent.Define<int, string, long, long>(
                 LogLevel.Trace,
                 LogEventIds.PublishingEvents,
-                "Publishing {eventCount} events from stream {streamName} offset {firstOffset}-{lastOffset}.");
+                "Publishing {eventCount} events from stream '{streamName}' offset #{firstOffset}-#{lastOffset}.");
 
         private static readonly LoggerEventDelegate<int, string> _publishedEvents =
             LoggerEvent.Define<int, string>(
                 LogLevel.Debug,
                 LogEventIds.PublishedEvents,
-                "Published {eventCount} events from stream {streamName}.");
+                "Published {eventCount} events from stream '{streamName}'.");
 
         public static void ReadingEvents(this ILogger logger, string streamName, long streamOffset)
         {
