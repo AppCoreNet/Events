@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AppCore.Logging;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
@@ -25,7 +26,8 @@ namespace AppCore.Events.Pipeline
                 {
                     handler1,
                     handler2
-                });
+                },
+                Substitute.For<ILogger<EventPipeline<TestEvent>>>());
 
             var @event = new TestEvent();
 
@@ -34,7 +36,7 @@ namespace AppCore.Events.Pipeline
 
             var token = new CancellationToken();
 
-            await pipeline.PublishAsync(eventContext, token);
+            await pipeline.ProcessAsync(eventContext, token);
 
             await handler1.Received(1)
                           .HandleAsync(eventContext, token);
@@ -84,7 +86,8 @@ namespace AppCore.Events.Pipeline
                     behavior1,
                     behavior2
                 },
-                Enumerable.Empty<IEventHandler<TestEvent>>());
+                Enumerable.Empty<IEventHandler<TestEvent>>(),
+                Substitute.For<ILogger<EventPipeline<TestEvent>>>());
 
             var @event = new TestEvent();
 
@@ -92,7 +95,7 @@ namespace AppCore.Events.Pipeline
             eventContext.Event.Returns(@event);
 
             var token = new CancellationToken();
-            await pipeline.PublishAsync(eventContext, token);
+            await pipeline.ProcessAsync(eventContext, token);
 
             await behavior1.Received(1)
                            .HandleAsync(
@@ -126,9 +129,9 @@ namespace AppCore.Events.Pipeline
             
             var pipeline = new EventPipeline<TestEvent>(
                 Enumerable.Empty<IEventPipelineBehavior<TestEvent>>(),
-                new[] { handler }, accessor);
+                new[] { handler }, Substitute.For<ILogger<EventPipeline<TestEvent>>>(), accessor);
 
-            await pipeline.PublishAsync(context, CancellationToken.None);
+            await pipeline.ProcessAsync(context, CancellationToken.None);
 
             accessor.Received(1)
                     .EventContext = context;

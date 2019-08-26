@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
+using AppCore.Logging;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
@@ -40,7 +41,8 @@ namespace AppCore.Events
                 {
                     new CancelableEventBehavior<CancelableTestEvent>()
                 },
-                new[] {handler});
+                new[] {handler},
+                Substitute.For<ILogger<EventPipeline<CancelableTestEvent>>>());
 
             var @event = new CancelableTestEvent();
 
@@ -50,7 +52,7 @@ namespace AppCore.Events
 
             Func<Task> invoke = async ()=>
             {
-                await pipeline.PublishAsync(eventContext, CancellationToken.None);
+                await pipeline.ProcessAsync(eventContext, CancellationToken.None);
             };
 
             invoke.Should()

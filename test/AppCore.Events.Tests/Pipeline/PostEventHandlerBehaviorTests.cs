@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Events.Metadata;
+using AppCore.Logging;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
@@ -43,7 +44,7 @@ namespace AppCore.Events.Pipeline
 
             var ct = new CancellationToken();
 
-            var behavior = new PostEventHandlerBehavior<TestEvent>(handlers);
+            var behavior = new PostEventHandlerBehavior<TestEvent>(handlers, Substitute.For<ILogger<PostEventHandlerBehavior<TestEvent>>>());
             await behavior.HandleAsync(context, next, ct);
 
             await next.Received(1)

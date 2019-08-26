@@ -60,7 +60,7 @@ namespace AppCore.Events.Store
             foreach (IEventContext eventContext in events)
             {
                 IEventPipeline pipeline = ResolvePipeline(eventContext);
-                await pipeline.PublishAsync(eventContext, cancellationToken)
+                await pipeline.ProcessAsync(eventContext, cancellationToken)
                               .ConfigureAwait(false);
 
                 lastOffset = eventContext.GetEventStoreOffset();

@@ -52,7 +52,7 @@ namespace AppCore.Events
             IEventContext eventContext = _contextFactory.CreateContext(eventDescriptor, @event);
             
             IEventPipeline pipeline = _pipelineResolver.Resolve(eventType);
-            await pipeline.PublishAsync(eventContext, cancellationToken)
+            await pipeline.ProcessAsync(eventContext, cancellationToken)
                           .ConfigureAwait(false);
         }
     }
