@@ -110,7 +110,7 @@ namespace AppCore.Events.Storage
 
             var semaphore = new SemaphoreSlim(0, 1);
 
-            Task<IEnumerable<IEventContext>> readerTask = Task.Run(
+            Task<IReadOnlyCollection<IEventContext>> readerTask = Task.Run(
                 async () =>
                 {
                     semaphore.Release();
@@ -138,7 +138,7 @@ namespace AppCore.Events.Storage
 
             var semaphore = new SemaphoreSlim(0, 1);
 
-            Task<IEnumerable<IEventContext>> readerTask = Task.Run(
+            Task<IReadOnlyCollection<IEventContext>> readerTask = Task.Run(
                 async () =>
                 {
                     semaphore.Release();

@@ -34,8 +34,8 @@ namespace AppCore.Events.Storage
         /// <param name="maxCount">The maximum number of events to read.</param>
         /// <param name="timeout">The timeout for the read operation.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous write operation.</returns>
-        Task<IEnumerable<IEventContext>> ReadAsync(
+        /// <returns>A task that represents the asynchronous read operation.</returns>
+        Task<IReadOnlyCollection<IEventContext>> ReadAsync(
             string streamName,
             EventOffset offset,
             int maxCount,

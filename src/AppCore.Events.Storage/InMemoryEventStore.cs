@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,9 @@ namespace AppCore.Events.Storage
     public class InMemoryEventStore : ICommittableEventStore
     {
         private static readonly Task _completedTask = Task.FromResult(true);
+
+        private static readonly IReadOnlyCollection<IEventContext> _emptyCollection =
+            new ReadOnlyCollection<IEventContext>(new List<IEventContext>());
 
         private readonly IEventContextFactory _contextFactory;
 
@@ -74,7 +78,7 @@ namespace AppCore.Events.Storage
                 return _completedTask;
             }
 
-            public async Task<IEnumerable<IEventContext>> ReadAsync(EventOffset offset, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
+            public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(EventOffset offset, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
             {
                 CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 cts.CancelAfter(timeout);
@@ -122,7 +126,7 @@ namespace AppCore.Events.Storage
                     using (cts.Token.Register(() => taskCompletionSource.TrySetResult(false)))
                     {
                         if (!await taskCompletionSource.Task.ConfigureAwait(true))
-                            return Enumerable.Empty<IEventContext>();
+                            return _emptyCollection;
                     }
 
                 } while (true);
@@ -182,7 +186,7 @@ namespace AppCore.Events.Storage
         }
 
         /// <inheritdoc />
-        public async Task<IEnumerable<IEventContext>> ReadAsync(
+        public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(
             string streamName,
             EventOffset offset,
             int maxCount,
