@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <summary>
     /// Represents a type which publishes events from the store.

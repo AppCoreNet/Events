@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     public abstract class AsyncBackgroundTask : IBackgroundTask
     {

@@ -11,7 +11,7 @@ using AppCore.Diagnostics;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <summary>
     /// Provides an event store which stores events in-memory.

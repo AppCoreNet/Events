@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     public class ScopedEventStorePublisherTask : AsyncBackgroundTask
     {

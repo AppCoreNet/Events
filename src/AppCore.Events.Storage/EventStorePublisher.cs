@@ -9,7 +9,7 @@ using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 using AppCore.Events.Pipeline;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <inheritdoc />
     public class EventStorePublisher : IEventStorePublisher

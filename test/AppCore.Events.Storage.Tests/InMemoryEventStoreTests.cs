@@ -12,7 +12,7 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     public class InMemoryEventStoreTests
     {

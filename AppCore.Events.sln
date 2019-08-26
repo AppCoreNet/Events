@@ -13,6 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Tests", "tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Formatters.NewtonsoftJson", "src\AppCore.Events.Formatters.NewtonsoftJson\AppCore.Events.Formatters.NewtonsoftJson.csproj", "{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Storage.Abstractions", "src\AppCore.Events.Storage.Abstractions\AppCore.Events.Storage.Abstractions.csproj", "{69F56F13-DA52-45A8-A596-DEC19C2774C4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Storage", "src\AppCore.Events.Storage\AppCore.Events.Storage.csproj", "{6BF073F8-70AF-47AE-9AF9-782E35404A2E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Storage.Tests", "test\AppCore.Events.Storage.Tests\AppCore.Events.Storage.Tests.csproj", "{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +45,18 @@ Global
 		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD1E2BC7-735F-4333-88FC-CFBD0D311F6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69F56F13-DA52-45A8-A596-DEC19C2774C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69F56F13-DA52-45A8-A596-DEC19C2774C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69F56F13-DA52-45A8-A596-DEC19C2774C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69F56F13-DA52-45A8-A596-DEC19C2774C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF073F8-70AF-47AE-9AF9-782E35404A2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF073F8-70AF-47AE-9AF9-782E35404A2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF073F8-70AF-47AE-9AF9-782E35404A2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF073F8-70AF-47AE-9AF9-782E35404A2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,7 +8,7 @@ using AppCore.DependencyInjection.Facilities;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <summary>
     /// Represents extension for the <see cref="IEventsFacility"/> which registers event store behavior.

@@ -4,11 +4,10 @@
 using System;
 using System.Collections.Concurrent;
 using AppCore.DependencyInjection;
-using AppCore.Events.Pipeline;
 
-namespace AppCore.Events
+namespace AppCore.Events.Pipeline
 {
-    internal class EventPipelineResolver
+    public sealed class EventPipelineResolver
     {
         private readonly IContainer _container;
 

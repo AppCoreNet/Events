@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using AppCore.Events.Metadata;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <summary>
     /// Provides metadata for persistent events.

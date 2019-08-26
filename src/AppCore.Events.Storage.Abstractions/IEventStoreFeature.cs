@@ -1,7 +1,7 @@
 ﻿// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <summary>
     /// Provides event store related feature to an <see cref="IEventContext"/>.

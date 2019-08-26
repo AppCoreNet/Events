@@ -7,7 +7,7 @@ using AppCore.Diagnostics;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     /// <summary>
     /// Event pipeline behavior which stores events.

@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.3;netstandard2.0</TargetFrameworks>
-    <Description>AppCore events default implementations.</Description>
+    <Description>AppCore events storage default implementations.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="AppCore.Events.csproj.DotSettings" />
+    <None Remove="AppCore.Events.Storage.csproj.DotSettings" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,11 +16,12 @@
     <PackageReference Include="AppCore.TypeHelpers.Sources" Version="$(AppCore_Shared_Version)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="AppCore.Logging.Abstractions" Version="$(AppCore_Logging_Version)" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.Events.Abstractions.csproj" />
+    <ProjectReference Include="..\AppCore.Events.Storage.Abstractions\AppCore.Events.Storage.Abstractions.csproj" />
+    <ProjectReference Include="..\AppCore.Events\AppCore.Events.csproj" />
   </ItemGroup>
 
 </Project>

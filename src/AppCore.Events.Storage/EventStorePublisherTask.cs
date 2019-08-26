@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Store
+namespace AppCore.Events.Storage
 {
     public class EventStorePublisherTask : AsyncBackgroundTask
     {
