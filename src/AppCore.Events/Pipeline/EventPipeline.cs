@@ -79,6 +79,7 @@ namespace AppCore.Events.Pipeline
                           (EventPipelineDelegate<TEvent>) Handler,
                           (next, behavior) => async (e, ct) =>
                           {
+                              _logger.InvokingBehavior(typeof(TEvent), behavior.GetType());
                               current = behavior;
                               await behavior.HandleAsync(e, next, ct);
                           }

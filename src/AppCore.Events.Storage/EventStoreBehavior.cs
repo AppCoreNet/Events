@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AppCore.Diagnostics;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
+using AppCore.Logging;
 
 namespace AppCore.Events.Storage
 {
@@ -17,15 +18,19 @@ namespace AppCore.Events.Storage
         where TEvent : IEvent
     {
         private readonly IEventStore _store;
+        private readonly ILogger<EventStoreBehavior<TEvent>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStoreBehavior{TEvent}"/> class.
         /// </summary>
         /// <param name="store">The <see cref="IEventStore"/>.</param>
-        public EventStoreBehavior(IEventStore store)
+        /// <param name="logger">The logger.</param>
+        public EventStoreBehavior(IEventStore store, ILogger<EventStoreBehavior<TEvent>> logger)
         {
             Ensure.Arg.NotNull(store, nameof(store));
+            Ensure.Arg.NotNull(logger, nameof(logger));
             _store = store;
+            _logger = logger;
         }
 
         /// <summary>
@@ -46,6 +51,8 @@ namespace AppCore.Events.Storage
         {
             if (!context.IsFromEventStore() && ShouldStoreEvent(context))
             {
+                _logger.StoringEvent(typeof(TEvent));
+
                 await _store.WriteAsync(new[] {context}, cancellationToken)
                             .ConfigureAwait(false);
             }

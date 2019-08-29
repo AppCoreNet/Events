@@ -12,37 +12,43 @@ namespace AppCore.Events
             LoggerEvent.Define<string>(
                 LogLevel.Trace,
                 LogEventIds.PipelineProcessing,
-                "Processing event type {eventType}.");
+                "Processing event {eventType} ...");
 
         private static readonly LoggerEventDelegate<string, long> _pipelineProcessed =
             LoggerEvent.Define<string, long>(
                 LogLevel.Debug,
                 LogEventIds.PipelineProcessed,
-                "Processed event type {eventType} in {elapsedTime} ms.");
+                "Successfully processed event {eventType} in {elapsedTime} ms.");
 
         private static readonly LoggerEventDelegate<string, long> _pipelineFailed =
             LoggerEvent.Define<string, long>(
                 LogLevel.Error,
                 LogEventIds.PipelineFailed,
-                "Processed event type {eventType} failed after {elapsedTime} ms.");
+                "Failed to process event {eventType} after {elapsedTime} ms.");
 
         private static readonly LoggerEventDelegate<string, string, long> _pipelineShortCircuited =
             LoggerEvent.Define<string, string, long>(
                 LogLevel.Debug,
                 LogEventIds.PipelineShortCircuited,
-                "Processing of event type {eventType} was short-circuited by behavior {eventPipelineBehaviorType} in {elapsedTime} ms.");
+                "Processing of event {eventType} was short-circuited by behavior {eventPipelineBehaviorType} in {elapsedTime} ms.");
 
-        private static readonly LoggerEventDelegate<int, string> _invokingPreEventHandlers =
-            LoggerEvent.Define<int, string>(
+        private static readonly LoggerEventDelegate<string, string> _invokingBehavior =
+            LoggerEvent.Define<string, string>(
                 LogLevel.Trace,
-                LogEventIds.InvokingPreEventHandlers,
-                "Invoking {preEventHandlerCount} pre-handlers for event type {eventType}.");
+                LogEventIds.InvokingBehavior,
+                "Invoking behavior {pipelineBehaviorType} for event {eventType} ...");
 
-        private static readonly LoggerEventDelegate<int, string> _invokingPostEventHandlers =
-            LoggerEvent.Define<int, string>(
+        private static readonly LoggerEventDelegate<string, string> _invokingPreEventHandler =
+            LoggerEvent.Define<string, string>(
                 LogLevel.Trace,
-                LogEventIds.InvokingPostEventHandlers,
-                "Invoking {postEventHandlerCount} post-handlers for event type {eventType}.");
+                LogEventIds.InvokingPreEventHandler,
+                "Invoking pre-handler {preEventHandlerType} for event {eventType} ...");
+
+        private static readonly LoggerEventDelegate<string, string> _invokingPostEventHandler =
+            LoggerEvent.Define<string, string>(
+                LogLevel.Trace,
+                LogEventIds.InvokingPostEventHandler,
+                "Invoking post-handler {postEventHandlerType} for event {eventType} ...");
 
         public static void PipelineProcessing(this ILogger logger, Type eventType)
         {
@@ -68,14 +74,19 @@ namespace AppCore.Events
                 (long) elapsed.TotalMilliseconds);
         }
 
-        public static void InvokingPreEventHandlers(this ILogger logger, Type eventType, int count)
+        public static void InvokingBehavior(this ILogger logger, Type eventType, Type pipelineBehaviorType)
         {
-            _invokingPreEventHandlers(logger, count, eventType.GetDisplayName());
+            _invokingBehavior(logger, pipelineBehaviorType.GetDisplayName(), eventType.GetDisplayName());
         }
 
-        public static void InvokingPostEventHandlers(this ILogger logger, Type eventType, int count)
+        public static void InvokingPreEventHandler(this ILogger logger, Type eventType, Type preHandlerType)
         {
-            _invokingPostEventHandlers(logger, count, eventType.GetDisplayName());
+            _invokingPreEventHandler(logger, preHandlerType.GetDisplayName(), eventType.GetDisplayName());
+        }
+
+        public static void InvokingPostEventHandler(this ILogger logger, Type eventType, Type postHandlerType)
+        {
+            _invokingPostEventHandler(logger, postHandlerType.GetDisplayName(), eventType.GetDisplayName());
         }
     }
 }

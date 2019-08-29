@@ -44,10 +44,10 @@ namespace AppCore.Events.Pipeline
             EventPipelineDelegate<TEvent> next,
             CancellationToken cancellationToken)
         {
-            _logger.InvokingPreEventHandlers(typeof(TEvent), _handlers.Count);
-
             foreach (IPreEventHandler<TEvent> handler in _handlers)
             {
+                _logger.InvokingPreEventHandler(typeof(TEvent), handler.GetType());
+
                 await handler.OnHandlingAsync(context, cancellationToken)
                              .ConfigureAwait(false);
             }
