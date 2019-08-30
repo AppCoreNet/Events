@@ -55,7 +55,7 @@ namespace AppCore.Events.Storage
                 else
                 {
                     registry.Register<IBackgroundTask>()
-                            .Add<ScopedEventStorePublisherTask>()
+                            .Add<EventStorePublisherTask.Scoped>()
                             .IfNotRegistered()
                             .WithLifetime(facility.Lifetime);
                 }
