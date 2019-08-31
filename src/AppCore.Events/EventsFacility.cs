@@ -28,6 +28,8 @@ namespace AppCore.DependencyInjection
         /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry)
         {
+            registry.RegisterFacility<LoggingFacility>();
+
             registry.Register(typeof(IEventPipeline<>))
                     .Add(typeof(EventPipeline<>))
                     .WithLifetime(Lifetime)
