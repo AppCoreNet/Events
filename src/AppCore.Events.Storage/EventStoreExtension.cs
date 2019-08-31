@@ -47,17 +47,19 @@ namespace AppCore.Events.Storage
 
                 if (facility.Lifetime == ComponentLifetime.Singleton)
                 {
-                    registry.Register<IBackgroundTask>()
-                            .Add<EventStorePublisherTask>()
-                            .IfNotRegistered()
-                            .PerContainer();
+                    registry.RegisterFacility<BackgroundServiceFacility>()
+                            .UseServices(
+                                r => r.Add<EventStorePublisherService>()
+                                      .IfNotRegistered()
+                                      .PerContainer());
                 }
                 else
                 {
-                    registry.Register<IBackgroundTask>()
-                            .Add<EventStorePublisherTask.Scoped>()
-                            .IfNotRegistered()
-                            .WithLifetime(facility.Lifetime);
+                    registry.RegisterFacility<BackgroundServiceFacility>()
+                            .UseServices(
+                                r => r.Add<EventStorePublisherService.Scoped>()
+                                      .IfNotRegistered()
+                                      .WithLifetime(facility.Lifetime));
                 }
             }
 

@@ -6,16 +6,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
+using AppCore.Hosting;
 using AppCore.Logging;
 
 namespace AppCore.Events.Storage
 {
-    public class EventStorePublisherTask : AsyncBackgroundTask
+    public class EventStorePublisherService : BackgroundService
     {
         private readonly IEventStorePublisher _publisher;
-        private readonly ILogger<EventStorePublisherTask> _logger;
+        private readonly ILogger<EventStorePublisherService> _logger;
 
-        public EventStorePublisherTask(IEventStorePublisher publisher, ILogger<EventStorePublisherTask> logger)
+        public EventStorePublisherService(IEventStorePublisher publisher, ILogger<EventStorePublisherService> logger)
         {
             Ensure.Arg.NotNull(publisher, nameof(publisher));
             Ensure.Arg.NotNull(logger, nameof(logger));
@@ -47,7 +48,7 @@ namespace AppCore.Events.Storage
             }
         }
 
-        public class Scoped : AsyncBackgroundTask
+        public class Scoped : BackgroundService
         {
             private readonly IContainer _container;
 
@@ -65,9 +66,9 @@ namespace AppCore.Events.Storage
                     {
                         IContainer container = scope.Container;
 
-                        var publisherTask = new EventStorePublisherTask(
+                        var publisherTask = new EventStorePublisherService(
                             container.Resolve<IEventStorePublisher>(),
-                            container.Resolve<ILogger<EventStorePublisherTask>>());
+                            container.Resolve<ILogger<EventStorePublisherService>>());
 
                         await publisherTask.PublishAsync(cancellationToken);
                     }
