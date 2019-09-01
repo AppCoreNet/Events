@@ -42,6 +42,8 @@ namespace AppCore.Events.Storage
                 await _publisher.PublishPendingAsync(cancellationToken)
                                 .ConfigureAwait(false);
             }
+            catch (TaskCanceledException) {}
+            catch (OperationCanceledException) {}
             catch (Exception error)
             {
                 _logger.PublishingStoredEventsFailed(error);
