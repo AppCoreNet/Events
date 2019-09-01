@@ -68,11 +68,12 @@ namespace AppCore.Events.Storage
                     {
                         IContainer container = scope.Container;
 
-                        var publisherTask = new EventStorePublisherService(
+                        using (var publisherTask = new EventStorePublisherService(
                             container.Resolve<IEventStorePublisher>(),
-                            container.Resolve<ILogger<EventStorePublisherService>>());
-
-                        await publisherTask.PublishAsync(cancellationToken);
+                            container.Resolve<ILogger<EventStorePublisherService>>()))
+                        {
+                            await publisherTask.PublishAsync(cancellationToken);
+                        }
                     }
                 }
             }

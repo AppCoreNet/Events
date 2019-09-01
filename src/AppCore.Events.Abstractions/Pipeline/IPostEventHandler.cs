@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace AppCore.Events.Pipeline
 {
     /// <summary>
-    /// Represents a handler which is invoked after a event was successfully processed.
+    /// Represents a handler which is invoked after a event was successfully handled.
     /// </summary>
-    /// <typeparam name="TEvent">The type of the event that was processed.</typeparam>
+    /// <typeparam name="TEvent">The type of the event that is processed.</typeparam>
     public interface IPostEventHandler<in TEvent>
         where TEvent : IEvent
     {
         /// <summary>
-        /// Invoked after the event has being processed.
+        /// Invoked after the event has being handled.
         /// </summary>
         /// <param name="context">The context of the event that was handled.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>

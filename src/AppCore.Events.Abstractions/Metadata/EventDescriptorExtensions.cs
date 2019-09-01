@@ -28,7 +28,7 @@ namespace AppCore.Events.Metadata
 
             if (!descriptor.Metadata.TryGetValue(key, out object tmp))
             {
-                value = default(T);
+                value = default;
                 return false;
             }
 

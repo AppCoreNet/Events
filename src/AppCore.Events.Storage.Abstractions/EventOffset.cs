@@ -11,6 +11,9 @@ namespace AppCore.Events.Storage
     /// </summary>
     public readonly struct EventOffset : IEquatable<EventOffset>
     {
+        /// <summary>
+        /// Gets the offset value.
+        /// </summary>
         public long Value { get; }
 
         /// <summary>
@@ -34,16 +37,19 @@ namespace AppCore.Events.Storage
             return new EventOffset(value);
         }
 
+        /// <inheritdoc />
         public bool Equals(EventOffset other)
         {
             return Value == other.Value;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             return obj is EventOffset other && Equals(other);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return Value.GetHashCode();
