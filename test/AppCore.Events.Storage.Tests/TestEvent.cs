@@ -3,6 +3,7 @@
 
 namespace AppCore.Events.Storage
 {
+    [Persistent(StreamName = "test")]
     public class TestEvent : IEvent
     {
     }

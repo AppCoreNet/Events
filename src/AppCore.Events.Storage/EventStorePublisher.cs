@@ -28,7 +28,11 @@ namespace AppCore.Events.Storage
         /// <param name="storeOffset">Used to load/save the current event offset.</param>
         /// <param name="container">The <see cref="IContainer"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
         /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
-        public EventStorePublisher(IEventStore store, IEventStorePublisherOffset storeOffset, IContainer container, ILogger<EventStorePublisher> logger)
+        public EventStorePublisher(
+            IEventStore store,
+            IEventStorePublisherOffset storeOffset,
+            IContainer container,
+            ILogger<EventStorePublisher> logger)
         {
             Ensure.Arg.NotNull(store, nameof(store));
             Ensure.Arg.NotNull(storeOffset, nameof(storeOffset));
