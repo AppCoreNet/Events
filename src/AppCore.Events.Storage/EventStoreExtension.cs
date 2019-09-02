@@ -15,8 +15,15 @@ namespace AppCore.Events.Storage
     /// </summary>
     public class EventStoreExtension : FacilityExtension<IEventsFacility>
     {
+        /// <summary>
+        /// Gets or sets a value indicating whether to register <see cref="IEventStorePublisher"/> as a background
+        /// service.
+        /// </summary>
         public bool RegisterBackgroundPublisher { get; set; }
 
+        /// <summary>
+        /// Gets a list of additional registration callbacks.
+        /// </summary>
         public IList<Action<IComponentRegistry, IEventsFacility>> RegistrationCallbacks { get; } =
             new List<Action<IComponentRegistry, IEventsFacility>>();
 
@@ -36,7 +43,7 @@ namespace AppCore.Events.Storage
             if (RegisterBackgroundPublisher)
             {
                 registry.Register<IEventStorePublisherOffset>()
-                        .Add<InMemoryEventStorePublisherOffset>()
+                        .Add<EventStorePublisherOffset>()
                         .IfNoneRegistered()
                         .PerContainer();
 

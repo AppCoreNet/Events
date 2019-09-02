@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Licensed under the MIT License.
+// Copyright (c) 2018,2019 the AppCore .NET project.
+
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

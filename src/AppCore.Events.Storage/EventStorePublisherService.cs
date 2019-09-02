@@ -11,6 +11,9 @@ using AppCore.Logging;
 
 namespace AppCore.Events.Storage
 {
+    /// <summary>
+    /// Represents a <see cref="BackgroundService"/> which publishes events.
+    /// </summary>
     public class EventStorePublisherService : BackgroundService
     {
         private readonly IEventStorePublisher _publisher;

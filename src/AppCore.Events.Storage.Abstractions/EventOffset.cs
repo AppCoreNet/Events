@@ -26,12 +26,20 @@ namespace AppCore.Events.Storage
         /// </summary>
         public static readonly EventOffset Next = new EventOffset(-2);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventOffset"/> struct.
+        /// </summary>
+        /// <param name="value">The event offset.</param>
         public EventOffset(long value)
         {
             Ensure.Arg.InRange(value, -2, long.MaxValue, nameof(value));
             Value = value;
         }
 
+        /// <summary>
+        /// Implicitly converts a <see cref="long"/> to a <see cref="EventOffset"/>.
+        /// </summary>
+        /// <param name="value">The event offset.</param>
         public static implicit operator EventOffset(long value)
         {
             return new EventOffset(value);
@@ -55,11 +63,23 @@ namespace AppCore.Events.Storage
             return Value.GetHashCode();
         }
 
+        /// <summary>
+        /// Compares two <see cref="EventOffset"/> instances for equality.
+        /// </summary>
+        /// <param name="left">The first <see cref="EventOffset"/>.</param>
+        /// <param name="right">The second <see cref="EventOffset"/>.</param>
+        /// <returns><c>true</c> if both objects are equal; <c>false</c> otherwise.</returns>
         public static bool operator ==(EventOffset left, EventOffset right)
         {
             return left.Equals(right);
         }
 
+        /// <summary>
+        /// Compares two <see cref="EventOffset"/> instances for inequality.
+        /// </summary>
+        /// <param name="left">The first <see cref="EventOffset"/>.</param>
+        /// <param name="right">The second <see cref="EventOffset"/>.</param>
+        /// <returns><c>true</c> if both objects are not equal; <c>false</c> otherwise.</returns>
         public static bool operator !=(EventOffset left, EventOffset right)
         {
             return !left.Equals(right);
