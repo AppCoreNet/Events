@@ -8,15 +8,9 @@ namespace AppCore.Events.Logging
 {
     internal static class EventLoggingExtensions
     {
-        private static readonly LoggerEventDelegate<object> _eventHandling =
-            LoggerEvent.Define<object>(
-                LogLevel.Trace,
-                EventLoggingBehaviorLogEventIds.EventHandling,
-                "Publishing event {event} ...");
-
         private static readonly LoggerEventDelegate<object> _eventHandled =
             LoggerEvent.Define<object>(
-                LogLevel.Debug,
+                LogLevel.Info,
                 EventLoggingBehaviorLogEventIds.EventHandled,
                 "Successfully published event {event}");
 
@@ -25,11 +19,6 @@ namespace AppCore.Events.Logging
                 LogLevel.Error,
                 EventLoggingBehaviorLogEventIds.EventFailed,
                 "Error publishing event {event}");
-
-        public static void EventHandling(this ILogger logger, IEventContext context)
-        {
-            _eventHandling(logger, context.Event);
-        }
 
         public static void EventHandled(this ILogger logger, IEventContext context)
         {

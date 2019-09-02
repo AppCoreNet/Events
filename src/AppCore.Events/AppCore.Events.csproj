@@ -16,7 +16,7 @@
     <PackageReference Include="AppCore.TypeHelpers.Sources" Version="$(AppCore_Shared_Version)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="AppCore.Logging.Abstractions" Version="$(AppCore_Logging_Version)" />
+    <PackageReference Include="AppCore.Logging" Version="$(AppCore_Logging_Version)" />
   </ItemGroup>
 
   <ItemGroup>

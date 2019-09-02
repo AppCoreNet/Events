@@ -22,17 +22,20 @@ namespace AppCore.Events.Pipeline
         private readonly List<IEventPipelineBehavior<TEvent>> _behaviors;
         private readonly List<IEventHandler<TEvent>> _handlers;
         private readonly ILogger<EventPipeline<TEvent>> _logger;
+        private readonly IEventContextAccessor _contextAccessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPipeline{TEvent}"/> class.
         /// </summary>
         /// <param name="behaviors">The pipeline behaviors.</param>
         /// <param name="handlers">The event handlers.</param>
-        /// <param name="logger"></param>
+        /// <param name="logger">The logger.</param>
+        /// <param name="contextAccessor">The accessor for the current <see cref="IEventContext"/>.</param>
         public EventPipeline(
             IEnumerable<IEventPipelineBehavior<TEvent>> behaviors,
             IEnumerable<IEventHandler<TEvent>> handlers,
-            ILogger<EventPipeline<TEvent>> logger)
+            ILogger<EventPipeline<TEvent>> logger,
+            IEventContextAccessor contextAccessor = null)
         {
             Ensure.Arg.NotNull(behaviors, nameof(behaviors));
             Ensure.Arg.NotNull(handlers, nameof(handlers));
@@ -41,6 +44,7 @@ namespace AppCore.Events.Pipeline
             _behaviors = behaviors.ToList();
             _handlers = handlers.ToList();
             _logger = logger;
+            _contextAccessor = contextAccessor;
         }
 
         /// <inheritdoc />
@@ -62,6 +66,10 @@ namespace AppCore.Events.Pipeline
             _logger.PipelineProcessing(typeof(TEvent));
 
             Stopwatch stopwatch = Stopwatch.StartNew();
+
+            if (_contextAccessor != null)
+                _contextAccessor.EventContext = eventContext;
+
             try
             {
                 IEventPipelineBehavior<TEvent> current = null;
@@ -71,6 +79,7 @@ namespace AppCore.Events.Pipeline
                           (EventPipelineDelegate<TEvent>) Handler,
                           (next, behavior) => async (e, ct) =>
                           {
+                              _logger.InvokingBehavior(typeof(TEvent), behavior.GetType());
                               current = behavior;
                               await behavior.HandleAsync(e, next, ct);
                           }
@@ -90,6 +99,11 @@ namespace AppCore.Events.Pipeline
             {
                 _logger.PipelineFailed(typeof(TEvent), stopwatch.Elapsed, error);
                 throw;
+            }
+            finally
+            {
+                if (_contextAccessor != null)
+                    _contextAccessor.EventContext = null;
             }
         }
 

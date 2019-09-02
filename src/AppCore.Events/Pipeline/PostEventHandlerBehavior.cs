@@ -45,10 +45,10 @@ namespace AppCore.Events.Pipeline
             await next(context, cancellationToken)
                 .ConfigureAwait(false);
 
-            _logger.InvokingPostEventHandlers(typeof(TEvent), _handlers.Count);
-
             foreach (IPostEventHandler<TEvent> handler in _handlers)
             {
+                _logger.InvokingPostEventHandler(typeof(TEvent), handler.GetType());
+
                 await handler.OnHandledAsync(context, cancellationToken)
                              .ConfigureAwait(false);
             }

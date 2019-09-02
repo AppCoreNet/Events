@@ -16,7 +16,7 @@ namespace AppCore.DependencyInjection
     public static class EventLoggingRegistrationExtensions
     {
         /// <summary>
-        /// Registers logging event pipeline behavior.
+        /// Adds logging of events to the pipeline.
         /// </summary>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
         public static IFacilityBuilder<IEventsFacility> AddLogging(

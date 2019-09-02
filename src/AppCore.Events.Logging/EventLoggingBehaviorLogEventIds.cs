@@ -11,11 +11,6 @@ namespace AppCore.Events.Logging
     public static class EventLoggingBehaviorLogEventIds
     {
         /// <summary>
-        /// Identifies the log event for a event which is about to be handled.
-        /// </summary>
-        public static readonly LogEventId EventHandling = new LogEventId(0, nameof(EventHandling));
-
-        /// <summary>
         /// Identifies the log event for a event which has been successfully handled.
         /// </summary>
         public static readonly LogEventId EventHandled = new LogEventId(0, nameof(EventHandled));

@@ -15,8 +15,10 @@ namespace AppCore.Events
 
         public static readonly LogEventId PipelineShortCircuited = new LogEventId(3, nameof(PipelineShortCircuited));
 
-        public static readonly LogEventId InvokingPreEventHandlers = new LogEventId(4, nameof(InvokingPreEventHandlers));
+        public static readonly LogEventId InvokingBehavior = new LogEventId(4, nameof(InvokingBehavior));
 
-        public static readonly LogEventId InvokingPostEventHandlers = new LogEventId(4, nameof(InvokingPostEventHandlers));
+        public static readonly LogEventId InvokingPreEventHandler = new LogEventId(5, nameof(InvokingPreEventHandler));
+
+        public static readonly LogEventId InvokingPostEventHandler = new LogEventId(6, nameof(InvokingPostEventHandler));
     }
 }

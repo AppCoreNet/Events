@@ -30,11 +30,11 @@ namespace AppCore.Events
             new CancelableEventMetadataProvider().GetMetadata(typeof(CancelableTestEvent), metadata);
 
             var contextFactory = Substitute.For<IEventContextFactory>();
-            contextFactory.CreateContext(Arg.Any<CancelableTestEvent>())
+            contextFactory.CreateContext(Arg.Any<EventDescriptor>(), Arg.Any<CancelableTestEvent>())
                           .Returns(
                               ci => new EventContext<CancelableTestEvent>(
-                                  new EventDescriptor(typeof(CancelableTestEvent), metadata),
-                                  ci.ArgAt<CancelableTestEvent>(0)));
+                                  ci.ArgAt<EventDescriptor>(0),
+                                  ci.ArgAt<CancelableTestEvent>(1)));
 
             var pipeline = new EventPipeline<CancelableTestEvent>(
                 new[]
@@ -46,7 +46,9 @@ namespace AppCore.Events
 
             var @event = new CancelableTestEvent();
 
-            var eventContext = (IEventContext<CancelableTestEvent>) contextFactory.CreateContext(@event);
+            var eventContext = (IEventContext<CancelableTestEvent>) contextFactory.CreateContext(
+                new EventDescriptor(typeof(CancelableTestEvent), metadata),
+                @event);
 
             Func<Task> invoke = async ()=>
             {

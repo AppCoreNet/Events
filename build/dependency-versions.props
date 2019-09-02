@@ -3,5 +3,6 @@
     <AppCore_Shared_Version>0.1.0-alpha*</AppCore_Shared_Version>
     <AppCore_DI_Version>0.1.0-alpha*</AppCore_DI_Version>
     <AppCore_Logging_Version>0.1.0-alpha*</AppCore_Logging_Version>
+    <AppCore_Hosting_Version>0.1.0-alpha*</AppCore_Hosting_Version>
   </PropertyGroup>
 </Project>

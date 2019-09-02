@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace AppCore.Events.Pipeline
 {
     /// <summary>
-    /// Represents a handler which is invoked before a event is processed.
+    /// Represents a handler which is invoked before a event is handled.
     /// </summary>
     /// <typeparam name="TEvent">The type of the event that is processed.</typeparam>
     public interface IPreEventHandler<in TEvent>
         where TEvent : IEvent
     {
         /// <summary>
-        /// Invoked before the event is being processed.
+        /// Invoked before the event is being handled.
         /// </summary>
         /// <param name="context">The context of the event that is about to be handled.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>

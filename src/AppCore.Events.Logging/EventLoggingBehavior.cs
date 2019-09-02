@@ -35,7 +35,6 @@ namespace AppCore.Events.Logging
             EventPipelineDelegate<TEvent> next,
             CancellationToken cancellationToken)
         {
-            _logger.EventHandling(context);
             try
             {
                 await next(context, cancellationToken)

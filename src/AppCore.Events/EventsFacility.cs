@@ -20,8 +20,18 @@ namespace AppCore.DependencyInjection
         public ComponentLifetime Lifetime { get; set; } = ComponentLifetime.Scoped;
 
         /// <inheritdoc />
+        protected override void RegisterComponentsCore(IComponentRegistry registry)
+        {
+            //TODO: modify Facility to first register extensions
+            RegisterExtensionComponents(registry);
+            RegisterComponents(registry);
+        }
+
+        /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry)
         {
+            registry.RegisterFacility<LoggingFacility>();
+
             registry.Register(typeof(IEventPipeline<>))
                     .Add(typeof(EventPipeline<>))
                     .WithLifetime(Lifetime)

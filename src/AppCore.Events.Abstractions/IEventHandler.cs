@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AppCore.Events
 {
     /// <summary>
-    /// Provides a handler for commands.
+    /// Provides a handler for events.
     /// </summary>
     /// <typeparam name="TEvent">The type of the event that is handled.</typeparam>
     public interface IEventHandler<in TEvent>
