@@ -19,6 +19,11 @@ namespace AppCore.Events.Storage
         private readonly IEventStorePublisher _publisher;
         private readonly ILogger<EventStorePublisherService> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventStorePublisherService"/> class.
+        /// </summary>
+        /// <param name="publisher">The <see cref="IEventStorePublisher"/> used to publish events.</param>
+        /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
         public EventStorePublisherService(IEventStorePublisher publisher, ILogger<EventStorePublisherService> logger)
         {
             Ensure.Arg.NotNull(publisher, nameof(publisher));
@@ -28,6 +33,11 @@ namespace AppCore.Events.Storage
             _logger = logger;
         }
 
+        /// <summary>
+        /// Publishes events until canceled.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         protected override async Task RunAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
@@ -36,6 +46,11 @@ namespace AppCore.Events.Storage
             }
         }
 
+        /// <summary>
+        /// Publishes pending events.
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         protected virtual async Task PublishAsync(CancellationToken cancellationToken)
         {
             _logger.PublishingStoredEvents();
@@ -53,16 +68,28 @@ namespace AppCore.Events.Storage
             }
         }
 
+        /// <summary>
+        /// Represents a <see cref="BackgroundService"/> which publishes events using a service scope.
+        /// </summary>
         public class Scoped : BackgroundService
         {
             private readonly IContainer _container;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="BackgroundService"/> class.
+            /// </summary>
+            /// <param name="container">The <see cref="IContainer"/> used to resolve an <see cref="IEventStorePublisher"/>.</param>
             public Scoped(IContainer container)
             {
                 Ensure.Arg.NotNull(container, nameof(container));
                 _container = container;
             }
 
+            /// <summary>
+            /// Publishes events until canceled.
+            /// </summary>
+            /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+            /// <returns>A task that represents the asynchronous operation.</returns>
             protected override async Task RunAsync(CancellationToken cancellationToken)
             {
                 while (!cancellationToken.IsCancellationRequested)
