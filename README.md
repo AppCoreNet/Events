@@ -8,8 +8,9 @@ This repository includes projects containing abstractions and implementations of
 All artifacts are licensed under the [MIT license](LICENSE). You are free to use them in open-source or commercial projects as long
 as you keep the copyright notice intact when redistributing or otherwise reusing our artifacts.
 
-
 ## Packages
+
+Latest development packages can be found on [MyGet](https://www.myget.org/gallery/appcorenet).
 
 Package                                    | Description
 -------------------------------------------|-----------------------------------------------------------------------------
