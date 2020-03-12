@@ -1,7 +1,7 @@
-Events
-------
+AppCore .NET Events
+-------------------
 
-[![Build status](https://ci.appveyor.com/api/projects/status/iurs4mypee27molr/branch/dev?svg=true)](https://ci.appveyor.com/project/AppCoreNet/events/branch/dev)
+[![Build Status](https://dev.azure.com/AppCoreNet/Events/_apis/build/status/AppCoreNet.Events?branchName=dev)](https://dev.azure.com/AppCoreNet/Events/_build/latest?definitionId=5&branchName=dev)
 
 This repository includes projects containing abstractions and implementations of the event framework.
 
