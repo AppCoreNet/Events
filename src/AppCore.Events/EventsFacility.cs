@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018 the AppCore .NET project.
 
 using AppCore.DependencyInjection.Facilities;
@@ -18,14 +18,6 @@ namespace AppCore.DependencyInjection
         /// Gets or sets the lifetime when registering components.
         /// </summary>
         public ComponentLifetime Lifetime { get; set; } = ComponentLifetime.Scoped;
-
-        /// <inheritdoc />
-        protected override void RegisterComponentsCore(IComponentRegistry registry)
-        {
-            //TODO: modify Facility to first register extensions
-            RegisterExtensionComponents(registry);
-            RegisterComponents(registry);
-        }
 
         /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry)

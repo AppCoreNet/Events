@@ -1,13 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.3;netstandard2.0</TargetFrameworks>
     <Description>AppCore events storage default implementations.</Description>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="AppCore.Events.Storage.csproj.DotSettings" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AppCore.Diagnostics.Sources" Version="$(AppCore_Shared_Version)">
