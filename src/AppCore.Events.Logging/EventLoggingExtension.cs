@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018 the AppCore .NET project.
 
 using AppCore.DependencyInjection;
@@ -15,6 +15,8 @@ namespace AppCore.Events.Logging
         /// <inheritdoc />
         protected override void RegisterComponents(IComponentRegistry registry, IEventsFacility facility)
         {
+            registry.RegisterFacility<LoggingFacility>();
+
             registry.Register(typeof(IEventPipelineBehavior<>))
                     .Add(typeof(EventLoggingBehavior<>))
                     .PerContainer()
