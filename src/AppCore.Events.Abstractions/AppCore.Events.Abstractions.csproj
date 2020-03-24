@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.0;netstandard2.0</TargetFrameworks>
     <RootNamespace>AppCore.Events</RootNamespace>
-    <Description>AppCore events API abstractions.</Description>
+    <Description>Provides AppCore .NET abstractions for events.</Description>
   </PropertyGroup>
 
   <ItemGroup>
