@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -54,16 +54,16 @@ namespace AppCore.Events.Storage
 
                 if (facility.Lifetime == ComponentLifetime.Singleton)
                 {
-                    registry.RegisterFacility<BackgroundServiceFacility>()
-                            .UseServices(
+                    registry.RegisterFacility<HostingFacility>()
+                            .UseBackgroundServices(
                                 r => r.Add<EventStorePublisherService>()
                                       .IfNotRegistered()
                                       .PerContainer());
                 }
                 else
                 {
-                    registry.RegisterFacility<BackgroundServiceFacility>()
-                            .UseServices(
+                    registry.RegisterFacility<HostingFacility>()
+                            .UseBackgroundServices(
                                 r => r.Add<EventStorePublisherService.Scoped>()
                                       .IfNotRegistered()
                                       .WithLifetime(facility.Lifetime));
