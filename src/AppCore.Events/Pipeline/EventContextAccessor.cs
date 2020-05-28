@@ -1,7 +1,7 @@
-﻿// Licensed under the MIT License.
-// Copyright (c) 2018 the AppCore .NET project.
+// Licensed under the MIT License.
+// Copyright (c) 2018-2020 the AppCore .NET project.
 
-#if NET452
+#if !NETSTANDARD1_3 && !NETSTANDARD2_0
 using System;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Messaging;
@@ -19,7 +19,7 @@ namespace AppCore.Events.Pipeline
     /// </summary>
     public class EventContextAccessor : IEventContextAccessor
     {
-#if NET452
+#if !NETSTANDARD1_3 && !NETSTANDARD2_0
         private static readonly string _logicalDataKey = "__EventContext__" + AppDomain.CurrentDomain.Id;
 
         /// <inheritdoc />
@@ -36,7 +36,6 @@ namespace AppCore.Events.Pipeline
             }
         }
 #endif
-
 
 #if NETSTANDARD1_3 || NETSTANDARD2_0
         private readonly AsyncLocal<IEventContext> _eventContext = new AsyncLocal<IEventContext>();
