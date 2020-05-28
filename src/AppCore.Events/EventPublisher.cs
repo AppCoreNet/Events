@@ -1,10 +1,9 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018 the AppCore .NET project.
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
@@ -18,27 +17,27 @@ namespace AppCore.Events
     {
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
-        private readonly EventPipelineResolver _pipelineResolver;
+        private readonly IEventPipelineResolver _pipelineResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPublisher"/> class.
         /// </summary>
         /// <param name="descriptorFactory">The factory for <see cref="EventDescriptor"/>.</param>
         /// <param name="contextFactory">The factory for <see cref="IEventContext"/>'s.</param>
-        /// <param name="container">The <see cref="IContainer"/> used to resolve handlers and behaviors.</param>
+        /// <param name="pipelineResolver">The <see cref="IEventPipelineResolver"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
         /// <exception cref="ArgumentNullException">Argument <paramref name="container"/> is <c>null</c>.</exception>
         public EventPublisher(
             IEventDescriptorFactory descriptorFactory,
             IEventContextFactory contextFactory,
-            IContainer container)
+            IEventPipelineResolver pipelineResolver)
         {
             Ensure.Arg.NotNull(descriptorFactory, nameof(descriptorFactory));
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
-            Ensure.Arg.NotNull(container, nameof(container));
+            Ensure.Arg.NotNull(pipelineResolver, nameof(pipelineResolver));
 
             _descriptorFactory = descriptorFactory;
             _contextFactory = contextFactory;
-            _pipelineResolver = new EventPipelineResolver(container);
+            _pipelineResolver = pipelineResolver;
         }
 
         /// <inheritdoc />

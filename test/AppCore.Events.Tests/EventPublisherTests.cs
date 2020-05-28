@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System.Collections.Generic;
@@ -16,6 +16,8 @@ namespace AppCore.Events
     {
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
+        private readonly IEventPipelineResolver _pipelineResolver;
+        private readonly IEventPipeline<TestEvent> _pipeline;
 
         public EventPublisherTests()
         {
@@ -29,24 +31,23 @@ namespace AppCore.Events
                                   ci => new EventContext<TestEvent>(
                                       ci.ArgAt<EventDescriptor>(0),
                                       ci.ArgAt<TestEvent>(1)));
+
+            _pipeline = Substitute.For<IEventPipeline<TestEvent>>();
+
+            _pipelineResolver = Substitute.For<IEventPipelineResolver>();
+            _pipelineResolver.Resolve(typeof(IEventPipeline<TestEvent>))
+                             .Returns(_pipeline);
         }
 
         [Fact]
         public async Task PublishesEventOnPipeline()
         {
-            var pipeline = Substitute.For<IEventPipeline<TestEvent>>();
-
-            var container = Substitute.For<IContainer>();
-
-            container.Resolve(typeof(IEventPipeline<TestEvent>))
-                     .Returns(pipeline);
-
-            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, container);
+            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, _pipelineResolver);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await publisher.PublishAsync(@event, token);
 
-            await pipeline.Received(1)
+            await _pipeline.Received(1)
                           .ProcessAsync(
                               Arg.Is<IEventContext>(c => c.Event == @event),
                               Arg.Is(token));
