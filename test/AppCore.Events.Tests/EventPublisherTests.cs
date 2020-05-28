@@ -4,7 +4,6 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 using NSubstitute;
@@ -35,8 +34,8 @@ namespace AppCore.Events
             _pipeline = Substitute.For<IEventPipeline<TestEvent>>();
 
             _pipelineResolver = Substitute.For<IEventPipelineResolver>();
-            _pipelineResolver.Resolve(typeof(IEventPipeline<TestEvent>))
-                             .Returns(_pipeline);
+            _pipelineResolver.Resolve(typeof(TestEvent))
+                             .Returns(ci => _pipeline);
         }
 
         [Fact]

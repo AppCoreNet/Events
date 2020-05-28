@@ -31,7 +31,7 @@ namespace AppCore.Events.Storage
             _pipeline = Substitute.For<IEventPipeline<TestEvent>>();
             _publisher = new EventStorePublisher(_store, _storeOffset, _pipelineResolver, _logger);
 
-            _pipelineResolver.Resolve(typeof(IEventPipeline<TestEvent>))
+            _pipelineResolver.Resolve(typeof(TestEvent))
                              .Returns(_pipeline);
         }
 
