@@ -12,11 +12,9 @@ namespace AppCore.Events.Queue
     /// <summary>
     /// Provides in-memory event queue.
     /// </summary>
-    public class InMemoryEventQueue
+    public class InMemoryEventQueue : IEventQueue
     {
         private const int DefaultCapacity = 1024;
-        private const int DefaultMaxEventsToRead = 64;
-
         private readonly Channel<IEventContext> _channel;
 
         /// <summary>
@@ -24,20 +22,28 @@ namespace AppCore.Events.Queue
         /// </summary>
         public InMemoryEventQueue()
         {
-            _channel = Channel.CreateBounded<IEventContext>(new BoundedChannelOptions(DefaultCapacity));
+            _channel = Channel.CreateBounded<IEventContext>(
+                new BoundedChannelOptions(DefaultCapacity) {SingleReader = true});
         }
 
         /// <summary>
         /// Reads events from the queue.
         /// </summary>
-        /// <param name="timeout">The timeout for the read operation.</param>
+        /// <param name="callback">The callback which is invoked when events become available.</param>
+        /// <param name="options">The read options.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous read operation.</returns>
-        public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(TimeSpan timeout, CancellationToken cancellationToken)
+        public async Task ReadAsync(
+            Func<IReadOnlyCollection<IEventContext>, CancellationToken, Task> callback,
+            EventQueueReadOptions options,
+            CancellationToken cancellationToken)
         {
             var result = new List<IEventContext>();
 
-            using var cts = new CancellationTokenSource(timeout);
+            using CancellationTokenSource cts = options.Timeout == Timeout.InfiniteTimeSpan
+                ? new CancellationTokenSource()
+                : new CancellationTokenSource(options.Timeout);
+
             using var cts2 = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken);
 
             ChannelReader<IEventContext> reader = _channel.Reader;
@@ -45,15 +51,15 @@ namespace AppCore.Events.Queue
                                               .ConfigureAwait(false);
 
             if (!eventAvailable)
-                return result;
+                return;
 
-            while (result.Count < DefaultMaxEventsToRead
+            while (result.Count < options.MaxEventsToRead
                    && reader.TryRead(out IEventContext @event))
             {
                 result.Add(@event);
             }
 
-            return result;
+            await callback(result, cancellationToken);
         }
 
         /// <summary>

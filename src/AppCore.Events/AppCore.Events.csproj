@@ -13,6 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="AppCore.Logging" Version="$(AppCore_Logging_Version)" />
+    <PackageReference Include="AppCore.Hosting" Version="$(AppCore_Hosting_Version)" />
     <PackageReference Include="System.Threading.Channels" Version="4.5.0" />
   </ItemGroup>
 

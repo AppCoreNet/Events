@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AppCore.Diagnostics;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
+using AppCore.Events.Queue;
 
 namespace AppCore.Events
 {
@@ -18,18 +19,21 @@ namespace AppCore.Events
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
         private readonly IEventPipelineResolver _pipelineResolver;
+        private readonly IEventQueue _queue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPublisher"/> class.
         /// </summary>
         /// <param name="descriptorFactory">The factory for <see cref="EventDescriptor"/>.</param>
         /// <param name="contextFactory">The factory for <see cref="IEventContext"/>'s.</param>
-        /// <param name="pipelineResolver">The <see cref="IEventPipelineResolver"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
-        /// <exception cref="ArgumentNullException">Argument <paramref name="container"/> is <c>null</c>.</exception>
+        /// <param name="pipelineResolver">The event pipeline resolver.</param>
+        /// <param name="queue">The <see cref="IEventQueue"/>.</param>
+        /// <exception cref="ArgumentNullException">Some argument is <c>null</c>.</exception>
         public EventPublisher(
             IEventDescriptorFactory descriptorFactory,
             IEventContextFactory contextFactory,
-            IEventPipelineResolver pipelineResolver)
+            IEventPipelineResolver pipelineResolver,
+            IEventQueue queue = null)
         {
             Ensure.Arg.NotNull(descriptorFactory, nameof(descriptorFactory));
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
@@ -38,6 +42,7 @@ namespace AppCore.Events
             _descriptorFactory = descriptorFactory;
             _contextFactory = contextFactory;
             _pipelineResolver = pipelineResolver;
+            _queue = queue;
         }
 
         /// <inheritdoc />
@@ -49,10 +54,18 @@ namespace AppCore.Events
 
             EventDescriptor eventDescriptor = _descriptorFactory.CreateDescriptor(eventType);
             IEventContext eventContext = _contextFactory.CreateContext(eventDescriptor, @event);
-            
-            IEventPipeline pipeline = _pipelineResolver.Resolve(eventType);
-            await pipeline.ProcessAsync(eventContext, cancellationToken)
-                          .ConfigureAwait(false);
+
+            if (_queue != null)
+            {
+                await _queue.WriteAsync(new[] {eventContext}, cancellationToken)
+                            .ConfigureAwait(false);
+            }
+            else
+            {
+                IEventPipeline pipeline = _pipelineResolver.Resolve(eventType);
+                await pipeline.ProcessAsync(eventContext, cancellationToken)
+                              .ConfigureAwait(false);
+            }
         }
     }
 }
