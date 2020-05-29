@@ -2,10 +2,12 @@
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
+using AppCore.Events.Queue;
 using NSubstitute;
 using Xunit;
 
@@ -39,7 +41,7 @@ namespace AppCore.Events
         }
 
         [Fact]
-        public async Task PublishesEventOnPipeline()
+        public async Task PublishesEventUsingPipeline()
         {
             var publisher = new EventPublisher(_descriptorFactory, _contextFactory, _pipelineResolver);
             var @event = new TestEvent();
@@ -50,6 +52,27 @@ namespace AppCore.Events
                           .ProcessAsync(
                               Arg.Is<IEventContext>(c => c.Event == @event),
                               Arg.Is(token));
+        }
+
+        [Fact]
+        public async Task PublishesEventUsingQueue()
+        {
+            var queue = Substitute.For<IEventQueue>();
+
+            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, _pipelineResolver, queue);
+            var @event = new TestEvent();
+            var token = new CancellationToken();
+            await publisher.PublishAsync(@event, token);
+
+            await queue.Received(1)
+                       .WriteAsync(
+                           Arg.Is<IEnumerable<IEventContext>>(
+                               c => c.Count() == 1 && c.First().Event == @event),
+                           Arg.Is(token));
+
+            await _pipeline.DidNotReceiveWithAnyArgs()
+                           .ProcessAsync(Arg.Any<IEventContext>(),
+                                         Arg.Any<CancellationToken>());
         }
     }
 }
