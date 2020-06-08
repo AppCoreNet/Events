@@ -1,6 +1,7 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
@@ -17,6 +18,9 @@ namespace AppCore.Events.Queue
         private readonly IEventQueue _queue;
         private readonly IEventPipelineResolver _pipelineResolver;
         private readonly ILogger<EventQueuePublisher> _logger;
+
+        private readonly int _maxEventsToRead;
+        private readonly int _commitChunkSize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventQueuePublisher"/> class.
@@ -36,6 +40,10 @@ namespace AppCore.Events.Queue
             _queue = queue;
             _pipelineResolver = pipelineResolver;
             _logger = logger;
+
+            //TODO: retrieve from options
+            _maxEventsToRead = 64;
+            _commitChunkSize = 1;
         }
 
         /// <summary>
@@ -47,24 +55,39 @@ namespace AppCore.Events.Queue
         {
             _logger.DequeuingEvents();
 
-            await _queue
-                  .ReadAsync(
-                      async (events, ct) =>
-                      {
-                          _logger.PublishingEvents(events.Count);
+            IReadOnlyCollection<IEventContext> events =
+                await _queue.ReadAsync(64, cancellationToken)
+                            .ConfigureAwait(false);
 
-                          foreach (IEventContext @event in events)
-                          {
-                              IEventPipeline pipeline = _pipelineResolver.Resolve(@event.EventDescriptor.EventType);
-                              await pipeline.ProcessAsync(@event, cancellationToken)
-                                            .ConfigureAwait(false);
-                          }
+            _logger.PublishingEvents(events.Count);
 
-                          _logger.PublishedEvents(events.Count);
-                      },
-                      new EventQueueReadOptions(),
-                      cancellationToken)
-                  .ConfigureAwait(false);
+            IEventContext lastEvent = null;
+            int eventCount = 0;
+
+            foreach (IEventContext @event in events)
+            {
+                IEventPipeline pipeline = _pipelineResolver.Resolve(@event.EventDescriptor.EventType);
+                await pipeline.ProcessAsync(@event, cancellationToken)
+                              .ConfigureAwait(false);
+
+                lastEvent = @event;
+                ++eventCount;
+
+                if (eventCount == _commitChunkSize)
+                {
+                    eventCount = 0;
+                    await _queue.CommitReadAsync(lastEvent, cancellationToken)
+                                .ConfigureAwait(false);
+                }
+            }
+
+            if (eventCount < _commitChunkSize)
+            {
+                await _queue.CommitReadAsync(lastEvent, cancellationToken)
+                            .ConfigureAwait(false);
+            }
+
+            _logger.PublishedEvents(events.Count);
         }
     }
 }

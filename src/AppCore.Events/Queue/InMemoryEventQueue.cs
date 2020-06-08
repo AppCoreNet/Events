@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using AppCore.Diagnostics;
 
 namespace AppCore.Events.Queue
 {
@@ -26,57 +27,45 @@ namespace AppCore.Events.Queue
                 new BoundedChannelOptions(DefaultCapacity) {SingleReader = true});
         }
 
-        /// <summary>
-        /// Reads events from the queue.
-        /// </summary>
-        /// <param name="callback">The callback which is invoked when events become available.</param>
-        /// <param name="options">The read options.</param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous read operation.</returns>
-        public async Task ReadAsync(
-            Func<IReadOnlyCollection<IEventContext>, CancellationToken, Task> callback,
-            EventQueueReadOptions options,
-            CancellationToken cancellationToken)
-        {
-            var result = new List<IEventContext>();
-
-            using CancellationTokenSource cts = options.Timeout == Timeout.InfiniteTimeSpan
-                ? new CancellationTokenSource()
-                : new CancellationTokenSource(options.Timeout);
-
-            using var cts2 = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, cancellationToken);
-
-            ChannelReader<IEventContext> reader = _channel.Reader;
-            bool eventAvailable = await reader.WaitToReadAsync(cts2.Token)
-                                              .ConfigureAwait(false);
-
-            if (!eventAvailable)
-                return;
-
-            while (result.Count < options.MaxEventsToRead
-                   && reader.TryRead(out IEventContext @event))
-            {
-                result.Add(@event);
-            }
-
-            await callback(result, cancellationToken);
-        }
-
-        /// <summary>
-        /// Writes events to the queue.
-        /// </summary>
-        /// <param name="events">The <see cref="IEnumerable{T}"/> of events to enqueue.</param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous write operation.</returns>
+        /// <inheritdoc />
         public async Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
         {
-            ChannelWriter<IEventContext> writer = _channel.Writer;
+            Ensure.Arg.NotNull(events, nameof(events));
 
+            ChannelWriter<IEventContext> writer = _channel.Writer;
             foreach (IEventContext @event in events)
             {
                 await writer.WriteAsync(@event, cancellationToken)
                             .ConfigureAwait(false);
             }
+        }
+
+        /// <inheritdoc />
+        public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(int maxEventsToRead, CancellationToken cancellationToken)
+        {
+            Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+
+            ChannelReader<IEventContext> reader = _channel.Reader;
+            bool eventAvailable = await reader.WaitToReadAsync(cancellationToken)
+                                              .ConfigureAwait(false);
+
+            var result = new List<IEventContext>();
+            if (eventAvailable)
+            {
+                while (result.Count < maxEventsToRead
+                       && reader.TryRead(out IEventContext @event))
+                {
+                    result.Add(@event);
+                }
+            }
+
+            return result.AsReadOnly();
+        }
+
+        /// <inheritdoc />
+        public Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

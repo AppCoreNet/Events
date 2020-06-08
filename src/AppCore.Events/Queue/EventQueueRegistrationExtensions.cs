@@ -1,5 +1,5 @@
 // Licensed under the MIT License.
-// Copyright (c) 2018,2019 the AppCore .NET project.
+// Copyright (c) 2020 the AppCore .NET project.
 
 using System;
 using AppCore.DependencyInjection.Facilities;

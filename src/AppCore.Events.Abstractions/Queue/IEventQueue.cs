@@ -1,7 +1,6 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,23 +13,27 @@ namespace AppCore.Events.Queue
     public interface IEventQueue
     {
         /// <summary>
-        /// Writes events to the queue.
+        /// Writes an event to the queue.
         /// </summary>
-        /// <param name="events">The <see cref="IEnumerable{T}"/> of events to enqueue.</param>
+        /// <param name="events">The event to enqueue.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous write operation.</returns>
         Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Reads events from the queue.
+        /// Reads pending events from the queue.
         /// </summary>
-        /// <param name="callback">The callback which is invoked when events become available.</param>
-        /// <param name="options">The read options.</param>
+        /// <param name="maxEventsToRead">The maximum number of events to read.</param>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous read operation.</returns>
-        Task ReadAsync(
-            Func<IReadOnlyCollection<IEventContext>, CancellationToken, Task> callback,
-            EventQueueReadOptions options,
-            CancellationToken cancellationToken);
+        Task<IReadOnlyCollection<IEventContext>> ReadAsync(int maxEventsToRead, CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Commits the last processed read event.
+        /// </summary>
+        /// <param name="event">The event which has been processed.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous read operation.</returns>
+        Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken);
     }
 }
