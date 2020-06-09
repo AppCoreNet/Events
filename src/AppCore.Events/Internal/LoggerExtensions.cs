@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -8,6 +8,7 @@ namespace AppCore.Events
 {
     internal static class LoggerExtensions
     {
+        // EventPipeline
         private static readonly LoggerEventDelegate<string> _pipelineProcessing =
             LoggerEvent.Define<string>(
                 LogLevel.Trace,
@@ -87,6 +88,55 @@ namespace AppCore.Events
         public static void InvokingPostEventHandler(this ILogger logger, Type eventType, Type postHandlerType)
         {
             _invokingPostEventHandler(logger, postHandlerType.GetDisplayName(), eventType.GetDisplayName());
+        }
+
+        // EventQueuePublisherService
+
+        private static readonly LoggerEventDelegate _publishingQueuedEventsFailed =
+            LoggerEvent.Define(
+                LogLevel.Error,
+                LogEventIds.PublishingQueuedEventsFailed,
+                "Publishing events from queue failed.");
+
+
+        public static void PublishingQueuedEventsFailed(this ILogger logger, Exception error)
+        {
+            _publishingQueuedEventsFailed(logger, exception:error);
+        }
+
+        // EventQueuePublisher
+
+        private static readonly LoggerEventDelegate _dequeuingEvents =
+            LoggerEvent.Define(
+                LogLevel.Trace,
+                LogEventIds.DequeuingEvents,
+                "Reading events from queue ...");
+
+        private static readonly LoggerEventDelegate<int> _publishingEvents =
+            LoggerEvent.Define<int>(
+                LogLevel.Trace,
+                LogEventIds.PublishingEvents,
+                "Publishing {eventCount} events ...");
+
+        private static readonly LoggerEventDelegate<int> _publishedEvents =
+            LoggerEvent.Define<int>(
+                LogLevel.Debug,
+                LogEventIds.PublishedEvents,
+                "Successfully published {eventCount} events.");
+
+        public static void DequeuingEvents(this ILogger logger)
+        {
+            _dequeuingEvents(logger);
+        }
+
+        public static void PublishingEvents(this ILogger logger, int eventCount)
+        {
+            _publishingEvents(logger, eventCount);
+        }
+
+        public static void PublishedEvents(this ILogger logger, int eventCount)
+        {
+            _publishedEvents(logger, eventCount);
         }
     }
 }

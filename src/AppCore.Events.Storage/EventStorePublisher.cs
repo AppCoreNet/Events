@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 using AppCore.Events.Pipeline;
 using AppCore.Logging;
@@ -19,30 +18,30 @@ namespace AppCore.Events.Storage
         private readonly IEventStore _store;
         private readonly IEventStorePublisherOffset _storeOffset;
         private readonly ILogger<EventStorePublisher> _logger;
-        private readonly EventPipelineResolver _pipelineResolver;
+        private readonly IEventPipelineResolver _pipelineResolver;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventStorePublisher"/> class.
         /// </summary>
         /// <param name="store">The event store to use.</param>
         /// <param name="storeOffset">Used to load/save the current event offset.</param>
-        /// <param name="container">The <see cref="IContainer"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
+        /// <param name="pipelineResolver">The <see cref="IEventPipelineResolver"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
         /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
         public EventStorePublisher(
             IEventStore store,
             IEventStorePublisherOffset storeOffset,
-            IContainer container,
+            IEventPipelineResolver pipelineResolver,
             ILogger<EventStorePublisher> logger)
         {
             Ensure.Arg.NotNull(store, nameof(store));
             Ensure.Arg.NotNull(storeOffset, nameof(storeOffset));
-            Ensure.Arg.NotNull(container, nameof(container));
+            Ensure.Arg.NotNull(pipelineResolver, nameof(pipelineResolver));
             Ensure.Arg.NotNull(logger, nameof(logger));
 
             _store = store;
             _storeOffset = storeOffset;
             _logger = logger;
-            _pipelineResolver = new EventPipelineResolver(container);
+            _pipelineResolver = pipelineResolver;
         }
 
         private IEventPipeline ResolvePipeline(IEventContext eventContext)
