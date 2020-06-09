@@ -76,14 +76,14 @@ namespace AppCore.Events.Queue
             }
             finally
             {
+                _logger.PublishedEvents(eventCount);
+
                 if (lastEvent != null)
                 {
                     await _queue.CommitReadAsync(lastEvent, cancellationToken)
                                 .ConfigureAwait(false);
                 }
             }
-
-            _logger.PublishedEvents(eventCount);
         }
     }
 }
