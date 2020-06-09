@@ -20,7 +20,6 @@ namespace AppCore.Events.Queue
         private readonly ILogger<EventQueuePublisher> _logger;
 
         private readonly int _maxEventsToRead;
-        private readonly int _commitChunkSize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventQueuePublisher"/> class.
@@ -43,7 +42,6 @@ namespace AppCore.Events.Queue
 
             //TODO: retrieve from options
             _maxEventsToRead = 64;
-            _commitChunkSize = 1;
         }
 
         /// <summary>
@@ -64,30 +62,28 @@ namespace AppCore.Events.Queue
             IEventContext lastEvent = null;
             int eventCount = 0;
 
-            foreach (IEventContext @event in events)
+            try
             {
-                IEventPipeline pipeline = _pipelineResolver.Resolve(@event.EventDescriptor.EventType);
-                await pipeline.ProcessAsync(@event, cancellationToken)
-                              .ConfigureAwait(false);
-
-                lastEvent = @event;
-                ++eventCount;
-
-                if (eventCount == _commitChunkSize)
+                foreach (IEventContext @event in events)
                 {
-                    eventCount = 0;
+                    IEventPipeline pipeline = _pipelineResolver.Resolve(@event.EventDescriptor.EventType);
+                    await pipeline.ProcessAsync(@event, cancellationToken)
+                                  .ConfigureAwait(false);
+
+                    lastEvent = @event;
+                    ++eventCount;
+                }
+            }
+            finally
+            {
+                if (lastEvent != null)
+                {
                     await _queue.CommitReadAsync(lastEvent, cancellationToken)
                                 .ConfigureAwait(false);
                 }
             }
 
-            if (eventCount < _commitChunkSize)
-            {
-                await _queue.CommitReadAsync(lastEvent, cancellationToken)
-                            .ConfigureAwait(false);
-            }
-
-            _logger.PublishedEvents(events.Count);
+            _logger.PublishedEvents(eventCount);
         }
     }
 }
