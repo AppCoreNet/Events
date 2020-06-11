@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -19,7 +19,7 @@ namespace AppCore.DependencyInjection
         /// Adds logging of events to the pipeline.
         /// </summary>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> AddLogging(
+        public static IFacilityBuilder<IEventsFacility> UseLogging(
             this IFacilityBuilder<IEventsFacility> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));

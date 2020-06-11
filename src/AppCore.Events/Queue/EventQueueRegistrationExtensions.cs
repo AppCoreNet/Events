@@ -21,7 +21,7 @@ namespace AppCore.DependencyInjection
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <param name="configure">The delegate which is invoked to configure the extension.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityBuilder<IEventsFacility> AddQueue(
+        public static IFacilityBuilder<IEventsFacility> UseQueuing(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IFacilityExtensionBuilder<IEventsFacility, IEventQueueExtension>> configure = null)
         {
@@ -34,7 +34,7 @@ namespace AppCore.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, IEventQueueExtension> WithInMemoryQueue(
+        public static IFacilityExtensionBuilder<IEventsFacility, IEventQueueExtension> AddInMemoryQueue(
             this IFacilityExtensionBuilder<IEventsFacility, IEventQueueExtension> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));

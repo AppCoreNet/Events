@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018 the AppCore .NET project.
 
 using System;
@@ -40,7 +40,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> UseHandlers(
+        public static IFacilityBuilder<IEventsFacility> AddHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
@@ -63,7 +63,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> UsePreHandlers(
+        public static IFacilityBuilder<IEventsFacility> AddPreHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
@@ -86,7 +86,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> UsePostHandlers(
+        public static IFacilityBuilder<IEventsFacility> AddPostHandlers(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
@@ -109,7 +109,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registrationBuilder">A delegate to configure the <see cref="IRegistrationBuilder"/>.</param>
         /// <returns>The <paramref name="builder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IFacilityBuilder<IEventsFacility> UseBehaviors(
+        public static IFacilityBuilder<IEventsFacility> AddBehaviors(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IRegistrationBuilder> registrationBuilder)
         {
