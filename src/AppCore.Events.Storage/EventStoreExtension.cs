@@ -55,7 +55,7 @@ namespace AppCore.Events.Storage
                 if (facility.Lifetime == ComponentLifetime.Singleton)
                 {
                     registry.RegisterFacility<HostingFacility>()
-                            .UseBackgroundServices(
+                            .AddBackgroundServices(
                                 r => r.Add<EventStorePublisherService>()
                                       .IfNotRegistered()
                                       .PerContainer());
@@ -63,7 +63,7 @@ namespace AppCore.Events.Storage
                 else
                 {
                     registry.RegisterFacility<HostingFacility>()
-                            .UseBackgroundServices(
+                            .AddBackgroundServices(
                                 r => r.Add<EventStorePublisherService.Scoped>()
                                       .IfNotRegistered()
                                       .WithLifetime(facility.Lifetime));

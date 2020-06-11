@@ -28,7 +28,7 @@ namespace AppCore.Events.Queue
             if (facility.Lifetime == ComponentLifetime.Singleton)
             {
                 registry.RegisterFacility<HostingFacility>()
-                        .UseBackgroundServices(
+                        .AddBackgroundServices(
                             r => r.Add<EventQueuePublisherService>()
                                   .IfNotRegistered()
                                   .PerContainer());
@@ -36,7 +36,7 @@ namespace AppCore.Events.Queue
             else
             {
                 registry.RegisterFacility<HostingFacility>()
-                        .UseBackgroundServices(
+                        .AddBackgroundServices(
                             r => r.Add<EventQueuePublisherService.Scoped>()
                                   .IfNotRegistered()
                                   .WithLifetime(facility.Lifetime));
