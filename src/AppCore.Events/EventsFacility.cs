@@ -59,6 +59,11 @@ namespace AppCore.DependencyInjection
                     .PerContainer()
                     .IfNoneRegistered();
 
+            registry.Register<IEventMetadataProvider>()
+                    .Add<TopicMetadataProvider>()
+                    .PerContainer()
+                    .IfNotRegistered();
+
             registry.Register<IEventContextFactory>()
                     .Add<EventContextFactory>()
                     .PerContainer()
