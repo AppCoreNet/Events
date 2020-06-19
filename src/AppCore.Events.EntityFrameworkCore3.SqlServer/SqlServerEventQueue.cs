@@ -13,6 +13,7 @@ using AppCore.Data.EntityFrameworkCore;
 using AppCore.Diagnostics;
 using AppCore.Events.EntityFrameworkCore.SqlServer.Data;
 using AppCore.Events.Formatters;
+using AppCore.Events.Metadata;
 using AppCore.Events.Queue;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,7 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
         where TDbContext : DbContext
     {
         private const int PollInterval = 250;
+        private static string OffsetItemKey = "AppCore.Events.EventQueueOffset";
 
         private readonly IDbContextDataProvider<TDbContext> _dataProvider;
         private readonly TDbContext _dbContext;
@@ -36,11 +38,15 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
             Ensure.Arg.NotNull(dataProvider, nameof(dataProvider));
             Ensure.Arg.NotNull(formatters, nameof(formatters));
 
-
             _dataProvider = dataProvider;
             _dbContext = dataProvider.GetContext();
             _events = _dbContext.Set<Event>();
             _formatter = formatters.FirstOrDefault();
+        }
+
+        private static string GetEventTopic(IEventContext @event)
+        {
+            return @event.EventDescriptor.GetMetadata(EventMetadataKeys.TopicMetadataKey, String.Empty);
         }
 
         /// <inheritdoc />
@@ -50,42 +56,25 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
 
             using (_dataProvider.BeginChangeScope())
             {
-                await _events.AddRangeAsync(
-                    events.Select(
-                        e =>
-                        {
-                            /*
-                            string topic = e.EventDescriptor.GetMetadata(
-                                EventStoreMetadataKeys.QueueTopicMetadataKey,
-                                String.Empty);
-                            */
-
-                            string topic = null;
-                            using (var stream = new MemoryStream())
+                foreach (IEventContext @event in events)
+                {
+                    string topic = GetEventTopic(@event);
+                    using (var stream = new MemoryStream())
+                    {
+                        _formatter.Write(stream, @event);
+                        _events.Add(
+                            new Event
                             {
-                                _formatter.Write(stream, e);
-                                return new Event
-                                {
-                                    Topic = topic,
-                                    ContentType = _formatter.ContentType,
-                                    Data = stream.ToArray()
-                                };
-                            }
-                        }),
-                    cancellationToken);
+                                Topic = topic,
+                                ContentType = _formatter.ContentType,
+                                Data = stream.ToArray()
+                            });
+                    }
+                }
 
                 await _dataProvider.SaveChangesAsync(cancellationToken);
             }
         }
-
-        /*
-        private const string _readEventsSql = "SET NOCOUNT ON;"
-                                              + "WITH cte AS (" 
-                                              + "  SELECT TOP(@maxEventsToRead) [Offset],[Topic],[ContentType],[Data] FROM [EventQueue] WITH (ROWLOCK) ORDER BY [Offset]"
-                                              + ")"
-                                              + "DELETE FROM cte"
-                                              + "  OUTPUT deleted.[Offset], deleted.[Topic], deleted.[ContentType], deleted.[Data]";
-        */
 
         /// <inheritdoc />
         public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(
@@ -99,7 +88,8 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
             }
 
             _transaction =
-                await _dataProvider.TransactionManager.BeginTransactionAsync(IsolationLevel.Unspecified,
+                await _dataProvider.TransactionManager.BeginTransactionAsync(
+                    IsolationLevel.Unspecified,
                     cancellationToken);
 
             try
@@ -107,11 +97,16 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
                 Event[] events;
                 do
                 {
-                    events = await _events
-                        .FromSqlInterpolated(
-                            $"SELECT TOP({maxEventsToRead}) [Offset],[Topic],[ContentType],[Data] FROM [EventQueue] WITH (UPDLOCK) ORDER BY [Offset]")
-                        .AsNoTracking()
-                        .ToArrayAsync(cancellationToken);
+                    FormattableString query = $@"
+                        SELECT TOP({maxEventsToRead}) Q.Offset,Q.Topic,Q.ContentType,Q.Data
+                        FROM EventQueue Q WITH (UPDLOCK,READPAST)
+                        INNER JOIN (SELECT TOP(1) Topic FROM EventQueue WITH (UPDLOCK,READPAST) ORDER BY Offset) T
+                        ON Q.Topic = T.Topic
+                        ORDER BY Q.Offset";
+
+                    events = await _events.FromSqlInterpolated(query)
+                                          .AsNoTracking()
+                                          .ToArrayAsync(cancellationToken);
 
                     if (events.Length == 0)
                         await Task.Delay(PollInterval, cancellationToken);
@@ -127,8 +122,7 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
                             using (var stream = new MemoryStream(e.Data))
                             {
                                 IEventContext context = _formatter.Read(stream);
-                                context.Items.Add("Offset", e.Offset);
-                                //context.AddFeature<IEventStoreFeature>(new EventStoreFeature(this, e.Offset));
+                                context.Items.Add(OffsetItemKey, e.Offset);
                                 return context;
                             }
                         })
@@ -152,10 +146,11 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
                 throw new InvalidOperationException("Read transaction is not active.");
             }
 
-            long offset = (long) @event.Items["Offset"];
+            long offset = (long) @event.Items[OffsetItemKey];
+            string topic = GetEventTopic(@event);
 
             await _dbContext.Database.ExecuteSqlInterpolatedAsync(
-                $"DELETE FROM [EventQueue] WHERE [Offset] <= {offset}", cancellationToken);
+                $"DELETE FROM [EventQueue] WHERE [Offset] <= {offset} AND [Topic]={topic}", cancellationToken);
 
             await _transaction.CommitAsync(cancellationToken);
             _transaction = null;

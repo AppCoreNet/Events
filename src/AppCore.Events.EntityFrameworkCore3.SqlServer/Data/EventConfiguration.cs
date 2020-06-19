@@ -19,13 +19,13 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer.Data
             builder.HasKey(e => e.Offset)
                    .IsClustered();
 
-            builder.HasIndex(e => new { e.Topic, e.Offset });
-
             builder.Property(e => e.Offset)
                    .UseHiLo(SequenceName);
 
+            builder.HasIndex(e => e.Topic);
+
             builder.Property(e => e.Topic)
-                   .HasMaxLength(32);
+                   .HasMaxLength(64);
 
             builder.Property(e => e.ContentType)
                    .HasMaxLength(32)
