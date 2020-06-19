@@ -1,7 +1,7 @@
 AppCore .NET Events
 -------------------
 
-[![Build Status](https://dev.azure.com/AppCoreNet/Events/_apis/build/status/AppCoreNet.Events?branchName=dev)](https://dev.azure.com/AppCoreNet/Events/_build/latest?definitionId=5&branchName=dev)
+[![Build Status](https://dev.azure.com/AppCoreNet/Events/_apis/build/status/AppCoreNet.Events%20CI?branchName=dev)](https://dev.azure.com/AppCoreNet/Events/_build/latest?definitionId=5&branchName=dev)
 
 This repository includes projects containing abstractions and implementations of the event framework.
 
@@ -18,6 +18,7 @@ Package                                    | Description
 `AppCore.Events.Abstractions`              | Provides the public API of the event framework.
 `AppCore.Events.Formatters.NewtonsoftJson` | JSON serialization support for events.
 `AppCore.Events.Logging`                   | Adds logging of events.
+`AppCore.Events.EntityFrameworkCore3.SqlServer` | Adds support for queing events using SQL Server via EF Core.
 `AppCore.Events.Storage`                   | Event store default implementation.
 `AppCore.Events.Storage.Abstractions`      | Provides the public API for the event store.
 
