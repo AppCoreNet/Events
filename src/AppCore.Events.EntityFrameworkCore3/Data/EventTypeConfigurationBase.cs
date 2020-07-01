@@ -4,23 +4,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.Events.EntityFrameworkCore.SqlServer.Data
+namespace AppCore.Events.EntityFrameworkCore.Data
 {
-    public class EventConfiguration : IEntityTypeConfiguration<Event>
+    /// <summary>
+    /// Provides a base class for configuring the <see cref="Event"/> entity.
+    /// </summary>
+    public abstract class EventTypeConfigurationBase : IEntityTypeConfiguration<Event>
     {
-        public const string TableName = "EventQueue";
-
-        public const string SequenceName = "EventQueueSequence";
-
-        public void Configure(EntityTypeBuilder<Event> builder)
+        /// <inheritdoc />
+        public virtual void Configure(EntityTypeBuilder<Event> builder)
         {
-            builder.ToTable(TableName);
-
-            builder.HasKey(e => e.Offset)
-                   .IsClustered();
-
-            builder.Property(e => e.Offset)
-                   .UseHiLo(SequenceName);
+            builder.HasKey(e => e.Offset);
 
             builder.HasIndex(e => e.Topic);
 

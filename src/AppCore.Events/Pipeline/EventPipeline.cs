@@ -52,7 +52,7 @@ namespace AppCore.Events.Pipeline
         {
             Ensure.Arg.NotNull(eventContext, nameof(eventContext));
 
-            var handlerInvoked = false;
+            bool handlerInvoked = false;
             async Task Handler(IEventContext<TEvent> c, CancellationToken ct)
             {
                 handlerInvoked = true;
@@ -65,7 +65,7 @@ namespace AppCore.Events.Pipeline
 
             _logger.PipelineProcessing(typeof(TEvent));
 
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
             if (_contextAccessor != null)
                 _contextAccessor.EventContext = eventContext;

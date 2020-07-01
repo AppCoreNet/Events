@@ -19,7 +19,7 @@ namespace AppCore.Events.Queue
         private readonly IEventPipelineResolver _pipelineResolver;
         private readonly ILogger<EventQueuePublisher> _logger;
 
-        private readonly int _maxEventsToRead;
+        private const int _maxEventsToRead = 64;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventQueuePublisher"/> class.
@@ -41,7 +41,7 @@ namespace AppCore.Events.Queue
             _logger = logger;
 
             //TODO: retrieve from options
-            _maxEventsToRead = 64;
+            //_maxEventsToRead = 64;
         }
 
         /// <summary>
