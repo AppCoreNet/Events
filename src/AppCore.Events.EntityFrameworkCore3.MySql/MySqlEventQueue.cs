@@ -11,21 +11,21 @@ using AppCore.Events.Formatters;
 using AppCore.Events.Queue;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppCore.Events.EntityFrameworkCore.SqlServer
+namespace AppCore.Events.EntityFrameworkCore.MySql
 {
     /// <summary>
-    /// Represents an <see cref="IEventQueue"/> targeting SQL Server.
+    /// Represents an <see cref="IEventQueue"/> targeting MySql.
     /// </summary>
     /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
-    public class SqlServerEventQueue<TDbContext> : DbContextEventQueue<TDbContext>
+    public class MySqlEventQueue<TDbContext> : DbContextEventQueue<TDbContext>
         where TDbContext : DbContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SqlServerEventQueue{TDbContext}"/> class.
+        /// Initializes a new instance of the <see cref="MySqlEventQueue{TDbContext}"/> class.
         /// </summary>
         /// <param name="dataProvider">The data provider.</param>
         /// <param name="formatters">An enumerable of event formatters.</param>
-        public SqlServerEventQueue(
+        public MySqlEventQueue(
             IDbContextDataProvider<TDbContext> dataProvider,
             IEnumerable<IEventContextFormatter> formatters)
             : base(dataProvider, formatters)
@@ -38,11 +38,21 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
             CancellationToken cancellationToken)
         {
             FormattableString query = $@"
-                        SELECT TOP({maxEventsToRead}) Q.Offset,Q.Topic,Q.ContentType,Q.Data
-                        FROM EventQueue Q WITH (UPDLOCK,READPAST)
-                        INNER JOIN (SELECT TOP(1) Topic FROM EventQueue WITH (UPDLOCK,READPAST) ORDER BY Offset) T
-                        ON Q.Topic = T.Topic
-                        ORDER BY Q.Offset";
+                select
+                  Q.Offset,
+                  Q.Topic,
+                  Q.ContentType,
+                  Q.Data as Q
+                from EventQueue as Q with (UPDLOCK,READPAST)
+                  join (
+                    select Topic as Topic
+                    from EventQueue with (UPDLOCK,READPAST)
+                    order by Offset
+                    limit 1
+                  ) as T
+                    on Q.Topic = T.Topic
+                order by Q.Offset
+                limit {maxEventsToRead}";
 
             return await Events.FromSqlInterpolated(query)
                                .AsNoTracking()
@@ -53,7 +63,7 @@ namespace AppCore.Events.EntityFrameworkCore.SqlServer
         protected override async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
         {
             await Provider.GetContext().Database.ExecuteSqlInterpolatedAsync(
-                $"DELETE FROM [EventQueue] WHERE [Offset] <= {offset} AND [Topic]={topic}", cancellationToken);
+                $"DELETE FROM EventQueue WHERE Offset <= {offset} AND Topic={topic}", cancellationToken);
         }
     }
 }

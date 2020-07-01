@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Provides AppCore .NET SQL Server event queue.</Description>
-    <RootNamespace>AppCore.Events.EntityFrameworkCore.SqlServer</RootNamespace>
+    <Description>Provides AppCore .NET MySql event queue.</Description>
+    <RootNamespace>AppCore.Events.EntityFrameworkCore.MySql</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,7 +12,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="AppCore.Data.EntityFrameworkCore3" Version="$(AppCore_Data_Version)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="[3.1.0,4.0.0)" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.20" />
   </ItemGroup>
 
   <ItemGroup>
