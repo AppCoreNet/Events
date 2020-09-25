@@ -24,6 +24,11 @@ namespace AppCore.DependencyInjection
         {
             registry.RegisterFacility<LoggingFacility>();
 
+            registry.Register<IEventPipelineResolver>()
+                    .Add<EventPipelineResolver>()
+                    .WithLifetime(Lifetime)
+                    .IfNoneRegistered();
+
             registry.Register(typeof(IEventPipeline<>))
                     .Add(typeof(EventPipeline<>))
                     .WithLifetime(Lifetime)
@@ -53,6 +58,11 @@ namespace AppCore.DependencyInjection
                     .Add<EventDescriptorFactory>()
                     .PerContainer()
                     .IfNoneRegistered();
+
+            registry.Register<IEventMetadataProvider>()
+                    .Add<TopicMetadataProvider>()
+                    .PerContainer()
+                    .IfNotRegistered();
 
             registry.Register<IEventContextFactory>()
                     .Add<EventContextFactory>()

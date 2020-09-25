@@ -1,11 +1,10 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 using AppCore.Logging;
@@ -18,7 +17,7 @@ namespace AppCore.Events.Storage
     {
         private readonly IEventStore _store;
         private readonly IEventStorePublisherOffset _storeOffset;
-        private readonly IContainer _container;
+        private readonly IEventPipelineResolver _pipelineResolver;
         private readonly ILogger<EventStorePublisher> _logger;
         private readonly EventStorePublisher _publisher;
         private readonly IEventPipeline<TestEvent> _pipeline;
@@ -27,13 +26,13 @@ namespace AppCore.Events.Storage
         {
             _store = Substitute.For<IEventStore>();
             _storeOffset = Substitute.For<IEventStorePublisherOffset>();
-            _container = Substitute.For<IContainer>();
+            _pipelineResolver = Substitute.For<IEventPipelineResolver>();
             _logger = Substitute.For<ILogger<EventStorePublisher>>();
             _pipeline = Substitute.For<IEventPipeline<TestEvent>>();
-            _publisher = new EventStorePublisher(_store, _storeOffset, _container, _logger);
+            _publisher = new EventStorePublisher(_store, _storeOffset, _pipelineResolver, _logger);
 
-            _container.Resolve(typeof(IEventPipeline<TestEvent>))
-                      .Returns(_pipeline);
+            _pipelineResolver.Resolve(typeof(TestEvent))
+                             .Returns(_pipeline);
         }
 
         [Fact]

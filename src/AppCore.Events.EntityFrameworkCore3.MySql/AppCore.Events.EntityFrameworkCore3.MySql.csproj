@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Description>Provides AppCore .NET MySql event queue.</Description>
+    <RootNamespace>AppCore.Events.EntityFrameworkCore.MySql</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AppCore.Diagnostics.Sources" Version="$(AppCore_Shared_Version)">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="AppCore.Data.EntityFrameworkCore3" Version="$(AppCore_Data_Version)" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.Events.Abstractions.csproj" />
+    <ProjectReference Include="..\AppCore.Events.EntityFrameworkCore3\AppCore.Events.EntityFrameworkCore3.csproj" />
+  </ItemGroup>
+
+</Project>

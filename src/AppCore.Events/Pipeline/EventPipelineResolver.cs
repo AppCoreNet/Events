@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -11,7 +11,7 @@ namespace AppCore.Events.Pipeline
     /// <summary>
     /// Represents a resolver for <see cref="IEventPipeline{TEvent}"/> instances.
     /// </summary>
-    public sealed class EventPipelineResolver
+    public sealed class EventPipelineResolver : IEventPipelineResolver
     {
         private readonly IContainer _container;
 
@@ -40,16 +40,6 @@ namespace AppCore.Events.Pipeline
             return _pipelines.GetOrAdd(
                 eventType,
                 key => (IEventPipeline) _container.Resolve(typeof(IEventPipeline<>).MakeGenericType(key)));
-        }
-
-        /// <summary>
-        /// Resolves an <see cref="IEventPipeline{TEvent}"/> for the specified <typeparamref name="TEvent"/>.
-        /// </summary>
-        /// <returns>The <see cref="IEventPipeline{TEvent}"/> instance.</returns>
-        public IEventPipeline<TEvent> Resolve<TEvent>()
-            where TEvent : IEvent
-        {
-            return (IEventPipeline<TEvent>) Resolve(typeof(TEvent));
         }
     }
 }

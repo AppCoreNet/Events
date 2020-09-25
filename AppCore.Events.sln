@@ -19,6 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Storage", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.Storage.Tests", "test\AppCore.Events.Storage.Tests\AppCore.Events.Storage.Tests.csproj", "{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCore.Events.EntityFrameworkCore3.SqlServer", "src\AppCore.Events.EntityFrameworkCore3.SqlServer\AppCore.Events.EntityFrameworkCore3.SqlServer.csproj", "{A5C60F54-23BB-4E07-92E3-B57AC8EA709E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppCore.Events.EntityFrameworkCore3", "src\AppCore.Events.EntityFrameworkCore3\AppCore.Events.EntityFrameworkCore3.csproj", "{97932B36-F306-4918-BC81-5A237BBAEDD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppCore.Events.EntityFrameworkCore3.MySql", "src\AppCore.Events.EntityFrameworkCore3.MySql\AppCore.Events.EntityFrameworkCore3.MySql.csproj", "{D03851E0-52F8-468E-98B0-EBC06D2BE120}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +63,18 @@ Global
 		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6E2D0D2-1908-4F20-831C-46327C4B2AA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5C60F54-23BB-4E07-92E3-B57AC8EA709E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5C60F54-23BB-4E07-92E3-B57AC8EA709E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5C60F54-23BB-4E07-92E3-B57AC8EA709E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5C60F54-23BB-4E07-92E3-B57AC8EA709E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97932B36-F306-4918-BC81-5A237BBAEDD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97932B36-F306-4918-BC81-5A237BBAEDD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97932B36-F306-4918-BC81-5A237BBAEDD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97932B36-F306-4918-BC81-5A237BBAEDD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D03851E0-52F8-468E-98B0-EBC06D2BE120}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D03851E0-52F8-468E-98B0-EBC06D2BE120}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D03851E0-52F8-468E-98B0-EBC06D2BE120}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D03851E0-52F8-468E-98B0-EBC06D2BE120}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

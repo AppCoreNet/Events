@@ -1,12 +1,13 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
+using AppCore.Events.Queue;
 using NSubstitute;
 using Xunit;
 
@@ -16,6 +17,8 @@ namespace AppCore.Events
     {
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
+        private readonly IEventPipelineResolver _pipelineResolver;
+        private readonly IEventPipeline<TestEvent> _pipeline;
 
         public EventPublisherTests()
         {
@@ -29,27 +32,47 @@ namespace AppCore.Events
                                   ci => new EventContext<TestEvent>(
                                       ci.ArgAt<EventDescriptor>(0),
                                       ci.ArgAt<TestEvent>(1)));
+
+            _pipeline = Substitute.For<IEventPipeline<TestEvent>>();
+
+            _pipelineResolver = Substitute.For<IEventPipelineResolver>();
+            _pipelineResolver.Resolve(typeof(TestEvent))
+                             .Returns(ci => _pipeline);
         }
 
         [Fact]
-        public async Task PublishesEventOnPipeline()
+        public async Task PublishesEventUsingPipeline()
         {
-            var pipeline = Substitute.For<IEventPipeline<TestEvent>>();
-
-            var container = Substitute.For<IContainer>();
-
-            container.Resolve(typeof(IEventPipeline<TestEvent>))
-                     .Returns(pipeline);
-
-            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, container);
+            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, _pipelineResolver);
             var @event = new TestEvent();
             var token = new CancellationToken();
             await publisher.PublishAsync(@event, token);
 
-            await pipeline.Received(1)
+            await _pipeline.Received(1)
                           .ProcessAsync(
                               Arg.Is<IEventContext>(c => c.Event == @event),
                               Arg.Is(token));
+        }
+
+        [Fact]
+        public async Task PublishesEventUsingQueue()
+        {
+            var queue = Substitute.For<IEventQueue>();
+
+            var publisher = new EventPublisher(_descriptorFactory, _contextFactory, _pipelineResolver, queue);
+            var @event = new TestEvent();
+            var token = new CancellationToken();
+            await publisher.PublishAsync(@event, token);
+
+            await queue.Received(1)
+                       .WriteAsync(
+                           Arg.Is<IEnumerable<IEventContext>>(
+                               c => c.Count() == 1 && c.First().Event == @event),
+                           Arg.Is(token));
+
+            await _pipeline.DidNotReceiveWithAnyArgs()
+                           .ProcessAsync(Arg.Any<IEventContext>(),
+                                         Arg.Any<CancellationToken>());
         }
     }
 }

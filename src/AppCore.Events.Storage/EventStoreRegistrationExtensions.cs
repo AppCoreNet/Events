@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -21,7 +21,7 @@ namespace AppCore.DependencyInjection
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <param name="configure">The delegate which is invoked to configure the extension.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityBuilder<IEventsFacility> AddEventStore(
+        public static IFacilityBuilder<IEventsFacility> UseEventStore(
             this IFacilityBuilder<IEventsFacility> builder,
             Action<IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension>> configure = null)
         {
@@ -47,7 +47,7 @@ namespace AppCore.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> WithInMemoryStore(
+        public static IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> AddInMemoryStore(
             this IFacilityExtensionBuilder<IEventsFacility, EventStoreExtension> builder)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
