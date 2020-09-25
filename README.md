@@ -2,6 +2,9 @@ AppCore .NET Events
 -------------------
 
 [![Build Status](https://dev.azure.com/AppCoreNet/Events/_apis/build/status/AppCoreNet.Events%20CI?branchName=dev)](https://dev.azure.com/AppCoreNet/Events/_build/latest?definitionId=5&branchName=dev)
+![Azure DevOps tests (compact)](https://img.shields.io/azure-devops/tests/AppCoreNet/Events/5?compact_message)
+![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/AppCoreNet/Events/5/dev)
+![Nuget](https://img.shields.io/nuget/v/AppCore.Events.Abstractions)
 
 This repository includes projects containing abstractions and implementations of the event framework.
 
