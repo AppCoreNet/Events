@@ -1,6 +1,6 @@
 #module "nuget:?package=Cake.DotNetTool.Module&version=0.4.0"
 #tool "dotnet:?package=GitVersion.Tool&version=5.3.5"
-#tool "nuget:?package=ReportGenerator&version=4.6.1"
+#tool "dotnet:?package=dotnet-reportgenerator-globaltool&version=4.6.7"
 
 public static partial class BuildConstants
 {
@@ -181,10 +181,13 @@ Task("DotNetCore.Test")
       var coverageFiles = GetFiles(System.IO.Path.Combine(testResultsDir, "**", "coverage.cobertura.xml"));
       var reportDir = System.IO.Path.Combine(testResultsDir, "report");
 
-      ReportGenerator(coverageFiles, reportDir, new ReportGeneratorSettings
+      if (!IsRunningOnUnix())
       {
-        ReportTypes = { ReportGeneratorReportType.Cobertura, ReportGeneratorReportType.Html }
-      });
+        ReportGenerator(coverageFiles, reportDir, new ReportGeneratorSettings
+        {
+          ReportTypes = { ReportGeneratorReportType.Cobertura, ReportGeneratorReportType.Html }
+        });
+      }
     }
 });
 
