@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
     <Description>Provides AppCore .NET MySql event queue.</Description>
     <RootNamespace>AppCore.Events.EntityFrameworkCore.MySql</RootNamespace>
   </PropertyGroup>
@@ -13,6 +13,14 @@
     </PackageReference>
     <PackageReference Include="AppCore.Data.EntityFrameworkCore3" Version="$(AppCore_Data_Version)" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.20" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="[3.1.0,4.0.0)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="[3.1.0,7.0.0)" />
   </ItemGroup>
 
   <ItemGroup>

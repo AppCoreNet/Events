@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
     <Description>Provides AppCore .NET Entity Framework Core 3 event queue.</Description>
     <RootNamespace>AppCore.Events.EntityFrameworkCore</RootNamespace>
   </PropertyGroup>
@@ -12,7 +12,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="AppCore.Data.EntityFrameworkCore3" Version="$(AppCore_Data_Version)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.0,4.0.0)" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.0,7.0.0)" />
   </ItemGroup>
 
   <ItemGroup>

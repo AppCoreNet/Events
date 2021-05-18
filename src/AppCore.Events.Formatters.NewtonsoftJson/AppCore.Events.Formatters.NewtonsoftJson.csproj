@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.0;netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <RootNamespace>AppCore.Events.Formatters</RootNamespace>
     <Description>Provides AppCore .NET event serialization using Newtonsoft.Json.</Description>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <RootNamespace>AppCore.Events.Storage</RootNamespace>
     <Description>Provides the AppCore .NET storage API for events.</Description>
   </PropertyGroup>
