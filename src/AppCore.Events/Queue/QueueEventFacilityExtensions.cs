@@ -4,15 +4,15 @@
 using System;
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
-using AppCore.Events.Storage;
+using AppCore.Events.Queue;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
 {
     /// <summary>
-    /// Provides extension methods to register an event store.
+    /// Provides extension methods to register an event queue.
     /// </summary>
-    public static class EventStoreRegistrationExtensions
+    public static class QueueEventFacilityExtensions
     {
         /// <summary>
         /// Registers event store behavior.
@@ -22,7 +22,7 @@ namespace AppCore.DependencyInjection
         /// <returns>The passed facility to allow chaining.</returns>
         public static EventsFacility UseQueuing(
             EventsFacility facility,
-            Action<EventStoreExtension> configure = null)
+            Action<EventQueueExtension> configure = null)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
             facility.AddExtension(configure);
@@ -32,16 +32,16 @@ namespace AppCore.DependencyInjection
         /// <summary>
         /// Registers in-memory event queue.
         /// </summary>
-        /// <param name="extension">The <see cref="EventStoreExtension"/>.</param>
+        /// <param name="extension">The <see cref="EventQueueExtension"/>.</param>
         /// <returns>The passed facility to allow chaining.</returns>
-        public static EventStoreExtension WithInMemoryQueue(this EventStoreExtension extension)
+        public static EventQueueExtension WithInMemoryQueue(this EventQueueExtension extension)
         {
             Ensure.Arg.NotNull(extension, nameof(extension));
 
             extension.ConfigureRegistry(
                 r =>
                 {
-                    r.TryAdd(ComponentRegistration.Singleton<IEventStore, InMemoryEventStore>());
+                    r.TryAdd(ComponentRegistration.Singleton<IEventQueue, InMemoryEventQueue>());
                 });
 
             return extension;

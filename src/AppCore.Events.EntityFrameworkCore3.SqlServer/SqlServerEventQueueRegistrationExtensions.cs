@@ -1,9 +1,8 @@
 // Licensed under the MIT License.
-// Copyright (c) 2020 the AppCore .NET project.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
-using AppCore.Events;
 using AppCore.Events.EntityFrameworkCore.SqlServer;
 using AppCore.Events.Queue;
 using Microsoft.EntityFrameworkCore;
@@ -14,26 +13,22 @@ namespace AppCore.DependencyInjection
     public static class SqlServerEventQueueRegistrationExtensions
     {
         /// <summary>
-        /// Registers SQL Server event store.
+        /// Registers SQL Server event queue.
         /// </summary>
-        /// <param name="builder">The <see cref="IFacilityExtensionBuilder{TFacility,TExtension}"/>.</param>
-        /// <returns>The passed builder to allow chaining.</returns>
-        public static IFacilityExtensionBuilder<IEventsFacility, IEventQueueExtension>
-            AddSqlServer<TDbContext>(
-                this IFacilityExtensionBuilder<IEventsFacility, IEventQueueExtension> builder
-                )
+        /// <param name="extension">The <see cref="EventQueueExtension"/>.</param>
+        /// <returns>The passed facility to allow chaining.</returns>
+        public static EventQueueExtension WithSqlServerEventQueue<TDbContext>(this EventQueueExtension extension)
             where TDbContext : DbContext
         {
-            Ensure.Arg.NotNull(builder, nameof(builder));
+            Ensure.Arg.NotNull(extension, nameof(extension));
 
-            builder.Configure(
-                (f, e) => e.RegistrationCallbacks.Add(
-                    (r, f2) => r.Register<IEventQueue>()
-                                .Add<SqlServerEventQueue<TDbContext>>()
-                                .IfNoneRegistered()
-                                .PerScope()));
+            extension.ConfigureRegistry(
+                r =>
+                {
+                    r.TryAdd(ComponentRegistration.Scoped<IEventQueue, SqlServerEventQueue<TDbContext>>());
+                });
 
-            return builder;
+            return extension;
         }
     }
 }

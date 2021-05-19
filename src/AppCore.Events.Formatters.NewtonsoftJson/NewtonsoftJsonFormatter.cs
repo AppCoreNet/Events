@@ -1,5 +1,5 @@
-﻿// Licensed under the MIT License.
-// Copyright (c) 2018,2019 the AppCore .NET project.
+// Licensed under the MIT License.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System.Collections.Generic;
 using System.IO;
@@ -25,13 +25,14 @@ namespace AppCore.Events.Formatters
         /// Initializes a new instance of the <see cref="NewtonsoftJsonFormatter"/> class.
         /// </summary>
         /// <param name="contextFactory">The <see cref="IEventContextFactory"/>.</param>
-        public NewtonsoftJsonFormatter(IEventContextFactory contextFactory)
+        /// <param name="settings">The <see cref="JsonSerializerSettings"/>.</param>
+        public NewtonsoftJsonFormatter(IEventContextFactory contextFactory, JsonSerializerSettings settings = null)
         {
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
 
             _contextFactory = contextFactory;
             _serializer = JsonSerializer.Create(
-                new JsonSerializerSettings
+                settings ?? new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.Auto,
                     NullValueHandling = NullValueHandling.Ignore

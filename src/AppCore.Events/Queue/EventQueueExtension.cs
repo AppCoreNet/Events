@@ -1,50 +1,32 @@
 // Licensed under the MIT License.
-// Copyright (c) 2020 the AppCore .NET project.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
-using System;
-using System.Collections.Generic;
-using AppCore.DependencyInjection;
-using AppCore.DependencyInjection.Facilities;
+using AppCore.Events.Queue;
 
-namespace AppCore.Events.Queue
+// ReSharper disable once CheckNamespace
+namespace AppCore.DependencyInjection.Facilities
 {
     /// <summary>
-    /// Provides event queuing extension for the <see cref="IEventsFacility"/>.
+    /// Provides event queuing extension for the <see cref="EventsFacility"/>.
     /// </summary>
-    public class EventQueueExtension : FacilityExtension<IEventsFacility>, IEventQueueExtension
+    public class EventQueueExtension : FacilityExtension
     {
         /// <inheritdoc />
-        public IList<Action<IComponentRegistry, IEventsFacility>> RegistrationCallbacks { get; } =
-            new List<Action<IComponentRegistry, IEventsFacility>>();
-
-        /// <inheritdoc />
-        protected override void RegisterComponents(IComponentRegistry registry, IEventsFacility facility)
+        protected override void Build(IComponentRegistry registry)
         {
-            registry.Register<EventQueuePublisher>()
-                    .Add<EventQueuePublisher>()
-                    .IfNoneRegistered()
-                    .WithLifetime(facility.Lifetime);
+            base.Build(registry);
 
-            if (facility.Lifetime == ComponentLifetime.Singleton)
+            ComponentLifetime lifetime = ((EventsFacility) Facility).Lifetime;
+
+            registry.TryAdd(ComponentRegistration.Create<EventQueuePublisher, EventQueuePublisher>(lifetime));
+
+            if (lifetime == ComponentLifetime.Singleton)
             {
-                registry.RegisterFacility<HostingFacility>()
-                        .AddBackgroundServices(
-                            r => r.Add<EventQueuePublisherService>()
-                                  .IfNotRegistered()
-                                  .PerContainer());
+                registry.AddHosting(h => h.WithBackgroundService<EventQueuePublisherService>());
             }
             else
             {
-                registry.RegisterFacility<HostingFacility>()
-                        .AddBackgroundServices(
-                            r => r.Add<EventQueuePublisherService.Scoped>()
-                                  .IfNotRegistered()
-                                  .WithLifetime(facility.Lifetime));
-            }
-
-            foreach (Action<IComponentRegistry, IEventsFacility> registrationCallback in RegistrationCallbacks)
-            {
-                registrationCallback(registry, facility);
+                registry.AddHosting(h => h.WithBackgroundService<EventQueuePublisherService.Scoped>());
             }
         }
     }

@@ -1,78 +1,65 @@
 // Licensed under the MIT License.
-// Copyright (c) 2018,2019 the AppCore .NET project.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
-using System;
-using System.Collections.Generic;
-using AppCore.DependencyInjection;
-using AppCore.DependencyInjection.Facilities;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
+using AppCore.Events.Storage;
 
-namespace AppCore.Events.Storage
+// ReSharper disable once CheckNamespace
+namespace AppCore.DependencyInjection.Facilities
 {
     /// <summary>
-    /// Represents extension for the <see cref="IEventsFacility"/> which registers event store behavior.
+    /// Represents extension for the <see cref="EventsFacility"/> which registers event store behavior.
     /// </summary>
-    public class EventStoreExtension : FacilityExtension<IEventsFacility>
+    public class EventStoreExtension : FacilityExtension
     {
-        /// <summary>
-        /// Gets or sets a value indicating whether to register <see cref="IEventStorePublisher"/> as a background
-        /// service.
-        /// </summary>
-        public bool RegisterBackgroundPublisher { get; set; }
+        private bool _registerBackgroundPublisher;
 
         /// <summary>
-        /// Gets a list of additional registration callbacks.
+        /// Sets a value indicating whether to register background publishes.
         /// </summary>
-        public IList<Action<IComponentRegistry, IEventsFacility>> RegistrationCallbacks { get; } =
-            new List<Action<IComponentRegistry, IEventsFacility>>();
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public EventStoreExtension WithBackgroundPublisher(bool value = true)
+        {
+            _registerBackgroundPublisher = value;
+            return this;
+        }
 
         /// <inheritdoc />
-        protected override void RegisterComponents(IComponentRegistry registry, IEventsFacility facility)
+        protected override void Build(IComponentRegistry registry)
         {
-            registry.Register<IEventMetadataProvider>()
-                    .Add<EventStoreMetadataProvider>()
-                    .IfNotRegistered()
-                    .PerContainer();
+            base.Build(registry);
 
-            registry.Register(typeof(IEventPipelineBehavior<>))
-                    .Add(typeof(EventStoreBehavior<>))
-                    .IfNotRegistered()
-                    .WithLifetime(facility.Lifetime);
+            ComponentLifetime lifetime = ((EventsFacility) Facility).Lifetime;
 
-            if (RegisterBackgroundPublisher)
-            {
-                registry.Register<IEventStorePublisherOffset>()
-                        .Add<EventStorePublisherOffset>()
-                        .IfNoneRegistered()
-                        .PerContainer();
-
-                registry.Register<IEventStorePublisher>()
-                        .Add<EventStorePublisher>()
-                        .IfNoneRegistered()
-                        .WithLifetime(facility.Lifetime);
-
-                if (facility.Lifetime == ComponentLifetime.Singleton)
+            registry.TryAddEnumerable(
+                new[]
                 {
-                    registry.RegisterFacility<HostingFacility>()
-                            .AddBackgroundServices(
-                                r => r.Add<EventStorePublisherService>()
-                                      .IfNotRegistered()
-                                      .PerContainer());
+                    ComponentRegistration.Singleton<IEventMetadataProvider, EventStoreMetadataProvider>(),
+                    ComponentRegistration.Create(
+                        typeof(IEventPipelineBehavior<>),
+                        typeof(EventStoreBehavior<>),
+                        lifetime)
+                });
+
+            if (_registerBackgroundPublisher)
+            {
+                registry.TryAdd(
+                    new[]
+                    {
+                        ComponentRegistration.Scoped<IEventStorePublisherOffset, EventStorePublisherOffset>(),
+                        ComponentRegistration.Create<IEventStorePublisher, EventStorePublisher>(lifetime)
+                    });
+
+                if (lifetime == ComponentLifetime.Singleton)
+                {
+                    registry.AddHosting(h => h.WithBackgroundService<EventStorePublisherService>());
                 }
                 else
                 {
-                    registry.RegisterFacility<HostingFacility>()
-                            .AddBackgroundServices(
-                                r => r.Add<EventStorePublisherService.Scoped>()
-                                      .IfNotRegistered()
-                                      .WithLifetime(facility.Lifetime));
+                    registry.AddHosting(h => h.WithBackgroundService<EventStorePublisherService.Scoped>());
                 }
-            }
-
-            foreach (Action<IComponentRegistry, IEventsFacility> registrationCallback in RegistrationCallbacks)
-            {
-                registrationCallback(registry, facility);
             }
         }
     }
