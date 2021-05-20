@@ -4,7 +4,6 @@
 using AppCore.Events.EntityFrameworkCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MySql.Data.EntityFrameworkCore.Extensions;
 
 namespace AppCore.Events.EntityFrameworkCore.MySql.Data
 {
@@ -26,7 +25,7 @@ namespace AppCore.Events.EntityFrameworkCore.MySql.Data
             builder.HasKey(e => e.Offset);
 
             builder.Property(e => e.Offset)
-                   .UseMySQLAutoIncrementColumn("long");
+                   .UseMySqlIdentityColumn();
         }
     }
 }
