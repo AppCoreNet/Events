@@ -2,8 +2,8 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
-using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
+using AppCore.Events;
 using AppCore.Events.Logging;
 using AppCore.Events.Pipeline;
 
@@ -13,7 +13,7 @@ namespace AppCore.DependencyInjection
     /// <summary>
     /// Provides extension methods to register logging with the <see cref="EventsFacility"/>.
     /// </summary>
-    public static class LoggingEventsFacilityExtensions
+    public static class EventsFacilityExtensions
     {
         /// <summary>
         /// Adds logging of events to the pipeline.

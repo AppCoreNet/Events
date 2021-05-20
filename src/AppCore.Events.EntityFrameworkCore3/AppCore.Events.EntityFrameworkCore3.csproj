@@ -11,7 +11,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AppCore.Data.EntityFrameworkCore3" Version="$(AppCore_Data_Version)" />
+    <PackageReference Include="AppCore.Data.EntityFrameworkCore" Version="$(AppCore_Data_Version)" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">

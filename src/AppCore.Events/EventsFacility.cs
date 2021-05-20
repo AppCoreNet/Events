@@ -2,13 +2,13 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
+using AppCore.DependencyInjection;
+using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
-using AppCore.Events;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 
-// ReSharper disable once CheckNamespace
-namespace AppCore.DependencyInjection.Facilities
+namespace AppCore.Events
 {
     /// <summary>
     /// Provides the events facility.

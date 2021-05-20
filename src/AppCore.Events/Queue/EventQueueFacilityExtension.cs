@@ -1,15 +1,17 @@
 // Licensed under the MIT License.
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
+using AppCore.DependencyInjection;
+using AppCore.DependencyInjection.Facilities;
 using AppCore.Events.Queue;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.DependencyInjection.Facilities
+namespace AppCore.Events
 {
     /// <summary>
     /// Provides event queuing extension for the <see cref="EventsFacility"/>.
     /// </summary>
-    public class EventQueueExtension : FacilityExtension
+    public class EventQueueFacilityExtension : FacilityExtension
     {
         /// <inheritdoc />
         protected override void Build(IComponentRegistry registry)

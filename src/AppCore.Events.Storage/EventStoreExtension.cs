@@ -1,12 +1,14 @@
 // Licensed under the MIT License.
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
+using AppCore.DependencyInjection;
+using AppCore.DependencyInjection.Facilities;
 using AppCore.Events.Metadata;
 using AppCore.Events.Pipeline;
 using AppCore.Events.Storage;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.DependencyInjection.Facilities
+namespace AppCore.Events
 {
     /// <summary>
     /// Represents extension for the <see cref="EventsFacility"/> which registers event store behavior.

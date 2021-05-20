@@ -2,17 +2,17 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
-using AppCore.DependencyInjection.Facilities;
+using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 using AppCore.Events.Queue;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.DependencyInjection
+namespace AppCore.Events
 {
     /// <summary>
     /// Provides extension methods to register an event queue.
     /// </summary>
-    public static class QueueEventFacilityExtensions
+    public static class EventsFacilityExtensions
     {
         /// <summary>
         /// Registers event store behavior.
@@ -22,7 +22,7 @@ namespace AppCore.DependencyInjection
         /// <returns>The passed facility to allow chaining.</returns>
         public static EventsFacility UseQueuing(
             EventsFacility facility,
-            Action<EventQueueExtension> configure = null)
+            Action<EventQueueFacilityExtension> configure = null)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
             facility.AddExtension(configure);
@@ -32,9 +32,9 @@ namespace AppCore.DependencyInjection
         /// <summary>
         /// Registers in-memory event queue.
         /// </summary>
-        /// <param name="extension">The <see cref="EventQueueExtension"/>.</param>
+        /// <param name="extension">The <see cref="EventQueueFacilityExtension"/>.</param>
         /// <returns>The passed facility to allow chaining.</returns>
-        public static EventQueueExtension WithInMemoryQueue(this EventQueueExtension extension)
+        public static EventQueueFacilityExtension WithInMemoryQueue(this EventQueueFacilityExtension extension)
         {
             Ensure.Arg.NotNull(extension, nameof(extension));
 

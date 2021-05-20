@@ -2,8 +2,8 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
-using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
+using AppCore.Events;
 using AppCore.Events.Storage;
 
 // ReSharper disable once CheckNamespace
@@ -12,7 +12,7 @@ namespace AppCore.DependencyInjection
     /// <summary>
     /// Provides extension methods to register an event store.
     /// </summary>
-    public static class EventStoreRegistrationExtensions
+    public static class EventsFacilityExtensions
     {
         /// <summary>
         /// Registers event store behavior.

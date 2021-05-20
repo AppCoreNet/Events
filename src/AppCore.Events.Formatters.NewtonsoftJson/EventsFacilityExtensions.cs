@@ -2,8 +2,8 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
-using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
+using AppCore.Events;
 using AppCore.Events.Formatters;
 using AppCore.Events.Pipeline;
 using Newtonsoft.Json;
@@ -14,7 +14,7 @@ namespace AppCore.DependencyInjection
     /// <summary>
     /// Provides extension methods to register 
     /// </summary>
-    public static class NewtonsoftJsonEventsFacilityExtensions
+    public static class EventsFacilityExtensions
     {
         /// <summary>
         /// Registers Newtonsoft.Json event formatter.
