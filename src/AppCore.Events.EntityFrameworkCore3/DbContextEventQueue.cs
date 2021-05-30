@@ -97,16 +97,14 @@ namespace AppCore.Events.EntityFrameworkCore
                         e =>
                         {
                             string topic = GetEventTopic(e);
-                            using (var stream = new MemoryStream())
+                            using var stream = new MemoryStream();
+                            formatter.Write(stream, e);
+                            return new Event
                             {
-                                formatter.Write(stream, e);
-                                return new Event
-                                {
-                                    Topic = topic,
-                                    ContentType = formatter.ContentType,
-                                    Data = stream.ToArray()
-                                };
-                            }
+                                Topic = topic,
+                                ContentType = formatter.ContentType,
+                                Data = stream.ToArray()
+                            };
                         }),
                     cancellationToken);
 
@@ -150,12 +148,10 @@ namespace AppCore.Events.EntityFrameworkCore
                 return events.Select(
                         e =>
                         {
-                            using (var stream = new MemoryStream(e.Data))
-                            {
-                                IEventContext context = GetFormatter(e.ContentType).Read(stream);
-                                context.Items.Add(OffsetItemKey, e.Offset);
-                                return context;
-                            }
+                            using var stream = new MemoryStream(e.Data);
+                            IEventContext context = GetFormatter(e.ContentType).Read(stream);
+                            context.Items.Add(OffsetItemKey, e.Offset);
+                            return context;
                         })
                     .ToList()
                     .AsReadOnly();
