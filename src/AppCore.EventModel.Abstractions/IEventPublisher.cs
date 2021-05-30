@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Represents the event publisher.

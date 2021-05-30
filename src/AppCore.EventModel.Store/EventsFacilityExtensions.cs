@@ -3,8 +3,9 @@
 
 using System;
 using AppCore.Diagnostics;
+using AppCore.EventModel;
+using AppCore.EventModel.Store;
 using AppCore.Events;
-using AppCore.Events.Storage;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection

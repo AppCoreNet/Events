@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Concurrent;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     using EventContextFactoryDelegate = Func<EventDescriptor, IEvent, IEventContext>;
 

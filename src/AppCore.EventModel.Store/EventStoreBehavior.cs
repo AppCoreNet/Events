@@ -1,14 +1,14 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
 using AppCore.Logging;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Event pipeline behavior which stores events.

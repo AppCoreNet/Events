@@ -8,11 +8,13 @@ using System.Runtime.Remoting.Messaging;
 
 #endif
 
-#if NETSTANDARD1_3 || NETSTANDARD2_0
+
 using System.Threading;
+#if NETSTANDARD1_3 || NETSTANDARD2_0
+
 #endif
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     /// <summary>
     /// Default implementation of the <see cref="IEventContextAccessor"/> interface.

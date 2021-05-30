@@ -3,7 +3,7 @@
 
 using System;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Enables cancellation for the event type.

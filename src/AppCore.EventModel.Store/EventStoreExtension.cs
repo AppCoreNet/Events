@@ -3,12 +3,12 @@
 
 using AppCore.DependencyInjection;
 using AppCore.DependencyInjection.Facilities;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
-using AppCore.Events.Storage;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
+using AppCore.EventModel.Store;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Represents extension for the <see cref="EventsFacility"/> which registers event store behavior.

@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Stores the offset of the last event processed by <see cref="IEventStorePublisher"/>.

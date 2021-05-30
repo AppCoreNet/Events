@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Represents an event store which supports persistent subscriptions.

@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace AppCore.Events.Formatters
+namespace AppCore.EventModel.Formatters
 {
     internal class JsonSerializedEvent
     {

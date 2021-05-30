@@ -9,10 +9,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Provides an event store which stores events in-memory.

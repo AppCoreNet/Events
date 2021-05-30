@@ -4,7 +4,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     /// <summary>
     /// Represents an event pipeline.

@@ -5,10 +5,10 @@ using System;
 using AppCore.DependencyInjection;
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Provides the events facility.

@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Default implementation of the <see cref="IEventContext{TEvent}"/> interface.

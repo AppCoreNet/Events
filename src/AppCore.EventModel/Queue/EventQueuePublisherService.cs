@@ -9,7 +9,7 @@ using AppCore.Diagnostics;
 using AppCore.Hosting;
 using AppCore.Logging;
 
-namespace AppCore.Events.Queue
+namespace AppCore.EventModel.Queue
 {
     /// <summary>
     /// The <see cref="BackgroundService"/> used to publish queued events.

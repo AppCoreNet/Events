@@ -4,11 +4,11 @@
 using System.Collections.Generic;
 using System.IO;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
 using Newtonsoft.Json;
 
-namespace AppCore.Events.Formatters
+namespace AppCore.EventModel.Formatters
 {
     /// <summary>
     /// Provides a Newtonsoft.Json based event context formatter.

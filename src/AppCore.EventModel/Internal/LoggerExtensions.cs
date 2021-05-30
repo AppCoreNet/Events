@@ -4,7 +4,8 @@
 using System;
 using AppCore.Logging;
 
-namespace AppCore.Events
+// ReSharper disable once CheckNamespace
+namespace AppCore.EventModel
 {
     internal static class LoggerExtensions
     {

@@ -3,7 +3,7 @@
 
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <inheritdoc />
     public class EventStoreFeature : IEventStoreFeature

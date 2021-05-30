@@ -1,7 +1,7 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
-namespace AppCore.Events.Metadata
+namespace AppCore.EventModel.Metadata
 {
     /// <summary>
     /// Provides well known event metadata keys.

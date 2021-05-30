@@ -8,7 +8,7 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events.Metadata
+namespace AppCore.EventModel.Metadata
 {
     public class EventDescriptorFactoryTests
     {

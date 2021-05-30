@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace AppCore.Events.Metadata
+namespace AppCore.EventModel.Metadata
 {
     /// <summary>
     /// Provides metadata for event topic.

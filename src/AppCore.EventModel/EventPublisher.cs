@@ -5,11 +5,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
-using AppCore.Events.Queue;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
+using AppCore.EventModel.Queue;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Provides the default event publisher implementation.

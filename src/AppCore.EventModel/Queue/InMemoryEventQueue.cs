@@ -1,14 +1,13 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Queue
+namespace AppCore.EventModel.Queue
 {
     /// <summary>
     /// Provides in-memory event queue.

@@ -4,10 +4,11 @@
 using System;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
-using AppCore.Events.Queue;
+using AppCore.EventModel.Queue;
+using AppCore.Events;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Provides extension methods to register an event queue.

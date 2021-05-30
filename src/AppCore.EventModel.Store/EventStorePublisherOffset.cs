@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <inheritdoc />
     public class EventStorePublisherOffset : IEventStorePublisherOffset

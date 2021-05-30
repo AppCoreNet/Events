@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 using FluentAssertions;
 using Xunit;
 
-namespace AppCore.Events.Queue
+namespace AppCore.EventModel.Queue
 {
     public class InMemoryEventQueueTests
     {

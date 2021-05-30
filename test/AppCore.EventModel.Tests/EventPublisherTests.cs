@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
-using AppCore.Events.Queue;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
+using AppCore.EventModel.Queue;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     public class EventPublisherTests
     {

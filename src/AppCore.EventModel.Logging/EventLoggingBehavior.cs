@@ -5,10 +5,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Pipeline;
 using AppCore.Logging;
 
-namespace AppCore.Events.Logging
+namespace AppCore.EventModel.Logging
 {
     /// <summary>
     /// Provides a event pipeline behavior which logs events.

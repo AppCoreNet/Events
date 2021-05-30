@@ -3,7 +3,7 @@
 
 using System;
 
-namespace AppCore.Events.Metadata
+namespace AppCore.EventModel.Metadata
 {
     /// <summary>
     /// Represents a type which instantiates <see cref="EventDescriptor"/> objects.

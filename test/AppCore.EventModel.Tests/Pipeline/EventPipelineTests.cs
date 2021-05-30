@@ -10,7 +10,7 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     public class EventPipelineTests
     {

@@ -7,10 +7,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Pipeline;
 using AppCore.Logging;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <inheritdoc />
     public class EventStorePublisher : IEventStorePublisher

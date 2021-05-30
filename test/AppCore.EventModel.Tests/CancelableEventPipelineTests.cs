@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
 using AppCore.Logging;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     public class CancelableEventPublisherTests
     {

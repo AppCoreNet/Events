@@ -2,11 +2,11 @@
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System.Collections.Generic;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 using FluentAssertions;
 using Xunit;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     public class EventContextFactoryTests
     {

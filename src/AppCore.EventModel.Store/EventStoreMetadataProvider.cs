@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Provides metadata for persistent events.

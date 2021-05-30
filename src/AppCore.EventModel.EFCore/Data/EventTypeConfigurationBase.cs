@@ -4,7 +4,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.Events.EntityFrameworkCore.Data
+namespace AppCore.EventModel.EntityFrameworkCore.Data
 {
     /// <summary>
     /// Provides a base class for configuring the <see cref="Event"/> entity.

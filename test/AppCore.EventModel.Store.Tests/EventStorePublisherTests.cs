@@ -5,13 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.Events.Metadata;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Pipeline;
 using AppCore.Logging;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     public class EventStorePublisherTests
     {

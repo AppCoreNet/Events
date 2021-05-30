@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace AppCore.Events.Formatters
+namespace AppCore.EventModel.Formatters
 {
     /// <summary>
     /// Represents a formatter for <see cref="IEventContext"/>.

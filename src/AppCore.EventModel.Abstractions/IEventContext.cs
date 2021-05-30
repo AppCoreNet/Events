@@ -3,9 +3,9 @@
 
 using System;
 using System.Collections.Generic;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Represents the context when processing events.

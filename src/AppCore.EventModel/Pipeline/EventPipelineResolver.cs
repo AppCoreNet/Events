@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     /// <summary>
     /// Represents a resolver for <see cref="IEventPipeline{TEvent}"/> instances.

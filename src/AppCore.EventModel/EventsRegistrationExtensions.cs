@@ -2,7 +2,7 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
-using AppCore.Events;
+using AppCore.EventModel;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
@@ -18,7 +18,7 @@ namespace AppCore.DependencyInjection
         /// <param name="registry">The <see cref="IComponentRegistry"/>.</param>
         /// <param name="configure">The configure delegate.</param>
         /// <returns></returns>
-        public static IComponentRegistry AddEvents(
+        public static IComponentRegistry AddEventModel(
             this IComponentRegistry registry,
             Action<EventsFacility> configure = null)
         {

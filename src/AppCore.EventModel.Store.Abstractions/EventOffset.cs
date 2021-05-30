@@ -4,7 +4,7 @@
 using System;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Represents the offset of an event in a store.

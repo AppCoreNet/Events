@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AppCore.Events.Metadata
+namespace AppCore.EventModel.Metadata
 {
     /// <summary>
     /// Represents a type which provides metadata for events.

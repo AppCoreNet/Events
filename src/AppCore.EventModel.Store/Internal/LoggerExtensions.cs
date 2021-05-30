@@ -1,10 +1,11 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
 using AppCore.Logging;
 
-namespace AppCore.Events.Storage
+// ReSharper disable once CheckNamespace
+namespace AppCore.EventModel.Store
 {
     internal static class LoggerExtensions
     {

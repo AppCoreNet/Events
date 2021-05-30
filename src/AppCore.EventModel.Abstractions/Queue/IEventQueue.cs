@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.Events.Queue
+namespace AppCore.EventModel.Queue
 {
     /// <summary>
     /// Represents an event queue.

@@ -2,9 +2,9 @@
 // Copyright (c) 2018 the AppCore .NET project.
 
 using AppCore.Diagnostics;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Pipeline;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Provides extension methods for the <see cref="IEventContext"/> type.

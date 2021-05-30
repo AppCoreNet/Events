@@ -3,7 +3,7 @@
 
 using System;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Decorates an event to be persisted.

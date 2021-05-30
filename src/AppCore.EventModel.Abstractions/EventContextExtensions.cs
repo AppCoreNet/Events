@@ -4,7 +4,7 @@
 using System;
 using AppCore.Diagnostics;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Provides extension methods for the <see cref="IEventContext"/>.

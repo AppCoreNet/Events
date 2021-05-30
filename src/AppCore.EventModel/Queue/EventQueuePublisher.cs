@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel.Pipeline;
 using AppCore.Logging;
 
-namespace AppCore.Events.Queue
+namespace AppCore.EventModel.Queue
 {
     /// <summary>
     /// Publishes events by reading from the queue and processing the pipeline.

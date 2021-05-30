@@ -3,9 +3,9 @@
 
 using System;
 using AppCore.Diagnostics;
-using AppCore.Events;
-using AppCore.Events.Formatters;
-using AppCore.Events.Pipeline;
+using AppCore.EventModel;
+using AppCore.EventModel.Formatters;
+using AppCore.EventModel.Pipeline;
 using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace

@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 using AppCore.Data;
 using AppCore.Data.EntityFrameworkCore;
 using AppCore.Diagnostics;
-using AppCore.Events.EntityFrameworkCore.Data;
-using AppCore.Events.Formatters;
-using AppCore.Events.Metadata;
-using AppCore.Events.Queue;
+using AppCore.EventModel.EntityFrameworkCore.Data;
+using AppCore.EventModel.Formatters;
+using AppCore.EventModel.Metadata;
+using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppCore.Events.EntityFrameworkCore
+namespace AppCore.EventModel.EntityFrameworkCore
 {
     /// <summary>
     /// Provides a base class for Entity Framework Core based implementations of <see cref="IEventQueue"/>.
@@ -27,7 +27,7 @@ namespace AppCore.Events.EntityFrameworkCore
         where TDbContext : DbContext
     {
         private const int PollInterval = 250;
-        private static string OffsetItemKey = "AppCore.Events.EventQueueOffset";
+        private static string OffsetItemKey = "AppCore.EventModel.EventQueueOffset";
 
         private readonly Dictionary<string, IEventContextFormatter> _formatters;
         private ITransaction _transaction;

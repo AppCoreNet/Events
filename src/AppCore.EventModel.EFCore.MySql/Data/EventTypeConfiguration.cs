@@ -1,11 +1,11 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
-using AppCore.Events.EntityFrameworkCore.Data;
+using AppCore.EventModel.EntityFrameworkCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.Events.EntityFrameworkCore.MySql.Data
+namespace AppCore.EventModel.EntityFrameworkCore.MySql.Data
 {
     /// <summary>
     /// Event entity type configuration for MySql.

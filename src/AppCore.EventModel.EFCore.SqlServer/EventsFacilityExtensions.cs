@@ -3,9 +3,9 @@
 
 using AppCore.Data;
 using AppCore.Diagnostics;
+using AppCore.EventModel.EntityFrameworkCore.SqlServer;
+using AppCore.EventModel.Queue;
 using AppCore.Events;
-using AppCore.Events.EntityFrameworkCore.SqlServer;
-using AppCore.Events.Queue;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable once CheckNamespace

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Decorates an event with a topic.

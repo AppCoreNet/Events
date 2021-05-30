@@ -3,7 +3,7 @@
 
 using AppCore.Logging;
 
-namespace AppCore.Events.Logging
+namespace AppCore.EventModel.Logging
 {
     /// <summary>
     /// Provides <see cref="LogEventId"/>'s for logged events.

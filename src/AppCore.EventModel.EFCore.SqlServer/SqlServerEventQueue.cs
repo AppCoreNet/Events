@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Data.EntityFrameworkCore;
-using AppCore.Events.EntityFrameworkCore.Data;
-using AppCore.Events.Formatters;
-using AppCore.Events.Queue;
+using AppCore.EventModel.EntityFrameworkCore.Data;
+using AppCore.EventModel.Formatters;
+using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppCore.Events.EntityFrameworkCore.SqlServer
+namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
 {
     /// <summary>
     /// Represents an <see cref="IEventQueue"/> targeting SQL Server.

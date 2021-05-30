@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -9,7 +9,7 @@ using AppCore.Diagnostics;
 using AppCore.Hosting;
 using AppCore.Logging;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Represents a <see cref="BackgroundService"/> which publishes events.

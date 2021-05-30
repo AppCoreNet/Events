@@ -3,7 +3,7 @@
 
 using AppCore.Diagnostics;
 
-namespace AppCore.Events.Storage
+namespace AppCore.EventModel.Store
 {
     /// <summary>
     /// Provides event store extension methods for <see cref="IEventContext"/>.

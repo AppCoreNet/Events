@@ -3,9 +3,9 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     internal static class CancelableEventBehavior
     {

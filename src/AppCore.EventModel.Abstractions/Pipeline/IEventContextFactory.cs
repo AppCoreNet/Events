@@ -1,9 +1,9 @@
 ﻿// Licensed under the MIT License.
 // Copyright (c) 2019 the AppCore .NET project.
 
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     /// <summary>
     /// Represents a type which instantiates <see cref="IEventContext"/> objects.

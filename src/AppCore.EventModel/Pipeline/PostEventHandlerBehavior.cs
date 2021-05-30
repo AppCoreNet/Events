@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018 the AppCore .NET project.
 
 using System;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using AppCore.Diagnostics;
 using AppCore.Logging;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     /// <summary>
     /// Pipeline behavior which invokes <see cref="IPostEventHandler{TEvent}"/>s.

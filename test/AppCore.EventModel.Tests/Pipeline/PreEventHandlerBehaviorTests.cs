@@ -4,13 +4,13 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.Events.Metadata;
+using AppCore.EventModel.Metadata;
 using AppCore.Logging;
 using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace AppCore.Events.Pipeline
+namespace AppCore.EventModel.Pipeline
 {
     public class PreEventHandlerBehaviorTests
     {
