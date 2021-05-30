@@ -3,10 +3,10 @@
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;netcoreapp3.1;net5</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' != 'Unix'">$(TargetFrameworks);net461</TargetFrameworks>
-    <RootNamespace>AppCore.EventModel.Storage</RootNamespace>
+    <RootNamespace>AppCore.EventModel</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\AppCore.Events.Storage\AppCore.EventModel.Store.csproj" />
+    <ProjectReference Include="..\..\src\AppCore.EventModel\AppCore.EventModel.csproj" />
   </ItemGroup>
 </Project>

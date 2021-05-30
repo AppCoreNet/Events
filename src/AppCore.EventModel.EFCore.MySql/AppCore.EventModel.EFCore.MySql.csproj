@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.EntityFrameworkCore3\AppCore.EventModel.EFCore.csproj" />
+    <ProjectReference Include="..\AppCore.EventModel.EFCore\AppCore.EventModel.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

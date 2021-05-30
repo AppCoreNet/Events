@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.EventModel.Abstractions.csproj" />
+    <ProjectReference Include="..\AppCore.EventModel.Abstractions\AppCore.EventModel.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

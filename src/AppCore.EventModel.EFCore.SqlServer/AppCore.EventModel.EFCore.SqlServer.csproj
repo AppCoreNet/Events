@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
-    <Description>Provides AppCore .NET Entity Framework Core event queue.</Description>
-    <RootNamespace>AppCore.EventModel.EntityFrameworkCore</RootNamespace>
-    <PackageId>AppCore.EventModel.EntityFrameworkCore</PackageId>
+    <Description>Provides AppCore .NET SQL Server event queue.</Description>
+    <RootNamespace>AppCore.EventModel.EntityFrameworkCore.SqlServer</RootNamespace>
+    <PackageId>AppCore.EventModel.EntityFrameworkCore.SqlServer</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,19 +12,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AppCore.Data.EntityFrameworkCore" Version="$(AppCore_Data_Version)" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'!='netstandard2.1'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.0,4.0.0)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="[3.1.0,4.0.0)" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.0,7.0.0)" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="[3.1.0,7.0.0)" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events\AppCore.EventModel.csproj" />
+    <ProjectReference Include="..\AppCore.EventModel.EFCore\AppCore.EventModel.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

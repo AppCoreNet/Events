@@ -2,19 +2,18 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <RootNamespace>AppCore.EventModel.Formatters</RootNamespace>
-    <Description>Provides AppCore .NET event serialization using Newtonsoft.Json.</Description>
+    <Description>Adds logging to AppCore .NET events.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AppCore.Diagnostics.Sources" Version="$(AppCore_Shared_Version)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="AppCore.Logging" Version="$(AppCore_Logging_Version)" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events\AppCore.EventModel.csproj" />
+    <ProjectReference Include="..\AppCore.EventModel\AppCore.EventModel.csproj" />
   </ItemGroup>
 
 </Project>
