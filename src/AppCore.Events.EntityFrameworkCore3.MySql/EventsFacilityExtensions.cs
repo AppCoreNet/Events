@@ -27,7 +27,7 @@ namespace AppCore.DependencyInjection
             extension.ConfigureRegistry(
                 r =>
                 {
-                    r.AddData(d => d.UseEntityFrameworkCore<TTag, TDbContext>());
+                    r.AddDataProvider(d => d.UseEntityFrameworkCore<TTag, TDbContext>());
                     r.TryAdd(ComponentRegistration.Scoped<IEventQueue, MySqlEventQueue<TDbContext>>());
                 });
 
