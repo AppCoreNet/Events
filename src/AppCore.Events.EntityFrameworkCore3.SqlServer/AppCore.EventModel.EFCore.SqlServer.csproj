@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
     <Description>Provides AppCore .NET SQL Server event queue.</Description>
-    <RootNamespace>AppCore.Events.EntityFrameworkCore.SqlServer</RootNamespace>
+    <RootNamespace>AppCore.EventModel.EntityFrameworkCore.SqlServer</RootNamespace>
+    <PackageId>AppCore.EventModel.EntityFrameworkCore.SqlServer</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.EntityFrameworkCore3\AppCore.Events.EntityFrameworkCore3.csproj" />
+    <ProjectReference Include="..\AppCore.Events.EntityFrameworkCore3\AppCore.EventModel.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

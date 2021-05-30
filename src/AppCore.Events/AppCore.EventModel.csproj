@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <Description>Provides default AppCore .NET event implementations.</Description>
+    <Description>Provides default AppCore .NET event model implementations.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.Events.Abstractions.csproj" />
+    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.EventModel.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

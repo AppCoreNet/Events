@@ -8,7 +8,7 @@ Setup<BuildParameters>(context =>
    var parameters = BuildParameters.Create(Context);
    parameters.Initialize();
    
-   Information(Figlet("AppCore.Events"));
+   Information(Figlet("AppCore.EventModel"));
    Information($"Version: {parameters.Version.InformationalVersion}");
    
    return parameters;

@@ -3,7 +3,8 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
     <Description>Provides AppCore .NET MySql event queue.</Description>
-    <RootNamespace>AppCore.Events.EntityFrameworkCore.MySql</RootNamespace>
+    <RootNamespace>AppCore.EventModel.EntityFrameworkCore.MySql</RootNamespace>
+    <PackageId>AppCore.EventModel.EntityFrameworkCore.MySql</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.EntityFrameworkCore3\AppCore.Events.EntityFrameworkCore3.csproj" />
+    <ProjectReference Include="..\AppCore.Events.EntityFrameworkCore3\AppCore.EventModel.EFCore.csproj" />
   </ItemGroup>
 
 </Project>

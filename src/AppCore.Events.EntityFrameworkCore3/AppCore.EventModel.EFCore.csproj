@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net461</TargetFrameworks>
-    <Description>Provides AppCore .NET Entity Framework Core 3 event queue.</Description>
-    <RootNamespace>AppCore.Events.EntityFrameworkCore</RootNamespace>
+    <Description>Provides AppCore .NET Entity Framework Core event queue.</Description>
+    <RootNamespace>AppCore.EventModel.EntityFrameworkCore</RootNamespace>
+    <PackageId>AppCore.EventModel.EntityFrameworkCore</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events\AppCore.Events.csproj" />
+    <ProjectReference Include="..\AppCore.Events\AppCore.EventModel.csproj" />
   </ItemGroup>
 
 </Project>

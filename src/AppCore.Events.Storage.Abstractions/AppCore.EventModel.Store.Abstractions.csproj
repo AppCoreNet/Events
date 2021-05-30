@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <RootNamespace>AppCore.Events</RootNamespace>
-    <Description>Provides AppCore .NET abstractions for events.</Description>
+    <RootNamespace>AppCore.EventModel.Store</RootNamespace>
+    <Description>Provides the AppCore .NET storage API for events.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,10 @@
     <PackageReference Include="AppCore.TypeHelpers.Sources" Version="$(AppCore_Shared_Version)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="AppCore.DependencyInjection.Abstractions" Version="$(AppCore_DI_Version)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AppCore.Events.Abstractions\AppCore.EventModel.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

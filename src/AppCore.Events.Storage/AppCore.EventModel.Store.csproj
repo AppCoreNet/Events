@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AppCore.Events.Storage.Abstractions\AppCore.Events.Storage.Abstractions.csproj" />
-    <ProjectReference Include="..\AppCore.Events\AppCore.Events.csproj" />
+    <ProjectReference Include="..\AppCore.Events.Storage.Abstractions\AppCore.EventModel.Store.Abstractions.csproj" />
+    <ProjectReference Include="..\AppCore.Events\AppCore.EventModel.csproj" />
   </ItemGroup>
 
 </Project>
