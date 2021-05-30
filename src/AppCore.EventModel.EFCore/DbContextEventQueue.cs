@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using AppCore.Data;
 using AppCore.Data.EntityFrameworkCore;
 using AppCore.Diagnostics;
-using AppCore.EventModel.EntityFrameworkCore.Data;
+using AppCore.EventModel.EntityFrameworkCore.Model;
 using AppCore.EventModel.Formatters;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Queue;

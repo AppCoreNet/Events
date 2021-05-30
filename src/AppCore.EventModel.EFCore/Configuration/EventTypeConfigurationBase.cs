@@ -1,10 +1,11 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
+using AppCore.EventModel.EntityFrameworkCore.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.EventModel.EntityFrameworkCore.Data
+namespace AppCore.EventModel.EntityFrameworkCore.Configuration
 {
     /// <summary>
     /// Provides a base class for configuring the <see cref="Event"/> entity.

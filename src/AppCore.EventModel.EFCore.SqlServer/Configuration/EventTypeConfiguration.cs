@@ -1,14 +1,15 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
-using AppCore.EventModel.EntityFrameworkCore.Data;
+using AppCore.EventModel.EntityFrameworkCore.Configuration;
+using AppCore.EventModel.EntityFrameworkCore.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.EventModel.EntityFrameworkCore.MySql.Data
+namespace AppCore.EventModel.EntityFrameworkCore.SqlServer.Configuration
 {
     /// <summary>
-    /// Event entity type configuration for MySql.
+    /// Event entity type configuration for SQL Server.
     /// </summary>
     public class EventTypeConfiguration : EventTypeConfigurationBase
     {
@@ -17,15 +18,21 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql.Data
         /// </summary>
         public const string TableName = "EventQueue";
 
+        /// <summary>
+        /// The name of the event queue sequence.
+        /// </summary>
+        public const string SequenceName = "EventQueueSequence";
+
         /// <inheritdoc />
         public override void Configure(EntityTypeBuilder<Event> builder)
         {
             builder.ToTable(TableName);
 
-            builder.HasKey(e => e.Offset);
+            builder.HasKey(e => e.Offset)
+                   .IsClustered();
 
             builder.Property(e => e.Offset)
-                   .UseMySqlIdentityColumn();
+                   .UseHiLo(SequenceName);
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Data.EntityFrameworkCore;
-using AppCore.EventModel.EntityFrameworkCore.Data;
+using AppCore.EventModel.EntityFrameworkCore.Model;
 using AppCore.EventModel.Formatters;
 using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;

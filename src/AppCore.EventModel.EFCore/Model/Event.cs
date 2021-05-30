@@ -1,7 +1,7 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
-namespace AppCore.EventModel.EntityFrameworkCore.Data
+namespace AppCore.EventModel.EntityFrameworkCore.Model
 {
     /// <summary>
     /// Represents the database entity for an event.
