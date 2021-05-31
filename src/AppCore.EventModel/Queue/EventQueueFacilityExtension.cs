@@ -3,11 +3,10 @@
 
 using AppCore.DependencyInjection;
 using AppCore.DependencyInjection.Facilities;
-using AppCore.EventModel;
 using AppCore.EventModel.Queue;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Events
+namespace AppCore.EventModel
 {
     /// <summary>
     /// Provides event queuing extension for the <see cref="EventsFacility"/>.

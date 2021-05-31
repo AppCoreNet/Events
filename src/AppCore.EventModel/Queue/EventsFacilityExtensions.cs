@@ -5,7 +5,6 @@ using System;
 using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Queue;
-using AppCore.Events;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.EventModel

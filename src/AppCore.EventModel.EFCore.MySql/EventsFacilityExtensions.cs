@@ -3,9 +3,9 @@
 
 using AppCore.Data;
 using AppCore.Diagnostics;
+using AppCore.EventModel;
 using AppCore.EventModel.EntityFrameworkCore.MySql;
 using AppCore.EventModel.Queue;
-using AppCore.Events;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable once CheckNamespace
