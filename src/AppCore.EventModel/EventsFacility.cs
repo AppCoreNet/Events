@@ -18,7 +18,7 @@ namespace AppCore.EventModel
         /// <summary>
         /// Gets the lifetime of the event pipeline components.
         /// </summary>
-        public ComponentLifetime Lifetime { get; private set; }
+        public ComponentLifetime Lifetime { get; private set; } = ComponentLifetime.Scoped;
 
         /// <summary>
         /// Registers the <see cref="IEventContextAccessor"/> with the DI container.
@@ -111,7 +111,7 @@ namespace AppCore.EventModel
             Ensure.Arg.NotNull(handlerType, nameof(handlerType));
             ConfigureRegistry(
                 r => r.TryAddEnumerable(
-                    ComponentRegistration.Create(typeof(IPostEventHandler<>), handlerType, Lifetime)
+                    ComponentRegistration.Create(typeof(IEventPipelineBehavior<>), handlerType, Lifetime)
                 )
             );
 

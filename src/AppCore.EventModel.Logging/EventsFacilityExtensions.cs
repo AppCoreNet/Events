@@ -24,8 +24,15 @@ namespace AppCore.DependencyInjection
             Ensure.Arg.NotNull(facility, nameof(facility));
 
             facility.ConfigureRegistry(
-                r => r.TryAddEnumerable(
-                    ComponentRegistration.Singleton(typeof(IEventPipelineBehavior<>), typeof(EventLoggingBehavior<>))));
+                r =>
+                {
+                    r.AddLogging();
+
+                    r.TryAddEnumerable(
+                        ComponentRegistration.Singleton(
+                            typeof(IEventPipelineBehavior<>),
+                            typeof(EventLoggingBehavior<>)));
+                });
 
             return facility;
         }
