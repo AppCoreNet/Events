@@ -11,15 +11,15 @@ using AppCore.EventModel.Pipeline;
 namespace AppCore.DependencyInjection
 {
     /// <summary>
-    /// Provides extension methods to register logging with the <see cref="EventsFacility"/>.
+    /// Provides extension methods to register logging with the <see cref="EventModelFacility"/>.
     /// </summary>
-    public static class EventsFacilityExtensions
+    public static class EventModelFacilityExtensions
     {
         /// <summary>
         /// Adds logging of events to the pipeline.
         /// </summary>
         /// <exception cref="ArgumentNullException">Argument <paramref name="facility"/> is <c>null</c>.</exception>
-        public static EventsFacility UseLogging(this EventsFacility facility)
+        public static EventModelFacility UseLogging(this EventModelFacility facility)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
 

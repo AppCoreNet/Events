@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
 {
-    public static class EventsFacilityExtensions
+    public static class EventModelFacilityExtensions
     {
         /// <summary>
         /// Registers MySql event queue.

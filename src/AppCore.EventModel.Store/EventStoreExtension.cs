@@ -11,7 +11,7 @@ using AppCore.EventModel.Store;
 namespace AppCore.EventModel
 {
     /// <summary>
-    /// Represents extension for the <see cref="EventsFacility"/> which registers event store behavior.
+    /// Represents extension for the <see cref="EventModelFacility"/> which registers event store behavior.
     /// </summary>
     public class EventStoreExtension : FacilityExtension
     {
@@ -33,7 +33,7 @@ namespace AppCore.EventModel
         {
             base.Build(registry);
 
-            ComponentLifetime lifetime = ((EventsFacility) Facility).Lifetime;
+            ComponentLifetime lifetime = ((EventModelFacility) Facility).Lifetime;
 
             registry.TryAddEnumerable(
                 new[]

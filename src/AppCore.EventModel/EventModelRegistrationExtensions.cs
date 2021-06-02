@@ -8,19 +8,19 @@ using AppCore.EventModel;
 namespace AppCore.DependencyInjection
 {
     /// <summary>
-    /// Provides extension methods to configure the <see cref="EventsFacility"/>.
+    /// Provides extension methods to configure the <see cref="EventModelFacility"/>.
     /// </summary>
-    public static class EventsRegistrationExtensions
+    public static class EventModelRegistrationExtensions
     {
         /// <summary>
-        /// Adds the <see cref="EventsFacility"/> to the DI container.
+        /// Adds the <see cref="EventModelFacility"/> to the DI container.
         /// </summary>
         /// <param name="registry">The <see cref="IComponentRegistry"/>.</param>
         /// <param name="configure">The configure delegate.</param>
         /// <returns></returns>
         public static IComponentRegistry AddEventModel(
             this IComponentRegistry registry,
-            Action<EventsFacility> configure = null)
+            Action<EventModelFacility> configure = null)
         {
             return registry.AddFacility(configure);
         }

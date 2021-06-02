@@ -14,15 +14,15 @@ namespace AppCore.DependencyInjection
     /// <summary>
     /// Provides extension methods to register 
     /// </summary>
-    public static class EventsFacilityExtensions
+    public static class EventModelFacilityExtensions
     {
         /// <summary>
         /// Registers Newtonsoft.Json event formatter.
         /// </summary>
-        /// <param name="facility">The <see cref="EventsFacility"/>.</param>
+        /// <param name="facility">The <see cref="EventModelFacility"/>.</param>
         /// <param name="configure">The settings configuration delegate.</param>
         /// <returns>The passed facility to allow chaining.</returns>
-        public static EventsFacility UseNewtonsoftJson(this EventsFacility facility, Action<JsonSerializerSettings> configure = null)
+        public static EventModelFacility UseNewtonsoftJson(this EventModelFacility facility, Action<JsonSerializerSettings> configure = null)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
 

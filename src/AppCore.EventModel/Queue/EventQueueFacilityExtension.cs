@@ -9,7 +9,7 @@ using AppCore.EventModel.Queue;
 namespace AppCore.EventModel
 {
     /// <summary>
-    /// Provides event queuing extension for the <see cref="EventsFacility"/>.
+    /// Provides event queuing extension for the <see cref="EventModelFacility"/>.
     /// </summary>
     public class EventQueueFacilityExtension : FacilityExtension
     {
@@ -18,7 +18,7 @@ namespace AppCore.EventModel
         {
             base.Build(registry);
 
-            ComponentLifetime lifetime = ((EventsFacility) Facility).Lifetime;
+            ComponentLifetime lifetime = ((EventModelFacility) Facility).Lifetime;
 
             registry.TryAdd(ComponentRegistration.Create<EventQueuePublisher, EventQueuePublisher>(lifetime));
 
