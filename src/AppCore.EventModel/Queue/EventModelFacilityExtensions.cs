@@ -21,7 +21,7 @@ namespace AppCore.DependencyInjection
         /// <param name="configure">The delegate which is invoked to configure the extension.</param>
         /// <returns>The passed facility to allow chaining.</returns>
         public static EventModelFacility UseQueuing(
-            EventModelFacility facility,
+            this EventModelFacility facility,
             Action<EventQueueFacilityExtension> configure = null)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
