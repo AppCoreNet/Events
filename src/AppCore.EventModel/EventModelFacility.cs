@@ -75,7 +75,7 @@ namespace AppCore.EventModel
             Ensure.Arg.NotNull(configure, nameof(configure));
             ConfigureRegistry(r =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IEventHandler<>));
+                var registrationSources = new ComponentRegistrationSources(typeof(IEventHandler<>), Lifetime);
                 configure(registrationSources);
                 r.TryAddEnumerable(registrationSources.GetRegistrations());
             });
@@ -112,7 +112,7 @@ namespace AppCore.EventModel
             Ensure.Arg.NotNull(configure, nameof(configure));
             ConfigureRegistry(r =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IPreEventHandler<>));
+                var registrationSources = new ComponentRegistrationSources(typeof(IPreEventHandler<>), Lifetime);
                 configure(registrationSources);
                 r.TryAddEnumerable(registrationSources.GetRegistrations());
             });
@@ -149,7 +149,7 @@ namespace AppCore.EventModel
             Ensure.Arg.NotNull(configure, nameof(configure));
             ConfigureRegistry(r =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IPostEventHandler<>));
+                var registrationSources = new ComponentRegistrationSources(typeof(IPostEventHandler<>), Lifetime);
                 configure(registrationSources);
                 r.TryAddEnumerable(registrationSources.GetRegistrations());
             });
@@ -186,7 +186,7 @@ namespace AppCore.EventModel
             Ensure.Arg.NotNull(configure, nameof(configure));
             ConfigureRegistry(r =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IEventPipelineBehavior<>));
+                var registrationSources = new ComponentRegistrationSources(typeof(IEventPipelineBehavior<>), Lifetime);
                 configure(registrationSources);
                 r.TryAddEnumerable(registrationSources.GetRegistrations());
             });
