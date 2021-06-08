@@ -1,5 +1,5 @@
 // Licensed under the MIT License.
-// Copyright (c) 2020 the AppCore .NET project.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using AppCore.EventModel.EntityFrameworkCore.Model;
 using AppCore.EventModel.Formatters;
 using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
 {
@@ -38,11 +39,11 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
             CancellationToken cancellationToken)
         {
             FormattableString query = $@"
-                        SELECT TOP({maxEventsToRead}) Q.Offset,Q.Topic,Q.ContentType,Q.Data
-                        FROM EventQueue Q WITH (UPDLOCK,READPAST)
-                        INNER JOIN (SELECT TOP(1) Topic FROM EventQueue WITH (UPDLOCK,READPAST) ORDER BY Offset) T
-                        ON Q.Topic = T.Topic
-                        ORDER BY Q.Offset";
+                SELECT TOP({maxEventsToRead}) Q.Offset,Q.Topic,Q.ContentType,Q.Data
+                FROM EventQueue Q WITH (UPDLOCK,READPAST)
+                INNER JOIN (SELECT TOP(1) Topic FROM EventQueue WITH (UPDLOCK,READPAST) ORDER BY Offset) T
+                ON Q.Topic = T.Topic
+                ORDER BY Q.Offset";
 
             return await Events.FromSqlInterpolated(query)
                                .AsNoTracking()
@@ -52,8 +53,20 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
         /// <inheritdoc />
         protected override async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
         {
-            await Provider.GetContext().Database.ExecuteSqlInterpolatedAsync(
-                $"DELETE FROM [EventQueue] WHERE [Offset] <= {offset} AND [Topic]={topic}", cancellationToken);
+            DatabaseFacade database = Provider.GetContext().Database;
+
+            // copy events to history
+            FormattableString copyStmt = $@"
+                INSERT INTO [EventHistory] ([Offset],[Topic],[ContentType],[Data])
+                SELECT [Offset],[Topic],[ContentType],[Data]
+                FROM [EventQueue]
+                WHERE [Offset] <= {offset} AND [Topic]={topic}";
+
+            await database.ExecuteSqlInterpolatedAsync(copyStmt, cancellationToken);
+
+            // delete events
+            FormattableString deleteStmt = $"DELETE FROM [EventQueue] WHERE [Offset] <= {offset} AND [Topic]={topic}";
+            await database.ExecuteSqlInterpolatedAsync(deleteStmt, cancellationToken);
         }
     }
 }

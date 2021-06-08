@@ -1,6 +1,3 @@
-// Licensed under the MIT License.
-// Copyright (c) 2018-2021 the AppCore .NET project.
-
 using AppCore.EventModel.EntityFrameworkCore.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,12 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppCore.EventModel.EntityFrameworkCore.Configuration
 {
     /// <summary>
-    /// Provides a base class for configuring the <see cref="Event"/> entity.
+    /// Provides a base class for configuring the <see cref="EventHistory"/> entity.
     /// </summary>
-    public abstract class EventTypeConfigurationBase : IEntityTypeConfiguration<Event>
+    public abstract class EventHistoryTypeConfigurationBase : IEntityTypeConfiguration<EventHistory>
     {
-        /// <inheritdoc />
-        public virtual void Configure(EntityTypeBuilder<Event> builder)
+        public virtual void Configure(EntityTypeBuilder<EventHistory> builder)
         {
             builder.HasKey(e => e.Offset);
 

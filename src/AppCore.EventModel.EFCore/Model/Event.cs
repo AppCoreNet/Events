@@ -1,5 +1,5 @@
 // Licensed under the MIT License.
-// Copyright (c) 2020 the AppCore .NET project.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
 namespace AppCore.EventModel.EntityFrameworkCore.Model
 {

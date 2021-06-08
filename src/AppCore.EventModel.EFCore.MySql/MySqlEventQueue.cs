@@ -1,5 +1,5 @@
 // Licensed under the MIT License.
-// Copyright (c) 2020 the AppCore .NET project.
+// Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using AppCore.EventModel.EntityFrameworkCore.Model;
 using AppCore.EventModel.Formatters;
 using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace AppCore.EventModel.EntityFrameworkCore.MySql
 {
@@ -62,8 +63,20 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
         /// <inheritdoc />
         protected override async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
         {
-            await Provider.GetContext().Database.ExecuteSqlInterpolatedAsync(
-                $"DELETE FROM EventQueue WHERE Offset <= {offset} AND Topic={topic}", cancellationToken);
+            DatabaseFacade database = Provider.GetContext().Database;
+
+            // copy events to history
+            FormattableString copyStmt = $@"
+                insert into EventHistory (Offset,Topic,ContentType,Data)
+                select Offset,Topic,ContentType,Data
+                from EventQueue
+                where Offset <= {offset} and Topic={topic}";
+
+            await database.ExecuteSqlInterpolatedAsync(copyStmt, cancellationToken);
+
+            // delete events
+            FormattableString deleteStmt = $"delete from EventQueue where Offset <= {offset} and Topic={topic}";
+            await database.ExecuteSqlInterpolatedAsync(deleteStmt, cancellationToken);
         }
     }
 }

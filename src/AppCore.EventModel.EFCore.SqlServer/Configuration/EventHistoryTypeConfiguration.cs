@@ -9,30 +9,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppCore.EventModel.EntityFrameworkCore.SqlServer.Configuration
 {
     /// <summary>
-    /// Event entity type configuration for SQL Server.
+    /// EventHistory entity type configuration for SQL Server.
     /// </summary>
-    public class EventTypeConfiguration : EventTypeConfigurationBase
+    public class EventHistoryTypeConfiguration : EventHistoryTypeConfigurationBase
     {
         /// <summary>
-        /// The name of the event queue table.
+        /// The name of the event history table.
         /// </summary>
-        public const string TableName = "EventQueue";
-
-        /// <summary>
-        /// The name of the event queue sequence.
-        /// </summary>
-        public const string SequenceName = "EventQueueSequence";
+        public const string TableName = "EventHistory";
 
         /// <inheritdoc />
-        public override void Configure(EntityTypeBuilder<Event> builder)
+        public override void Configure(EntityTypeBuilder<EventHistory> builder)
         {
             builder.ToTable(TableName);
 
             builder.HasKey(e => e.Offset)
                    .IsClustered();
-
-            builder.Property(e => e.Offset)
-                   .UseHiLo(SequenceName);
         }
     }
 }
