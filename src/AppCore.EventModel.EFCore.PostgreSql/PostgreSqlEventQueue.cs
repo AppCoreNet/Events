@@ -12,21 +12,21 @@ using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace AppCore.EventModel.EntityFrameworkCore.MySql
+namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
 {
     /// <summary>
-    /// Represents an <see cref="IEventQueue"/> targeting MySql.
+    /// Represents an <see cref="IEventQueue"/> targeting PostgreSQL.
     /// </summary>
     /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
-    public class MySqlEventQueue<TDbContext> : DbContextEventQueue<TDbContext>
+    public class PostgreSqlEventQueue<TDbContext> : DbContextEventQueue<TDbContext>
         where TDbContext : DbContext
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlEventQueue{TDbContext}"/> class.
+        /// Initializes a new instance of the <see cref="PostgreSqlEventQueue{TDbContext}"/> class.
         /// </summary>
         /// <param name="dataProvider">The data provider.</param>
         /// <param name="formatters">An enumerable of event formatters.</param>
-        public MySqlEventQueue(
+        public PostgreSqlEventQueue(
             IDbContextDataProvider<TDbContext> dataProvider,
             IEnumerable<IEventContextFormatter> formatters)
             : base(dataProvider, formatters)
@@ -50,12 +50,12 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
                     from EventQueue
                     order by Offset
                     for update skip locked
-                    limit 1
+                    fetch next 1 rows only
                   ) as T
                     on Q.Topic = T.Topic
                 order by Q.Offset
                 for update skip locked
-                limit {maxEventsToRead}";
+                fetch next {maxEventsToRead} rows only";
 
             return await Events.FromSqlInterpolated(query)
                                .AsNoTracking()
