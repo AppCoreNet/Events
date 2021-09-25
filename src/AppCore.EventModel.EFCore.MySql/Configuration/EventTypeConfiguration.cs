@@ -21,9 +21,9 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql.Configuration
         /// <inheritdoc />
         public override void Configure(EntityTypeBuilder<Event> builder)
         {
-            builder.ToTable(TableName);
+            base.Configure(builder);
 
-            builder.HasKey(e => e.Offset);
+            builder.ToTable(TableName);
 
             builder.Property(e => e.Offset)
                    .UseMySqlIdentityColumn();

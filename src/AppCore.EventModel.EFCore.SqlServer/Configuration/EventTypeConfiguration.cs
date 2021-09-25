@@ -18,21 +18,18 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer.Configuration
         /// </summary>
         public const string TableName = "EventQueue";
 
-        /// <summary>
-        /// The name of the event queue sequence.
-        /// </summary>
-        public const string SequenceName = "EventQueueSequence";
-
         /// <inheritdoc />
         public override void Configure(EntityTypeBuilder<Event> builder)
         {
+            base.Configure(builder);
+
             builder.ToTable(TableName);
 
             builder.HasKey(e => e.Offset)
                    .IsClustered();
 
             builder.Property(e => e.Offset)
-                   .UseHiLo(SequenceName);
+                   .UseIdentityColumn();
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
-using AppCore.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace AppCore.EventModel.Pipeline
 {

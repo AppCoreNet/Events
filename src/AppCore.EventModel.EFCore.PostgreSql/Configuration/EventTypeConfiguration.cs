@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql.Configuration
 {
     /// <summary>
-    /// Event entity type configuration for MySql.
+    /// Event entity type configuration for PostgreSql.
     /// </summary>
     public class EventTypeConfiguration : EventTypeConfigurationBase
     {
@@ -18,20 +18,15 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql.Configuration
         /// </summary>
         public const string TableName = "EventQueue";
 
-        /// <summary>
-        /// The name of the event queue sequence.
-        /// </summary>
-        public const string SequenceName = "EventQueueSequence";
-
         /// <inheritdoc />
         public override void Configure(EntityTypeBuilder<Event> builder)
         {
+            base.Configure(builder);
+
             builder.ToTable(TableName);
 
-            builder.HasKey(e => e.Offset);
-
             builder.Property(e => e.Offset)
-                   .UseHiLo(SequenceName);
+                   .UseIdentityAlwaysColumn();
         }
     }
 }

@@ -1,34 +1,46 @@
 // Licensed under the MIT License.
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
-using AppCore.DependencyInjection;
 using AppCore.DependencyInjection.Facilities;
 using AppCore.EventModel.Queue;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.EventModel
+namespace AppCore.DependencyInjection
 {
     /// <summary>
     /// Provides event queuing extension for the <see cref="EventModelFacility"/>.
     /// </summary>
     public class EventQueueFacilityExtension : FacilityExtension
     {
-        /// <inheritdoc />
-        protected override void Build(IComponentRegistry registry)
+        /// <summary>
+        /// Registers in-memory event queue.
+        /// </summary>
+        /// <returns>The facility to allow chaining.</returns>
+        public EventQueueFacilityExtension WithInMemoryQueue()
         {
-            base.Build(registry);
+            ConfigureServices(services => { services.TryAddSingleton<IEventQueue, InMemoryEventQueue>(); });
+            return this;
+        }
 
-            ComponentLifetime lifetime = ((EventModelFacility) Facility).Lifetime;
+        /// <inheritdoc />
+        protected override void ConfigureServices(IServiceCollection registry)
+        {
+            base.ConfigureServices(registry);
 
-            registry.TryAdd(ComponentRegistration.Create<EventQueuePublisher, EventQueuePublisher>(lifetime));
+            ServiceLifetime lifetime = ((EventModelFacility) Facility).Lifetime;
 
-            if (lifetime == ComponentLifetime.Singleton)
+            registry.TryAdd(
+                ServiceDescriptor.Describe(typeof(EventQueuePublisher), typeof(EventQueuePublisher), lifetime));
+
+            if (lifetime == ServiceLifetime.Singleton)
             {
-                registry.AddHosting(h => h.WithBackgroundService<EventQueuePublisherService>());
+                registry.AddHostedService<EventQueuePublisherService>();
             }
             else
             {
-                registry.AddHosting(h => h.WithBackgroundService<EventQueuePublisherService.Scoped>());
+                registry.AddHostedService<EventQueuePublisherService.Scoped>();
             }
         }
     }

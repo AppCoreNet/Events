@@ -11,6 +11,6 @@ namespace AppCore.EventModel.Metadata
         /// <summary>
         /// Metadata key identifying the topic of an event.
         /// </summary>
-        public const string TopicMetadataKey = "AppCore.Events.Metadata.Topic";
+        public const string TopicMetadataKey = "AppCore.EventModel.Metadata.Topic";
     }
 }

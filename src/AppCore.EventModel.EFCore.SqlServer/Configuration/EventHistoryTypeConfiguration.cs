@@ -21,6 +21,8 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer.Configuration
         /// <inheritdoc />
         public override void Configure(EntityTypeBuilder<EventHistory> builder)
         {
+            base.Configure(builder);
+
             builder.ToTable(TableName);
 
             builder.HasKey(e => e.Offset)

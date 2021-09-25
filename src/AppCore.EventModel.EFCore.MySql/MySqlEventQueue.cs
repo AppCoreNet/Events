@@ -43,19 +43,19 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
                   Q.Offset,
                   Q.Topic,
                   Q.ContentType,
-                  Q.Data as Q
+                  Q.Data
                 from EventQueue as Q
                   join (
                     select Topic as Topic
                     from EventQueue
                     order by Offset
-                    for update skip locked
                     limit 1
+                    for update skip locked
                   ) as T
                     on Q.Topic = T.Topic
                 order by Q.Offset
-                for update skip locked
-                limit {maxEventsToRead}";
+                limit {maxEventsToRead}
+                for update skip locked";
 
             return await Events.FromSqlInterpolated(query)
                                .AsNoTracking()

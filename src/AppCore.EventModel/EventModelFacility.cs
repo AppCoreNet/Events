@@ -2,13 +2,16 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
-using AppCore.DependencyInjection;
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
+using AppCore.EventModel;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Pipeline;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace AppCore.EventModel
+// ReSharper disable once CheckNamespace
+namespace AppCore.DependencyInjection
 {
     /// <summary>
     /// Provides the events facility.
@@ -18,7 +21,7 @@ namespace AppCore.EventModel
         /// <summary>
         /// Gets the lifetime of the event pipeline components.
         /// </summary>
-        public ComponentLifetime Lifetime { get; private set; } = ComponentLifetime.Scoped;
+        public ServiceLifetime Lifetime { get; private set; } = ServiceLifetime.Scoped;
 
         /// <summary>
         /// Registers the <see cref="IEventContextAccessor"/> with the DI container.
@@ -26,21 +29,16 @@ namespace AppCore.EventModel
         /// <returns>The <see cref="EventModelFacility"/>.</returns>
         public EventModelFacility WithEventContext()
         {
-            ConfigureRegistry(
-                r => r.TryAdd(
-                    ComponentRegistration.Singleton<IEventContextAccessor, EventContextAccessor>()
-                )
-            );
-
+            ConfigureServices(services => services.TryAddSingleton<IEventContextAccessor, EventContextAccessor>());
             return this;
         }
 
         /// <summary>
         /// Configures the lifetime of event pipeline components.
         /// </summary>
-        /// <param name="lifetime">The <see cref="ComponentLifetime"/>.</param>
+        /// <param name="lifetime">The <see cref="ServiceLifetime"/>.</param>
         /// <returns>The <see cref="EventModelFacility"/>.</returns>
-        public EventModelFacility WithLifetime(ComponentLifetime lifetime)
+        public EventModelFacility WithLifetime(ServiceLifetime lifetime)
         {
             Lifetime = lifetime;
             return this;
@@ -55,11 +53,9 @@ namespace AppCore.EventModel
         public EventModelFacility WithHandler(Type handlerType)
         {
             Ensure.Arg.NotNull(handlerType, nameof(handlerType));
-            ConfigureRegistry(
-                r => r.TryAddEnumerable(
-                    ComponentRegistration.Create(typeof(IEventHandler<>), handlerType, Lifetime)
-                )
-            );
+            ConfigureServices(
+                services => services.TryAddEnumerable(
+                    ServiceDescriptor.Describe(typeof(IEventHandler<>), handlerType, Lifetime)));
 
             return this;
         }
@@ -70,14 +66,18 @@ namespace AppCore.EventModel
         /// <param name="configure">The delegate used to configure the registration sources.</param>
         /// <returns>The <see cref="EventModelFacility"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public EventModelFacility WithHandlersFrom(Action<IComponentRegistrationSources> configure)
+        public EventModelFacility WithHandlersFrom(Action<IServiceDescriptorReflectionBuilder> configure)
         {
             Ensure.Arg.NotNull(configure, nameof(configure));
-            ConfigureRegistry(r =>
+            ConfigureServices(services =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IEventHandler<>), Lifetime);
-                configure(registrationSources);
-                r.TryAddEnumerable(registrationSources.GetRegistrations());
+                services.TryAddEnumerableFrom(
+                    typeof(IEventHandler<>),
+                    builder =>
+                    {
+                        builder.WithDefaultLifetime(Lifetime);
+                        configure(builder);
+                    });
             });
 
             return this;
@@ -92,11 +92,9 @@ namespace AppCore.EventModel
         public EventModelFacility WithPreHandler(Type handlerType)
         {
             Ensure.Arg.NotNull(handlerType, nameof(handlerType));
-            ConfigureRegistry(
-                r => r.TryAddEnumerable(
-                    ComponentRegistration.Create(typeof(IPreEventHandler<>), handlerType, Lifetime)
-                )
-            );
+            ConfigureServices(
+                services => services.TryAddEnumerable(
+                    ServiceDescriptor.Describe(typeof(IPreEventHandler<>), handlerType, Lifetime)));
 
             return this;
         }
@@ -107,14 +105,18 @@ namespace AppCore.EventModel
         /// <param name="configure">The delegate used to configure the registration sources.</param>
         /// <returns>The <see cref="EventModelFacility"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public EventModelFacility WithPreHandlersFrom(Action<IComponentRegistrationSources> configure)
+        public EventModelFacility WithPreHandlersFrom(Action<IServiceDescriptorReflectionBuilder> configure)
         {
             Ensure.Arg.NotNull(configure, nameof(configure));
-            ConfigureRegistry(r =>
+            ConfigureServices(services =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IPreEventHandler<>), Lifetime);
-                configure(registrationSources);
-                r.TryAddEnumerable(registrationSources.GetRegistrations());
+                services.TryAddEnumerableFrom(
+                    typeof(IPreEventHandler<>),
+                    builder =>
+                    {
+                        builder.WithDefaultLifetime(Lifetime);
+                        configure(builder);
+                    });
             });
 
             return this;
@@ -129,11 +131,9 @@ namespace AppCore.EventModel
         public EventModelFacility WithPostHandler(Type handlerType)
         {
             Ensure.Arg.NotNull(handlerType, nameof(handlerType));
-            ConfigureRegistry(
-                r => r.TryAddEnumerable(
-                    ComponentRegistration.Create(typeof(IPostEventHandler<>), handlerType, Lifetime)
-                )
-            );
+            ConfigureServices(
+                    services => services.TryAddEnumerable(
+                        ServiceDescriptor.Describe(typeof(IPostEventHandler<>), handlerType, Lifetime)));
 
             return this;
         }
@@ -144,14 +144,18 @@ namespace AppCore.EventModel
         /// <param name="configure">The delegate used to configure the registration sources.</param>
         /// <returns>The <see cref="EventModelFacility"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public EventModelFacility WithPostHandlersFrom(Action<IComponentRegistrationSources> configure)
+        public EventModelFacility WithPostHandlersFrom(Action<IServiceDescriptorReflectionBuilder> configure)
         {
             Ensure.Arg.NotNull(configure, nameof(configure));
-            ConfigureRegistry(r =>
+            ConfigureServices(services =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IPostEventHandler<>), Lifetime);
-                configure(registrationSources);
-                r.TryAddEnumerable(registrationSources.GetRegistrations());
+                services.TryAddEnumerableFrom(
+                    typeof(IPostEventHandler<>),
+                    builder =>
+                    {
+                        builder.WithDefaultLifetime(Lifetime);
+                        configure(builder);
+                    });
             });
 
             return this;
@@ -166,11 +170,9 @@ namespace AppCore.EventModel
         public EventModelFacility WithBehavior(Type handlerType)
         {
             Ensure.Arg.NotNull(handlerType, nameof(handlerType));
-            ConfigureRegistry(
-                r => r.TryAddEnumerable(
-                    ComponentRegistration.Create(typeof(IEventPipelineBehavior<>), handlerType, Lifetime)
-                )
-            );
+            ConfigureServices(
+                services => services.TryAddEnumerable(
+                    ServiceDescriptor.Describe(typeof(IEventPipelineBehavior<>), handlerType, Lifetime)));
 
             return this;
         }
@@ -181,44 +183,52 @@ namespace AppCore.EventModel
         /// <param name="configure">The delegate used to configure the registration sources.</param>
         /// <returns>The <see cref="EventModelFacility"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public EventModelFacility WithBehaviorsFrom(Action<IComponentRegistrationSources> configure)
+        public EventModelFacility WithBehaviorsFrom(Action<IServiceDescriptorReflectionBuilder> configure)
         {
             Ensure.Arg.NotNull(configure, nameof(configure));
-            ConfigureRegistry(r =>
+            ConfigureServices(services =>
             {
-                var registrationSources = new ComponentRegistrationSources(typeof(IEventPipelineBehavior<>), Lifetime);
-                configure(registrationSources);
-                r.TryAddEnumerable(registrationSources.GetRegistrations());
+                services.TryAddEnumerableFrom(
+                    typeof(IEventPipelineBehavior<>),
+                    builder =>
+                    {
+                        builder.WithDefaultLifetime(Lifetime);
+                        configure(builder);
+                    });
             });
 
             return this;
         }
 
         /// <inheritdoc />
-        protected override void Build(IComponentRegistry registry)
+        protected override void ConfigureServices(IServiceCollection services)
         {
-            base.Build(registry);
+            base.ConfigureServices(services);
 
-            registry.AddLogging();
-
-            registry.TryAdd(
+            services.TryAdd(
                 new[]
                 {
-                    ComponentRegistration.Create<IEventPipelineResolver, EventPipelineResolver>(Lifetime),
-                    ComponentRegistration.Create(typeof(IEventPipeline<>), typeof(EventPipeline<>), Lifetime),
-                    ComponentRegistration.Singleton<IEventContextFactory, EventContextFactory>(),
-                    ComponentRegistration.Singleton<IEventDescriptorFactory, EventDescriptorFactory>(),
-                    ComponentRegistration.Create<IEventPublisher, EventPublisher>(Lifetime)
+                    ServiceDescriptor.Describe(typeof(IEventPipelineResolver), typeof(EventPipelineResolver), Lifetime),
+                    ServiceDescriptor.Describe(typeof(IEventPipeline<>), typeof(EventPipeline<>), Lifetime),
+                    ServiceDescriptor.Singleton<IEventContextFactory, EventContextFactory>(),
+                    ServiceDescriptor.Singleton<IEventDescriptorFactory, EventDescriptorFactory>(),
+                    ServiceDescriptor.Describe(typeof(IEventPublisher), typeof(EventPublisher), Lifetime)
                 });
 
-            registry.TryAddEnumerable(
+            services.TryAddEnumerable(
                 new[]
                 {
-                    ComponentRegistration.Singleton<IEventMetadataProvider, CancelableEventMetadataProvider>(),
-                    ComponentRegistration.Singleton<IEventMetadataProvider, TopicMetadataProvider>(),
-                    ComponentRegistration.Singleton(typeof(IEventPipelineBehavior<>), typeof(CancelableEventBehavior<>)),
-                    ComponentRegistration.Create(typeof(IEventPipelineBehavior<>), typeof(PreEventHandlerBehavior<>), Lifetime),
-                    ComponentRegistration.Create(typeof(IEventPipelineBehavior<>), typeof(PostEventHandlerBehavior<>), Lifetime)
+                    ServiceDescriptor.Singleton<IEventMetadataProvider, CancelableEventMetadataProvider>(),
+                    ServiceDescriptor.Singleton<IEventMetadataProvider, TopicMetadataProvider>(),
+                    ServiceDescriptor.Singleton(typeof(IEventPipelineBehavior<>), typeof(CancelableEventBehavior<>)),
+                    ServiceDescriptor.Describe(
+                        typeof(IEventPipelineBehavior<>),
+                        typeof(PreEventHandlerBehavior<>),
+                        Lifetime),
+                    ServiceDescriptor.Describe(
+                        typeof(IEventPipelineBehavior<>),
+                        typeof(PostEventHandlerBehavior<>),
+                        Lifetime)
                 });
         }
     }

@@ -3,9 +3,6 @@
 
 using System;
 using AppCore.Diagnostics;
-using AppCore.EventModel;
-using AppCore.EventModel.Logging;
-using AppCore.EventModel.Pipeline;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
@@ -22,18 +19,7 @@ namespace AppCore.DependencyInjection
         public static EventModelFacility UseLogging(this EventModelFacility facility)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
-
-            facility.ConfigureRegistry(
-                r =>
-                {
-                    r.AddLogging();
-
-                    r.TryAddEnumerable(
-                        ComponentRegistration.Singleton(
-                            typeof(IEventPipelineBehavior<>),
-                            typeof(EventLoggingBehavior<>)));
-                });
-
+            facility.AddExtension<LoggingEventModelFacilityExtension>();
             return facility;
         }
     }

@@ -1,4 +1,4 @@
-﻿// Licensed under the MIT License.
+// Licensed under the MIT License.
 // Copyright (c) 2018,2019 the AppCore .NET project.
 
 using System;
@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Pipeline;
-using AppCore.Logging;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 

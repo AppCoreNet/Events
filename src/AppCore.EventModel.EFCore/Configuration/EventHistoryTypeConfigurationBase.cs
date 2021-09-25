@@ -9,9 +9,13 @@ namespace AppCore.EventModel.EntityFrameworkCore.Configuration
     /// </summary>
     public abstract class EventHistoryTypeConfigurationBase : IEntityTypeConfiguration<EventHistory>
     {
+        /// <inheritdoc />
         public virtual void Configure(EntityTypeBuilder<EventHistory> builder)
         {
             builder.HasKey(e => e.Offset);
+
+            builder.Property(e => e.Offset)
+                   .ValueGeneratedNever();
 
             builder.HasIndex(e => e.Topic);
 

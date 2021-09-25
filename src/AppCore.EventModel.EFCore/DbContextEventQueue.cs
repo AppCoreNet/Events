@@ -35,7 +35,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
         /// <summary>
         /// Gets the data provider.
         /// </summary>
-        protected IDbContextDataProvider<TDbContext> Provider { get; }
+        public IDbContextDataProvider<TDbContext> Provider { get; }
 
         /// <summary>
         /// Gets the <see cref="DbSet{TEntity}"/> of events.
@@ -58,6 +58,9 @@ namespace AppCore.EventModel.EntityFrameworkCore
                 f => f.ContentType,
                 f => f,
                 StringComparer.OrdinalIgnoreCase);
+
+            if (_formatters.Count == 0)
+                throw new NotSupportedException("The must be at least one event formatter registered.");
 
             Provider = dataProvider;
             Events = dataProvider.GetContext().Set<Event>();
@@ -89,15 +92,17 @@ namespace AppCore.EventModel.EntityFrameworkCore
             Ensure.Arg.NotNull(events, nameof(events));
 
             IEventContextFormatter formatter = _formatters.First().Value;
-
             using (Provider.BeginChangeScope())
             {
+                using var stream = new MemoryStream();
+
                 await WriteCoreAsync(
                     events.Select(
                         e =>
                         {
                             string topic = GetEventTopic(e);
-                            using var stream = new MemoryStream();
+                            stream.SetLength(0);
+                            stream.Seek(0, SeekOrigin.Begin);
                             formatter.Write(stream, e);
                             return new Event
                             {
@@ -105,16 +110,25 @@ namespace AppCore.EventModel.EntityFrameworkCore
                                 ContentType = formatter.ContentType,
                                 Data = stream.ToArray()
                             };
-                        }),
+                        }).ToArray(),
                     cancellationToken);
 
                 await Provider.SaveChangesAsync(cancellationToken);
             }
         }
 
-        protected abstract Task<IReadOnlyCollection<Event>> ReadCoreAsync(
+        protected virtual async Task<IReadOnlyCollection<Event>> ReadCoreAsync(
             int maxEventsToRead,
-            CancellationToken cancellationToken);
+            CancellationToken cancellationToken)
+        {
+            return await Events.Where(
+                                   e => e.Topic == Events.OrderBy(e => e.Offset)
+                                                         .GroupBy(e => e.Topic)
+                                                         .Select(g => g.Key)
+                                                         .FirstOrDefault())
+                               .OrderBy(e => e.Offset)
+                               .ToArrayAsync(cancellationToken);
+        }
 
         /// <inheritdoc />
         public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(
@@ -165,11 +179,21 @@ namespace AppCore.EventModel.EntityFrameworkCore
             }
         }
 
-        protected abstract Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken);
+        protected virtual async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
+        {
+            Event[] events = await Events.Where(e => e.Topic == topic && e.Offset <= offset)
+                                         .ToArrayAsync(cancellationToken);
+
+            Events.RemoveRange(events);
+            await Provider.GetContext()
+                          .SaveChangesAsync(cancellationToken);
+        }
 
         /// <inheritdoc />
         public async Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken)
         {
+            Ensure.Arg.NotNull(@event, nameof(@event));
+
             if (_transaction == null)
             {
                 throw new InvalidOperationException("Read transaction is not active.");

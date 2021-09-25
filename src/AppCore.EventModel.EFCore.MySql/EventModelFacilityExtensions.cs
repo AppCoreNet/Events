@@ -3,14 +3,14 @@
 
 using AppCore.Data;
 using AppCore.Diagnostics;
-using AppCore.EventModel;
-using AppCore.EventModel.EntityFrameworkCore.MySql;
-using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
 {
+    /// <summary>
+    /// Provides extensions for the <see cref="EventQueueFacilityExtension"/>.
+    /// </summary>
     public static class EventModelFacilityExtensions
     {
         /// <summary>
@@ -23,14 +23,7 @@ namespace AppCore.DependencyInjection
             where TDbContext : DbContext
         {
             Ensure.Arg.NotNull(extension, nameof(extension));
-
-            extension.ConfigureRegistry(
-                r =>
-                {
-                    r.AddDataProvider(d => d.UseEntityFrameworkCore<TTag, TDbContext>());
-                    r.TryAdd(ComponentRegistration.Scoped<IEventQueue, MySqlEventQueue<TDbContext>>());
-                });
-
+            extension.Facility.AddExtension<MySqlEventQueueFacilityExtension<TTag, TDbContext>>();
             return extension;
         }
 

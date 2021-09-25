@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Pipeline;
-using AppCore.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace AppCore.EventModel.Queue
 {

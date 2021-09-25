@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Pipeline;
-using AppCore.Logging;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 

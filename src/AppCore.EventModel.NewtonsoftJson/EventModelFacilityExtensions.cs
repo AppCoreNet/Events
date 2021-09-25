@@ -3,10 +3,6 @@
 
 using System;
 using AppCore.Diagnostics;
-using AppCore.EventModel;
-using AppCore.EventModel.Formatters;
-using AppCore.EventModel.Pipeline;
-using Newtonsoft.Json;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
@@ -22,24 +18,10 @@ namespace AppCore.DependencyInjection
         /// <param name="facility">The <see cref="EventModelFacility"/>.</param>
         /// <param name="configure">The settings configuration delegate.</param>
         /// <returns>The passed facility to allow chaining.</returns>
-        public static EventModelFacility UseNewtonsoftJson(this EventModelFacility facility, Action<JsonSerializerSettings> configure = null)
+        public static EventModelFacility UseNewtonsoftJson(this EventModelFacility facility, Action<NewtonsoftJsonEventModelFacilityExtension> configure = null)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
-
-            facility.ConfigureRegistry(
-                r => r.TryAddEnumerable(
-                    ComponentRegistration.Singleton<IEventContextFormatter>(
-                        ComponentFactory.Create(
-                            c =>
-                            {
-                                var settings = new JsonSerializerSettings();
-                                configure?.Invoke(settings);
-                                return new NewtonsoftJsonFormatter(c.Resolve<IEventContextFactory>(), settings);
-                            })
-                    )
-                )
-            );
-
+            facility.AddExtension(configure);
             return facility;
         }
     }

@@ -4,10 +4,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AppCore.DependencyInjection;
 using AppCore.Diagnostics;
-using AppCore.Hosting;
-using AppCore.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace AppCore.EventModel.Store
 {
@@ -38,7 +38,7 @@ namespace AppCore.EventModel.Store
         /// </summary>
         /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        protected override async Task RunAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -73,16 +73,16 @@ namespace AppCore.EventModel.Store
         /// </summary>
         public class Scoped : BackgroundService
         {
-            private readonly IContainer _container;
+            private readonly IServiceProvider _serviceProvider;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="BackgroundService"/> class.
             /// </summary>
-            /// <param name="container">The <see cref="IContainer"/> used to resolve an <see cref="IEventStorePublisher"/>.</param>
-            public Scoped(IContainer container)
+            /// <param name="serviceProvider">The <see cref="IServiceProvider"/> used to resolve an <see cref="IEventStorePublisher"/>.</param>
+            public Scoped(IServiceProvider serviceProvider)
             {
-                Ensure.Arg.NotNull(container, nameof(container));
-                _container = container;
+                Ensure.Arg.NotNull(serviceProvider, nameof(serviceProvider));
+                _serviceProvider = serviceProvider;
             }
 
             /// <summary>
@@ -90,17 +90,17 @@ namespace AppCore.EventModel.Store
             /// </summary>
             /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
             /// <returns>A task that represents the asynchronous operation.</returns>
-            protected override async Task RunAsync(CancellationToken cancellationToken)
+            protected override async Task ExecuteAsync(CancellationToken cancellationToken)
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    using (IContainerScope scope = _container.CreateScope())
+                    using (IServiceScope scope = _serviceProvider.CreateScope())
                     {
-                        IContainer container = scope.Container;
+                        IServiceProvider container = scope.ServiceProvider;
 
                         using (var publisherTask = new EventStorePublisherService(
-                            container.Resolve<IEventStorePublisher>(),
-                            container.Resolve<ILogger<EventStorePublisherService>>()))
+                            container.GetRequiredService<IEventStorePublisher>(),
+                            container.GetRequiredService<ILogger<EventStorePublisherService>>()))
                         {
                             await publisherTask.PublishAsync(cancellationToken);
                         }

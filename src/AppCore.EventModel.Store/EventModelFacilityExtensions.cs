@@ -3,8 +3,6 @@
 
 using System;
 using AppCore.Diagnostics;
-using AppCore.EventModel;
-using AppCore.EventModel.Store;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.DependencyInjection
@@ -22,29 +20,11 @@ namespace AppCore.DependencyInjection
         /// <returns>The passed facility to allow chaining.</returns>
         public static EventModelFacility UseQueuing(
             EventModelFacility facility,
-            Action<EventStoreExtension> configure = null)
+            Action<EventStoreFacilityExtension> configure = null)
         {
             Ensure.Arg.NotNull(facility, nameof(facility));
             facility.AddExtension(configure);
             return facility;
-        }
-
-        /// <summary>
-        /// Registers in-memory event queue.
-        /// </summary>
-        /// <param name="extension">The <see cref="EventStoreExtension"/>.</param>
-        /// <returns>The passed facility to allow chaining.</returns>
-        public static EventStoreExtension WithInMemoryQueue(this EventStoreExtension extension)
-        {
-            Ensure.Arg.NotNull(extension, nameof(extension));
-
-            extension.ConfigureRegistry(
-                r =>
-                {
-                    r.TryAdd(ComponentRegistration.Singleton<IEventStore, InMemoryEventStore>());
-                });
-
-            return extension;
         }
     }
 }

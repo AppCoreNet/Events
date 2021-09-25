@@ -2,8 +2,8 @@
   <PropertyGroup>
     <AppCore_Shared_Version>0.3.0-alpha*</AppCore_Shared_Version>
     <AppCore_DI_Version>0.3.0-alpha*</AppCore_DI_Version>
-    <AppCore_Logging_Version>0.3.0-alpha*</AppCore_Logging_Version>
     <AppCore_Data_Version>0.3.0-alpha*</AppCore_Data_Version>
     <AppCore_Hosting_Version>0.3.0-alpha*</AppCore_Hosting_Version>
+    <Microsoft_Extensions_Version>[2.1.0,7.0.0)</Microsoft_Extensions_Version>
   </PropertyGroup>
 </Project>

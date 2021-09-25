@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql.Configuration
 {
     /// <summary>
-    /// EventHistory entity type configuration for MySql.
+    /// EventHistory entity type configuration for PostgreSql.
     /// </summary>
     public class EventHistoryTypeConfiguration : EventHistoryTypeConfigurationBase
     {
@@ -18,9 +18,9 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql.Configuration
         /// <inheritdoc />
         public override void Configure(EntityTypeBuilder<EventHistory> builder)
         {
-            builder.ToTable(TableName);
+            base.Configure(builder);
 
-            builder.HasKey(e => e.Offset);
+            builder.ToTable(TableName);
         }
     }
 }
