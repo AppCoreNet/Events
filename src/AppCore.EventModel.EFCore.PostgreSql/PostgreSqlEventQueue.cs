@@ -88,10 +88,10 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
                 .AppendColumnNames<EventHistory>(
                     new[]
                     {
-                        nameof(EventHistory.Offset),
-                        nameof(EventHistory.Topic),
-                        nameof(EventHistory.ContentType),
-                        nameof(EventHistory.Data)
+                        nameof(Model.EventHistory.Offset),
+                        nameof(Model.EventHistory.Topic),
+                        nameof(Model.EventHistory.ContentType),
+                        nameof(Model.EventHistory.Data)
                     })
                 .Append(") ")
                 .Append(" select ")
