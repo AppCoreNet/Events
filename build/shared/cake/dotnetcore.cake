@@ -26,6 +26,10 @@ public class BuildParametersDotNetCore
     public bool CollectTestAssemblyCoverage { get; set; } = false;
 }
 
+BuildParametersInit.Add((p,c) => {
+    p.DotNetCore.TestFilter = c.Argument("test-filter" "");
+});
+
 public bool DotNetCoreNewSolution(string solutionFile, FilePathCollection projectFiles)
 {
     bool needsUpdate = true;
