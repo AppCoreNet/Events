@@ -2,7 +2,6 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System.Collections.Generic;
-using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
 using AppCore.Data.EntityFrameworkCore;
@@ -110,7 +109,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
                 .AppendColumnName<Event>(nameof(Event.Offset))
                 .Append("<={0} and ")
                 .AppendColumnName<Event>(nameof(Event.Topic))
-                .Append("='{1}'");
+                .Append("={1}");
 
             return stmt.ToString();
         }
@@ -124,7 +123,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
                 .AppendColumnName<Event>(nameof(Event.Offset))
                 .Append("<={0} and ")
                 .AppendColumnName<Event>(nameof(Event.Topic))
-                .Append("='{1}'");
+                .Append("={1}");
 
             return stmt.ToString();
         }
@@ -143,8 +142,23 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
         protected override async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
         {
             DatabaseFacade database = Provider.GetContext().Database;
-            await database.ExecuteSqlRawAsync(_copyStatement, new object[] {offset, topic}, cancellationToken);
-            await database.ExecuteSqlRawAsync(_deleteStatement, new object[] {offset, topic}, cancellationToken);
+            await database.ExecuteSqlRawAsync(
+                _copyStatement,
+                new object[]
+                {
+                    offset,
+                    topic
+                },
+                cancellationToken);
+
+            await database.ExecuteSqlRawAsync(
+                _deleteStatement,
+                new object[]
+                {
+                    offset,
+                    topic
+                },
+                cancellationToken);
         }
     }
 }

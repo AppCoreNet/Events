@@ -43,6 +43,11 @@ namespace AppCore.EventModel.EntityFrameworkCore
         protected DbSet<Event> Events { get; }
 
         /// <summary>
+        /// Gets the <see cref="DbSet{TEntity}"/> of events.
+        /// </summary>
+        protected DbSet<EventHistory> EventHistory { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DbContextEventQueue{TDbContext}"/> class.
         /// </summary>
         /// <param name="dataProvider">The data provider.</param>
@@ -64,6 +69,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
 
             Provider = dataProvider;
             Events = dataProvider.GetContext().Set<Event>();
+            EventHistory = dataProvider.GetContext().Set<EventHistory>();
         }
 
         private static string GetEventTopic(IEventContext @event)
@@ -185,6 +191,17 @@ namespace AppCore.EventModel.EntityFrameworkCore
                                          .ToArrayAsync(cancellationToken);
 
             Events.RemoveRange(events);
+
+            EventHistory.AddRange(
+                events.Select(
+                    e => new EventHistory
+                    {
+                        Offset = e.Offset,
+                        Topic = e.Topic,
+                        ContentType = e.ContentType,
+                        Data = e.Data
+                    }));
+
             await Provider.GetContext()
                           .SaveChangesAsync(cancellationToken);
         }

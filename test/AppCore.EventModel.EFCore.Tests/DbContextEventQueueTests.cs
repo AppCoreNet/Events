@@ -151,6 +151,66 @@ namespace AppCore.EventModel.EntityFrameworkCore
             await queue.CommitReadAsync(events.Last(), CancellationToken.None);
         }
 
+        [Fact]
+        public async Task CommitReadAsyncMovesEventsFromQueueToHistory()
+        {
+            string contentType = "text/plain";
+            IEventContextFormatter formatter = CreateEventContextFormatter(contentType);
+            DbContextEventQueue<TDbContext> queue = CreateEventQueue(Provider, new[] { formatter });
+            TDbContext dbContext = queue.Provider.GetContext();
+            dbContext
+                .Set<Event>()
+                .AddRange(
+                    new Event
+                    {
+                        ContentType = contentType,
+                        Data = new[] { (byte)'1' },
+                        Topic = "test-topic"
+                    },
+                    new Event
+                    {
+                        ContentType = contentType,
+                        Data = new[] { (byte)'2' },
+                        Topic = "test-topic"
+                    });
+
+            await dbContext.SaveChangesAsync();
+
+            IReadOnlyCollection<IEventContext> events = await queue.ReadAsync(10, CancellationToken.None);
+            events.Should()
+                  .HaveCount(2);
+
+            await queue.CommitReadAsync(events.Last(), CancellationToken.None);
+
+            int eventCount = await dbContext
+                              .Set<Event>()
+                              .CountAsync();
+
+            eventCount.Should()
+                      .Be(0);
+
+            queue.Provider.GetContext()
+                 .Set<EventHistory>()
+                 .Should()
+                 .BeEquivalentTo(
+                     new Event
+                     {
+                         ContentType = contentType,
+                         Data = new[] { (byte)'1' },
+                         Offset = 1,
+                         Topic = "test-topic"
+                     },
+                     new Event
+                     {
+                         ContentType = contentType,
+                         Offset = 2,
+                         Data = new[] { (byte)'2' },
+                         Topic = "test-topic"
+                     }
+                 );
+
+        }
+
         public virtual async Task InitializeAsync()
         {
             await Provider.GetContext().Database.EnsureCreatedAsync();
