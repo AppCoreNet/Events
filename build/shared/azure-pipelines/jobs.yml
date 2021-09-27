@@ -1,5 +1,6 @@
 parameters:
   configuration: 'Debug'
+  testFilter: ''
 
 jobs:
 - job: Linux
@@ -10,6 +11,7 @@ jobs:
   - template: ./build-steps.yml
     parameters:
       configuration: $(configuration)
+      testFilter: $(testFilter)
   - template: ./publish-steps.yml
     parameters:
       configuration: $(configuration)  
@@ -22,6 +24,7 @@ jobs:
   - template: ./build-steps.yml
     parameters:
       configuration: $(configuration)
+      testFilter: $(testFilter)
       
 - job: Windows
   pool:
@@ -31,3 +34,4 @@ jobs:
   - template: ./build-steps.yml
     parameters:
       configuration: $(configuration)
+      testFilter: $(testFilter)

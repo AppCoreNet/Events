@@ -20,6 +20,7 @@ public class BuildParametersDotNetCore
     
     public string TestSolution { get; set; }
     public string TestProjectsPattern { get; set; } = "**/test/**/*.csproj";
+    public string TestFilter { get; set; }
     
     public bool CollectCoverage { get; set; } = true;
     public bool CollectTestAssemblyCoverage { get; set; } = false;
@@ -169,6 +170,7 @@ Task("DotNetCore.Test")
                 return args;
             },
         Configuration = p.Configuration,
+        Filter = p.DotNetCore.TestFilter,
         ResultsDirectory = testResultsDir,
         Loggers = new string[] { "trx" },
         NoRestore = true,
