@@ -27,7 +27,7 @@ public class BuildParametersDotNetCore
 }
 
 BuildParametersInit.Add((p,c) => {
-    p.DotNetCore.TestFilter = c.Argument("test-filter" "");
+    p.DotNetCore.TestFilter = c.Argument("test-filter", "");
 });
 
 public bool DotNetCoreNewSolution(string solutionFile, FilePathCollection projectFiles)
