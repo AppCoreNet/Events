@@ -15,6 +15,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
     }
 
     [Collection("postgres")]
+    [Trait("Integration", "Database")]
     public class PostgreSqlDbContextEventQueueTests : DbContextEventQueueTests<PostgreSqlDbContext>
     {
         public PostgreSqlDbContextEventQueueTests(PostgreSqlContainer container)

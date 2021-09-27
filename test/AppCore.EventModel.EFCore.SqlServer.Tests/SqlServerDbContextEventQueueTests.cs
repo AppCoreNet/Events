@@ -15,6 +15,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
     }
 
     [Collection("sqlserver")]
+    [Trait("Integration", "Database")]
     public class SqlServerDbContextEventQueueTests : DbContextEventQueueTests<SqlServerDbContext>
     {
         public SqlServerDbContextEventQueueTests(SqlServerContainer container)

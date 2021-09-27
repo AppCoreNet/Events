@@ -15,6 +15,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
     }
 
     [Collection("mysql")]
+    [Trait("Integration", "Database")]
     public class MySqlDbContextEventQueueTests : DbContextEventQueueTests<MySqlDbContext>
     {
         public MySqlDbContextEventQueueTests(MySqlContainer container)
