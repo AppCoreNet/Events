@@ -34,7 +34,7 @@ namespace AppCore.DependencyInjection
             base.ConfigureServices(services);
 
             services.TryAddEnumerable(
-                ServiceDescriptor.Singleton<IEventContextFormatter>(
+                ServiceDescriptor.Singleton<IEventContextFormatter, NewtonsoftJsonFormatter>(
                     sp =>
                     {
                         var settings = sp.GetRequiredService<IOptionsSnapshot<JsonSerializerSettings>>();
