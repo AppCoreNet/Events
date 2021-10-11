@@ -33,6 +33,10 @@ namespace AppCore.DependencyInjection
         {
             base.ConfigureServices(services);
 
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<JsonSerializerSettings>, ConfigureJsonSerializerSettings>());
+
+            services.Configure<JsonSerializerSettings>("name", o => { });
+
             services.TryAddEnumerable(
                 ServiceDescriptor.Singleton<IEventContextFormatter, NewtonsoftJsonFormatter>(
                     sp =>
