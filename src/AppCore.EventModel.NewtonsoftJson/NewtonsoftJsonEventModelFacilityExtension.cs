@@ -2,6 +2,7 @@
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
 using System;
+using System.Collections.Generic;
 using AppCore.DependencyInjection.Facilities;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Formatters;
@@ -33,19 +34,19 @@ namespace AppCore.DependencyInjection
         {
             base.ConfigureServices(services);
 
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<JsonSerializerSettings>, ConfigureJsonSerializerSettings>());
-
-            services.Configure<JsonSerializerSettings>("name", o => { });
-
             services.TryAddEnumerable(
-                ServiceDescriptor.Singleton<IEventContextFormatter, NewtonsoftJsonFormatter>(
-                    sp =>
-                    {
-                        var settings = sp.GetRequiredService<IOptionsSnapshot<JsonSerializerSettings>>();
-                        return new NewtonsoftJsonFormatter(
-                            sp.GetRequiredService<IEventContextFactory>(),
-                            settings.Get(OptionsName));
-                    })
+                new[]
+                {
+                    ServiceDescriptor.Singleton<IConfigureOptions<JsonSerializerSettings>, ConfigureJsonSerializerSettings>(),
+                    ServiceDescriptor.Singleton<IEventContextFormatter, NewtonsoftJsonFormatter>(
+                        sp =>
+                        {
+                            var settings = sp.GetRequiredService<IOptionsSnapshot<JsonSerializerSettings>>();
+                            return new NewtonsoftJsonFormatter(
+                                sp.GetRequiredService<IEventContextFactory>(),
+                                settings.Get(OptionsName));
+                        })
+                }
             );
         }
     }
