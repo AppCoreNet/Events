@@ -31,7 +31,9 @@ namespace AppCore.DependencyInjection
         /// <inheritdoc />
         protected override void ConfigureServices(IServiceCollection services)
         {
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IConfigureOptions<JsonSerializerSettings>, ConfigureJsonSerializerSettings>());
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton<IConfigureOptions<JsonSerializerSettings>, ConfigureJsonSerializerSettings>(
+                    _ => new ConfigureJsonSerializerSettings(OptionsName)));
 
             base.ConfigureServices(services);
 
