@@ -23,7 +23,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
     /// Provides a base class for Entity Framework Core based implementations of <see cref="IEventQueue"/>.
     /// </summary>
     /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
-    public abstract class DbContextEventQueue<TDbContext> : IEventQueue
+    public abstract class DbContextEventQueue<TDbContext> : IEventQueue, IAsyncDisposable, IDisposable
         where TDbContext : DbContext
     {
         private const int PollInterval = 250;
@@ -68,8 +68,45 @@ namespace AppCore.EventModel.EntityFrameworkCore
                 throw new NotSupportedException("The must be at least one event formatter registered.");
 
             Provider = dataProvider;
-            Events = dataProvider.GetContext().Set<Event>();
-            EventHistory = dataProvider.GetContext().Set<EventHistory>();
+            TDbContext dbContext = dataProvider.GetContext();
+            Events = dbContext.Set<Event>();
+            EventHistory = dbContext.Set<EventHistory>();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _transaction?.Dispose();
+            }
+
+            _transaction = null;
+        }
+
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
+            if (_transaction is not null)
+            {
+                await _transaction.DisposeAsync()
+                                  .ConfigureAwait(false);
+            }
+
+            _transaction = null;
         }
 
         private static string GetEventTopic(IEventContext @event)
@@ -123,17 +160,17 @@ namespace AppCore.EventModel.EntityFrameworkCore
             }
         }
 
-        protected virtual async Task<IReadOnlyCollection<Event>> ReadCoreAsync(
-            int maxEventsToRead,
-            CancellationToken cancellationToken)
+        protected virtual IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
         {
-            return await Events.Where(
-                                   e => e.Topic == Events.OrderBy(e => e.Offset)
-                                                         .GroupBy(e => e.Topic)
-                                                         .Select(g => g.Key)
-                                                         .FirstOrDefault())
-                               .OrderBy(e => e.Offset)
-                               .ToArrayAsync(cancellationToken);
+            return Events
+                   .Where(
+                       e => e.Topic == Events.OrderBy(e => e.Offset)
+                                             .GroupBy(e => e.Topic)
+                                             .Select(g => g.Key)
+                                             .FirstOrDefault())
+                   .OrderBy(e => e.Offset)
+                   .AsNoTracking()
+                   .AsAsyncEnumerable();
         }
 
         /// <inheritdoc />
@@ -141,6 +178,8 @@ namespace AppCore.EventModel.EntityFrameworkCore
             int maxEventsToRead,
             CancellationToken cancellationToken)
         {
+            Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+
             if (_transaction != null)
             {
                 throw new InvalidOperationException(
@@ -154,27 +193,26 @@ namespace AppCore.EventModel.EntityFrameworkCore
 
             try
             {
-                IReadOnlyCollection<Event> events;
+                var result = new List<IEventContext>(maxEventsToRead);
                 do
                 {
-                    events = await ReadCoreAsync(maxEventsToRead, cancellationToken);
-                    if (events.Count == 0)
+                    IAsyncEnumerable<Event> events = ReadCore(maxEventsToRead);
+                    await foreach (Event @event in events.WithCancellation(cancellationToken))
+                    {
+                        using var stream = new MemoryStream(@event.Data);
+                        IEventContext eventContext = GetFormatter(@event.ContentType).Read(stream);
+                        eventContext.Items.Add(OffsetItemKey, @event.Offset);
+                        result.Add(eventContext);
+                    }
+
+                    if (result.Count == 0)
                         await Task.Delay(PollInterval, cancellationToken);
 
                     cancellationToken.ThrowIfCancellationRequested();
 
-                } while (events.Count == 0);
+                } while (result.Count == 0);
 
-                return events.Select(
-                        e =>
-                        {
-                            using var stream = new MemoryStream(e.Data);
-                            IEventContext context = GetFormatter(e.ContentType).Read(stream);
-                            context.Items.Add(OffsetItemKey, e.Offset);
-                            return context;
-                        })
-                    .ToList()
-                    .AsReadOnly();
+                return result.AsReadOnly();
             }
             catch
             {
@@ -223,6 +261,34 @@ namespace AppCore.EventModel.EntityFrameworkCore
             await _transaction.CommitAsync(cancellationToken);
 
             _transaction = null;
+        }
+
+        protected IAsyncEnumerable<EventHistory> ReadHistoryCore(long offset, int maxEventsToRead)
+        {
+            return EventHistory.Where(e => e.Offset >= offset)
+                               .OrderBy(e => e.Offset)
+                               .Take(maxEventsToRead)
+                               .AsNoTracking()
+                               .AsAsyncEnumerable();
+        }
+
+        /// <inheritdoc />
+        public async Task<IReadOnlyCollection<IEventContext>> ReadHistoryAsync(long offset, int maxEventsToRead, CancellationToken cancellationToken)
+        {
+            Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
+            Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+
+            var result = new List<IEventContext>(maxEventsToRead);
+            IAsyncEnumerable<EventHistory> eventHistory = ReadHistoryCore(offset, maxEventsToRead);
+            await foreach(EventHistory @event in eventHistory.WithCancellation(cancellationToken))
+            {
+                using var stream = new MemoryStream(@event.Data);
+                IEventContext eventContext = GetFormatter(@event.ContentType).Read(stream);
+                eventContext.Items.Add(OffsetItemKey, @event.Offset);
+                result.Add(eventContext);
+            }
+
+            return result.AsReadOnly();
         }
     }
 }

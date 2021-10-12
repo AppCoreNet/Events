@@ -34,9 +34,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
         }
 
         /// <inheritdoc />
-        protected override async Task<IReadOnlyCollection<Event>> ReadCoreAsync(
-            int maxEventsToRead,
-            CancellationToken cancellationToken)
+        protected override IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
         {
             FormattableString query = $@"
                 SELECT TOP({maxEventsToRead}) Q.Offset,Q.Topic,Q.ContentType,Q.Data
@@ -45,9 +43,9 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
                 ON Q.Topic = T.Topic
                 ORDER BY Q.Offset";
 
-            return await Events.FromSqlInterpolated(query)
-                               .AsNoTracking()
-                               .ToArrayAsync(cancellationToken);
+            return Events.FromSqlInterpolated(query)
+                         .AsNoTracking()
+                         .AsAsyncEnumerable();
         }
 
         /// <inheritdoc />

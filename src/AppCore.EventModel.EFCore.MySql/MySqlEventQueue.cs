@@ -34,9 +34,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
         }
 
         /// <inheritdoc />
-        protected override async Task<IReadOnlyCollection<Event>> ReadCoreAsync(
-            int maxEventsToRead,
-            CancellationToken cancellationToken)
+        protected override IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
         {
             FormattableString query = $@"
                 select
@@ -57,9 +55,9 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
                 limit {maxEventsToRead}
                 for update skip locked";
 
-            return await Events.FromSqlInterpolated(query)
-                               .AsNoTracking()
-                               .ToArrayAsync(cancellationToken);
+            return Events.FromSqlInterpolated(query)
+                         .AsNoTracking()
+                         .AsAsyncEnumerable();
         }
 
         /// <inheritdoc />

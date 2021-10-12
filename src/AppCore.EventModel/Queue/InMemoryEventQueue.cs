@@ -1,6 +1,7 @@
 // Licensed under the MIT License.
 // Copyright (c) 2020 the AppCore .NET project.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
@@ -65,6 +66,12 @@ namespace AppCore.EventModel.Queue
         public Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+
+        /// <inheritdoc />
+        public Task<IReadOnlyCollection<IEventContext>> ReadHistoryAsync(long offset, int maxEventsToRead, CancellationToken cancellationToken)
+        {
+            throw new NotSupportedException();
         }
     }
 }

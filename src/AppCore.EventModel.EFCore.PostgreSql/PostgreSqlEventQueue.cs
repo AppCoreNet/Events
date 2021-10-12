@@ -129,13 +129,11 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
         }
 
         /// <inheritdoc />
-        protected override async Task<IReadOnlyCollection<Event>> ReadCoreAsync(
-            int maxEventsToRead,
-            CancellationToken cancellationToken)
+        protected override IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
         {
-            return await Events.FromSqlRaw(_readStatement, maxEventsToRead)
-                               .AsNoTracking()
-                               .ToArrayAsync(cancellationToken);
+            return Events.FromSqlRaw(_readStatement, maxEventsToRead)
+                         .AsNoTracking()
+                         .AsAsyncEnumerable();
         }
 
         /// <inheritdoc />
