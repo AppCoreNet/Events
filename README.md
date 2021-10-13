@@ -1,10 +1,10 @@
-AppCore .NET Events
+AppCore .NET event model
 -------------------
 
-[![Build Status](https://dev.azure.com/AppCoreNet/Events/_apis/build/status/AppCoreNet.Events%20CI?branchName=dev)](https://dev.azure.com/AppCoreNet/Events/_build/latest?definitionId=5&branchName=dev)
-![Azure DevOps tests (compact)](https://img.shields.io/azure-devops/tests/AppCoreNet/Events/5?compact_message)
-![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/AppCoreNet/Events/5/dev)
-![Nuget](https://img.shields.io/nuget/v/AppCore.Events.Abstractions)
+[![Build Status](https://dev.azure.com/AppCoreNet/EventModel/_apis/build/status/AppCoreNet.EventModel%20CI?branchName=dev)](https://dev.azure.com/AppCoreNet/EventModel/_build/latest?definitionId=5&branchName=dev)
+![Azure DevOps tests (compact)](https://img.shields.io/azure-devops/tests/AppCoreNet/EventModel/5?compact_message)
+![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/AppCoreNet/EventModel/5/dev)
+![Nuget](https://img.shields.io/nuget/v/AppCore.EventModel.Abstractions)
 
 This repository includes projects containing abstractions and implementations of the event framework.
 
@@ -15,15 +15,17 @@ as you keep the copyright notice intact when redistributing or otherwise reusing
 
 Latest development packages can be found on [MyGet](https://www.myget.org/gallery/appcorenet).
 
-Package                                    | Description
--------------------------------------------|-----------------------------------------------------------------------------
-`AppCore.Events`                           | Provides event framework default implementations.
-`AppCore.Events.Abstractions`              | Provides the public API of the event framework.
-`AppCore.Events.Formatters.NewtonsoftJson` | JSON serialization support for events.
-`AppCore.Events.Logging`                   | Adds logging of events.
-`AppCore.Events.EntityFrameworkCore3.SqlServer` | Adds support for queing events using SQL Server via EF Core.
-`AppCore.Events.Storage`                   | Event store default implementation.
-`AppCore.Events.Storage.Abstractions`      | Provides the public API for the event store.
+Package                                            | Description
+---------------------------------------------------|-----------------------------------------------------------------------------
+`AppCore.EventModel`                               | Provides event framework default implementations.
+`AppCore.EventModel.Abstractions`                  | Provides the public API of the event framework.
+`AppCore.EventModel.NewtonsoftJson`                | JSON serialization support for events.
+`AppCore.EventModel.Logging`                       | Adds logging of events.
+`AppCore.EventModel.EntityFrameworkCore.SqlServer` | Adds support for queing events using SQL Server via EF Core.
+`AppCore.EventModel.EntityFrameworkCore.MySql`     | Adds support for queing events using MySql via EF Core.
+`AppCore.EventModel.EntityFrameworkCore.PostgreSql`| Adds support for queing events using PostgreSql via EF Core.
+`AppCore.EventModel.Store`                         | Event store default implementation.
+`AppCore.EventModel.Store.Abstractions`            | Provides the public API for the event store.
 
 ## Contributing
 

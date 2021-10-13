@@ -16,3 +16,4 @@ jobs:
 - template: build/shared/azure-pipelines/jobs.yml
   parameters:
     configuration: $(configuration)
+    testFilter: 'Category!=Integration'
