@@ -16,20 +16,20 @@ namespace AppCore.EventModel.Queue
     /// </summary>
     public class EventQueuePublisherService : BackgroundService
     {
-        private readonly EventQueuePublisher _publisher;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<EventQueuePublisherService> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventQueuePublisherService"/> class.
         /// </summary>
-        /// <param name="publisher">The event queue publisher.</param>
+        /// <param name="serviceScopeFactory">The <see cref="IServiceScopeFactory"/>.</param>
         /// <param name="logger">The logger.</param>
-        public EventQueuePublisherService(EventQueuePublisher publisher, ILogger<EventQueuePublisherService> logger)
+        public EventQueuePublisherService(IServiceScopeFactory serviceScopeFactory, ILogger<EventQueuePublisherService> logger)
         {
-            Ensure.Arg.NotNull(publisher, nameof(publisher));
-            Ensure.Arg.NotNull(logger, nameof(logger));
+            Ensure.Arg.NotNull(serviceScopeFactory);
+            Ensure.Arg.NotNull(logger);
 
-            _publisher = publisher;
+            _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
         }
 
@@ -55,52 +55,18 @@ namespace AppCore.EventModel.Queue
         {
             try
             {
-                await _publisher.PublishPendingAsync(cancellationToken)
-                                .ConfigureAwait(false);
+                using IServiceScope serviceScope = _serviceScopeFactory.CreateScope();
+                IServiceProvider serviceProvider = serviceScope.ServiceProvider;
+                var publisher = serviceProvider.GetRequiredService<EventQueuePublisher>();
+                await publisher.PublishPendingAsync(cancellationToken)
+                               .ConfigureAwait(false);
             }
             catch (TaskCanceledException) {}
             catch (OperationCanceledException) {}
             catch (Exception error)
             {
                 _logger.PublishingQueuedEventsFailed(error);
-            }
-        }
-
-        /// <summary>
-        /// The scoped <see cref="BackgroundService"/> used to publish queued events.
-        /// </summary>
-        public class Scoped : BackgroundService
-        {
-            private readonly IServiceProvider _serviceProvider;
-
-            /// <summary>
-            /// Initializes a new instance of the <see cref="BackgroundService"/> class.
-            /// </summary>
-            /// <param name="serviceProvider">The <see cref="IServiceProvider"/> used to resolve an <see cref="EventQueuePublisher"/>.</param>
-            public Scoped(IServiceProvider serviceProvider)
-            {
-                Ensure.Arg.NotNull(serviceProvider, nameof(serviceProvider));
-                _serviceProvider = serviceProvider;
-            }
-
-            /// <summary>
-            /// Publishes events until canceled.
-            /// </summary>
-            /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-            /// <returns>A task that represents the asynchronous operation.</returns>
-            protected override async Task ExecuteAsync(CancellationToken cancellationToken)
-            {
-                while (!cancellationToken.IsCancellationRequested)
-                {
-                    using IServiceScope serviceScope = _serviceProvider.CreateScope();
-                    IServiceProvider serviceProvider = serviceScope.ServiceProvider;
-
-                    using var publisher = new EventQueuePublisherService(
-                        serviceProvider.GetRequiredService<EventQueuePublisher>(),
-                        serviceProvider.GetRequiredService<ILogger<EventQueuePublisherService>>());
-
-                    await publisher.PublishAsync(cancellationToken);
-                }
+                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
             }
         }
     }

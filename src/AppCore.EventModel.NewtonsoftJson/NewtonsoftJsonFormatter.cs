@@ -6,6 +6,7 @@ using System.IO;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Pipeline;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace AppCore.EventModel.Formatters
@@ -25,18 +26,13 @@ namespace AppCore.EventModel.Formatters
         /// Initializes a new instance of the <see cref="NewtonsoftJsonFormatter"/> class.
         /// </summary>
         /// <param name="contextFactory">The <see cref="IEventContextFactory"/>.</param>
-        /// <param name="settings">The <see cref="JsonSerializerSettings"/>.</param>
-        public NewtonsoftJsonFormatter(IEventContextFactory contextFactory, JsonSerializerSettings settings = null)
+        /// <param name="options">The <see cref="NewtonsoftJsonFormatterOptions"/>.</param>
+        public NewtonsoftJsonFormatter(IEventContextFactory contextFactory, IOptionsMonitor<NewtonsoftJsonFormatterOptions> options)
         {
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
 
             _contextFactory = contextFactory;
-            _serializer = JsonSerializer.Create(
-                settings ?? new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
+            _serializer = JsonSerializer.Create(options.CurrentValue.SerializerSettings);
         }
 
         /// <inheritdoc />

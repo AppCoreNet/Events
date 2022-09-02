@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5;netcoreapp3.1;net461</TargetFrameworks>
+    <TargetFrameworks>net6;netstandard2.0;net462</TargetFrameworks>
     <Description>Provides AppCore .NET Entity Framework Core event queue.</Description>
     <RootNamespace>AppCore.EventModel.EntityFrameworkCore</RootNamespace>
     <PackageId>AppCore.EventModel.EntityFrameworkCore</PackageId>
@@ -15,16 +15,12 @@
     <PackageReference Include="AppCore.Data.EntityFrameworkCore" Version="$(AppCore_Data_Version)" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.0,4.0.0)" />
+  <ItemGroup Condition="'$(TargetFramework)'=='net462' OR '$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.28,4.0.0)" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[3.1.0,4.0.0)" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net5'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[5.0.0,7.0.0)" />
+  <ItemGroup Condition="'$(TargetFramework)'=='net6'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="[6.0.8,7.0.0)" />
   </ItemGroup>
 
   <ItemGroup>

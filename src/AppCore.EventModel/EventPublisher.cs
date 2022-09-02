@@ -19,7 +19,7 @@ namespace AppCore.EventModel
         private readonly IEventDescriptorFactory _descriptorFactory;
         private readonly IEventContextFactory _contextFactory;
         private readonly IEventPipelineResolver _pipelineResolver;
-        private readonly IEventQueue _queue;
+        private readonly IEventQueue? _queue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPublisher"/> class.
@@ -33,7 +33,7 @@ namespace AppCore.EventModel
             IEventDescriptorFactory descriptorFactory,
             IEventContextFactory contextFactory,
             IEventPipelineResolver pipelineResolver,
-            IEventQueue queue = null)
+            IEventQueue? queue = null)
         {
             Ensure.Arg.NotNull(descriptorFactory, nameof(descriptorFactory));
             Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));

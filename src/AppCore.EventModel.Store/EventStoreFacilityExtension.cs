@@ -1,7 +1,6 @@
 // Licensed under the MIT License.
 // Copyright (c) 2018-2021 the AppCore .NET project.
 
-using AppCore.DependencyInjection.Facilities;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Pipeline;
 using AppCore.EventModel.Store;
@@ -9,8 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.DependencyInjection
+namespace AppCore.Extensions.DependencyInjection
 {
+    /*
     /// <summary>
     /// Represents extension for the <see cref="EventModelFacility"/> which registers event store behavior.
     /// </summary>
@@ -76,4 +76,5 @@ namespace AppCore.DependencyInjection
             }
         }
     }
+    */
 }

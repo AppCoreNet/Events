@@ -27,14 +27,14 @@ namespace AppCore.EventModel.EntityFrameworkCore
         {
             Provider = new DbContextDataProvider<DefaultDataProvider, TDbContext>(
                 context,
-                Substitute.For<ILogger<DbContextDataProvider>>());
+                Substitute.For<ILoggerFactory>());
         }
 
         protected abstract DbContextEventQueue<TDbContext> CreateEventQueue(
             IDbContextDataProvider<TDbContext> provider,
             IEnumerable<IEventContextFormatter> formatters);
 
-        protected static IEventContext<TestEvent> CreateEventContext(TestEvent @event, EventDescriptor descriptor = null)
+        protected static IEventContext<TestEvent> CreateEventContext(TestEvent @event, EventDescriptor? descriptor = null)
         {
             var features = new Dictionary<Type, object>();
 

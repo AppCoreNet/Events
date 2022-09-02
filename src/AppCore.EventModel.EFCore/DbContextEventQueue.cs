@@ -30,7 +30,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
         private static string OffsetItemKey = "AppCore.EventModel.EventQueueOffset";
 
         private readonly Dictionary<string, IEventContextFormatter> _formatters;
-        private ITransaction _transaction;
+        private ITransaction? _transaction;
 
         /// <summary>
         /// Gets the data provider.
@@ -116,7 +116,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
 
         private IEventContextFormatter GetFormatter(string contentType)
         {
-            if (!_formatters.TryGetValue(contentType, out IEventContextFormatter formatter))
+            if (!_formatters.TryGetValue(contentType, out IEventContextFormatter? formatter))
                 throw new NotSupportedException($"No event formatter registered for content type '{contentType}'.");
 
             return formatter;

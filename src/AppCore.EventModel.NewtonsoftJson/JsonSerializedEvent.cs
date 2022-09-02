@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace AppCore.EventModel.Formatters
 {
-    internal class JsonSerializedEvent
+    internal sealed class JsonSerializedEvent
     {
         public IReadOnlyDictionary<string, object> Metadata { get; set; }
 

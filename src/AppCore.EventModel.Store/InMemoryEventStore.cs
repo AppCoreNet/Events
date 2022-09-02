@@ -69,7 +69,7 @@ namespace AppCore.EventModel.Store
                     _events.AddRange(events.Select(e => new EventData(_nextOffset++, e.EventDescriptor, e.Event)));
 
                     // notify all readers
-                    TaskCompletionSource<bool>[] sources = _taskCompletionSources.ToArray(); 
+                    TaskCompletionSource<bool>[] sources = _taskCompletionSources.ToArray();
                     _taskCompletionSources.Clear();
                     foreach (TaskCompletionSource<bool> source in sources)
                         source.TrySetResult(true);
@@ -80,7 +80,7 @@ namespace AppCore.EventModel.Store
 
             public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(EventOffset offset, int maxCount, TimeSpan timeout, CancellationToken cancellationToken)
             {
-                CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 cts.CancelAfter(timeout);
 
                 do

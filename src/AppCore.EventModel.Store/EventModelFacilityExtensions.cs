@@ -5,13 +5,14 @@ using System;
 using AppCore.Diagnostics;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.DependencyInjection
+namespace AppCore.Extensions.DependencyInjection
 {
     /// <summary>
     /// Provides extension methods to register an event store.
     /// </summary>
     public static class EventModelFacilityExtensions
     {
+        /*
         /// <summary>
         /// Registers event store behavior.
         /// </summary>
@@ -26,5 +27,6 @@ namespace AppCore.DependencyInjection
             facility.AddExtension(configure);
             return facility;
         }
+        */
     }
 }

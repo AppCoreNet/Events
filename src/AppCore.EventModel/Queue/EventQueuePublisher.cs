@@ -59,7 +59,7 @@ namespace AppCore.EventModel.Queue
 
             _logger.PublishingEvents(events.Count);
 
-            IEventContext lastEvent = null;
+            IEventContext? lastEvent = null;
             int eventCount = 0;
 
             try
