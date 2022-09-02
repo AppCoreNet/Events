@@ -29,9 +29,9 @@ public class EventDescriptor
     /// <param name="metadata">The event type metadata.</param>
     public EventDescriptor(Type eventType, IReadOnlyDictionary<string, object> metadata)
     {
-        Ensure.Arg.NotNull(eventType, nameof(eventType));
-        Ensure.Arg.OfType<IEvent>(eventType, nameof(eventType));
-        Ensure.Arg.NotNull(metadata, nameof(metadata));
+        Ensure.Arg.NotNull(eventType);
+        Ensure.Arg.OfType<IEvent>(eventType);
+        Ensure.Arg.NotNull(metadata);
 
         EventType = eventType;
         Metadata = metadata;

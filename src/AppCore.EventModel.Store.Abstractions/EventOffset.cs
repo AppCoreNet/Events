@@ -32,7 +32,7 @@ public readonly struct EventOffset : IEquatable<EventOffset>
     /// <param name="value">The event offset.</param>
     public EventOffset(long value)
     {
-        Ensure.Arg.InRange(value, -2, long.MaxValue, nameof(value));
+        Ensure.Arg.InRange(value, -2, long.MaxValue);
         Value = value;
     }
 

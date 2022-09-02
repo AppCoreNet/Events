@@ -29,7 +29,7 @@ public class NewtonsoftJsonFormatter : IEventContextFormatter
     /// <param name="options">The <see cref="NewtonsoftJsonFormatterOptions"/>.</param>
     public NewtonsoftJsonFormatter(IEventContextFactory contextFactory, IOptionsMonitor<NewtonsoftJsonFormatterOptions> options)
     {
-        Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
+        Ensure.Arg.NotNull(contextFactory);
 
         _contextFactory = contextFactory;
         _serializer = JsonSerializer.Create(options.CurrentValue.SerializerSettings);
@@ -38,8 +38,8 @@ public class NewtonsoftJsonFormatter : IEventContextFormatter
     /// <inheritdoc />
     public void Write(Stream stream, IEventContext context)
     {
-        Ensure.Arg.NotNull(stream, nameof(stream));
-        Ensure.Arg.NotNull(context, nameof(context));
+        Ensure.Arg.NotNull(stream);
+        Ensure.Arg.NotNull(context);
 
         IDictionary<object,object> items = context.Items;
         IReadOnlyDictionary<string,object> metadata = context.EventDescriptor.Metadata;
@@ -61,7 +61,7 @@ public class NewtonsoftJsonFormatter : IEventContextFormatter
     /// <inheritdoc />
     public IEventContext Read(Stream stream)
     {
-        Ensure.Arg.NotNull(stream, nameof(stream));
+        Ensure.Arg.NotNull(stream);
 
         JsonSerializedEvent @event;
         using (var reader = new StreamReader(stream))

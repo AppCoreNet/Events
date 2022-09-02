@@ -43,8 +43,8 @@ public class EventContextFactory : IEventContextFactory
     /// <inheritdoc />
     public IEventContext CreateContext(EventDescriptor descriptor, IEvent @event)
     {
-        Ensure.Arg.NotNull(descriptor, nameof(descriptor));
-        Ensure.Arg.NotNull(@event, nameof(@event));
+        Ensure.Arg.NotNull(descriptor);
+        Ensure.Arg.NotNull(@event);
 
         Type eventType = @event.GetType();
         EventContextFactoryDelegate factory = GetEventContextFactory(eventType);

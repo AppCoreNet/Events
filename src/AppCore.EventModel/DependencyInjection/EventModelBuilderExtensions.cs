@@ -43,7 +43,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(handlerType, nameof(handlerType));
+        Ensure.Arg.NotNull(handlerType);
 
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Describe(typeof(IEventHandler<>), handlerType, lifetime));
@@ -65,7 +65,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(configure, nameof(configure));
+        Ensure.Arg.NotNull(configure);
 
         builder.Services.TryAddEnumerableFrom(
             typeof(IEventHandler<>),
@@ -92,7 +92,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(handlerType, nameof(handlerType));
+        Ensure.Arg.NotNull(handlerType);
 
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Describe(typeof(IPreEventHandler<>), handlerType, lifetime));
@@ -114,7 +114,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(configure, nameof(configure));
+        Ensure.Arg.NotNull(configure);
 
         builder.Services.TryAddEnumerableFrom(
             typeof(IPreEventHandler<>),
@@ -141,7 +141,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(handlerType, nameof(handlerType));
+        Ensure.Arg.NotNull(handlerType);
 
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Describe(typeof(IPostEventHandler<>), handlerType, lifetime));
@@ -163,7 +163,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(configure, nameof(configure));
+        Ensure.Arg.NotNull(configure);
 
         builder.Services.TryAddEnumerableFrom(
             typeof(IPostEventHandler<>),
@@ -190,7 +190,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime lifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(handlerType, nameof(handlerType));
+        Ensure.Arg.NotNull(handlerType);
 
         builder.Services.TryAddEnumerable(
             ServiceDescriptor.Describe(typeof(IEventPipelineBehavior<>), handlerType, lifetime));
@@ -212,7 +212,7 @@ public static class EventModelBuilderExtensions
         ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
     {
         Ensure.Arg.NotNull(builder);
-        Ensure.Arg.NotNull(configure, nameof(configure));
+        Ensure.Arg.NotNull(configure);
 
         builder.Services.TryAddEnumerableFrom(
             typeof(IEventPipelineBehavior<>),

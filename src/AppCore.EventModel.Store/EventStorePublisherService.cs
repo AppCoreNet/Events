@@ -26,8 +26,8 @@ public class EventStorePublisherService : BackgroundService
     /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
     public EventStorePublisherService(IEventStorePublisher publisher, ILogger<EventStorePublisherService> logger)
     {
-        Ensure.Arg.NotNull(publisher, nameof(publisher));
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(publisher);
+        Ensure.Arg.NotNull(logger);
 
         _publisher = publisher;
         _logger = logger;
@@ -81,7 +81,7 @@ public class EventStorePublisherService : BackgroundService
         /// <param name="serviceProvider">The <see cref="IServiceProvider"/> used to resolve an <see cref="IEventStorePublisher"/>.</param>
         public Scoped(IServiceProvider serviceProvider)
         {
-            Ensure.Arg.NotNull(serviceProvider, nameof(serviceProvider));
+            Ensure.Arg.NotNull(serviceProvider);
             _serviceProvider = serviceProvider;
         }
 

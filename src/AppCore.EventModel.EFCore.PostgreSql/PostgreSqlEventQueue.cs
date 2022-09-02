@@ -11,7 +11,6 @@ using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Npgsql;
 
 namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql;
 

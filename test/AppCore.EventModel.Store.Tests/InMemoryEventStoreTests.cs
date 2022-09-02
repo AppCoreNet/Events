@@ -35,7 +35,7 @@ public class InMemoryEventStoreTests
         var factory = Substitute.For<IEventContextFactory>();
         factory.CreateContext(Arg.Any<EventDescriptor>(), Arg.Any<TestEvent>())
                .Returns(
-                   ci => (IEventContext) CreateEventContext(
+                   ci => CreateEventContext(
                        ci.ArgAt<TestEvent>(1),
                        ci.ArgAt<EventDescriptor>(0)));
 

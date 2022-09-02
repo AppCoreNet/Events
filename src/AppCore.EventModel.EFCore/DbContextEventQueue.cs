@@ -56,8 +56,8 @@ public abstract class DbContextEventQueue<TDbContext> : IEventQueue, IAsyncDispo
         IDbContextDataProvider<TDbContext> dataProvider,
         IEnumerable<IEventContextFormatter> formatters)
     {
-        Ensure.Arg.NotNull(dataProvider, nameof(dataProvider));
-        Ensure.Arg.NotNull(formatters, nameof(formatters));
+        Ensure.Arg.NotNull(dataProvider);
+        Ensure.Arg.NotNull(formatters);
 
         _formatters = formatters.ToDictionary(
             f => f.ContentType,
@@ -153,7 +153,7 @@ public abstract class DbContextEventQueue<TDbContext> : IEventQueue, IAsyncDispo
     /// <inheritdoc />
     public async Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
     {
-        Ensure.Arg.NotNull(events, nameof(events));
+        Ensure.Arg.NotNull(events);
 
         IEventContextFormatter formatter = _formatters.First().Value;
         using (Provider.BeginChangeScope())
@@ -203,7 +203,7 @@ public abstract class DbContextEventQueue<TDbContext> : IEventQueue, IAsyncDispo
         int maxEventsToRead,
         CancellationToken cancellationToken)
     {
-        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue);
 
         if (_transaction != null)
         {
@@ -277,7 +277,7 @@ public abstract class DbContextEventQueue<TDbContext> : IEventQueue, IAsyncDispo
     /// <inheritdoc />
     public async Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken)
     {
-        Ensure.Arg.NotNull(@event, nameof(@event));
+        Ensure.Arg.NotNull(@event);
 
         if (_transaction == null)
         {
@@ -312,8 +312,8 @@ public abstract class DbContextEventQueue<TDbContext> : IEventQueue, IAsyncDispo
     /// <inheritdoc />
     public async Task<IReadOnlyCollection<IEventContext>> ReadHistoryAsync(long offset, int maxEventsToRead, CancellationToken cancellationToken)
     {
-        Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
-        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+        Ensure.Arg.InRange(offset, 0, long.MaxValue);
+        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue);
 
         var result = new List<IEventContext>(maxEventsToRead);
         IAsyncEnumerable<EventHistory> eventHistory = ReadHistoryCoreAsync(offset, maxEventsToRead, cancellationToken);

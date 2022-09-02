@@ -29,8 +29,8 @@ public class PostEventHandlerBehavior<TEvent> : IEventPipelineBehavior<TEvent>
     /// <exception cref="ArgumentNullException">Argument <paramref name="handlers"/> is <c>null</c>.</exception>
     public PostEventHandlerBehavior(IEnumerable<IPostEventHandler<TEvent>> handlers, ILogger<PostEventHandlerBehavior<TEvent>> logger)
     {
-        Ensure.Arg.NotNull(handlers, nameof(handlers));
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(handlers);
+        Ensure.Arg.NotNull(logger);
 
         _handlers = handlers.ToList();
         _logger = logger;

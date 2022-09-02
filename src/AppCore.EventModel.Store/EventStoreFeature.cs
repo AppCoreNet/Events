@@ -21,8 +21,8 @@ public class EventStoreFeature : IEventStoreFeature
     /// <param name="offset">The offset of the event.</param>
     public EventStoreFeature(IEventStore store, long offset)
     {
-        Ensure.Arg.NotNull(store, nameof(store));
-        Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
+        Ensure.Arg.NotNull(store);
+        Ensure.Arg.InRange(offset, 0, long.MaxValue);
 
         Store = store;
         Offset = offset;

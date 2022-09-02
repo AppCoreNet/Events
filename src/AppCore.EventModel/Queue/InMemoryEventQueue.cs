@@ -30,7 +30,7 @@ public class InMemoryEventQueue : IEventQueue
     /// <inheritdoc />
     public async Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
     {
-        Ensure.Arg.NotNull(events, nameof(events));
+        Ensure.Arg.NotNull(events);
 
         ChannelWriter<IEventContext> writer = _channel.Writer;
         foreach (IEventContext @event in events)
@@ -43,7 +43,7 @@ public class InMemoryEventQueue : IEventQueue
     /// <inheritdoc />
     public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(int maxEventsToRead, CancellationToken cancellationToken)
     {
-        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue);
 
         ChannelReader<IEventContext> reader = _channel.Reader;
         bool eventAvailable = await reader.WaitToReadAsync(cancellationToken)

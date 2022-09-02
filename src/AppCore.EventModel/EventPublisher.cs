@@ -35,9 +35,9 @@ public class EventPublisher : IEventPublisher
         IEventPipelineResolver pipelineResolver,
         IEventQueue? queue = null)
     {
-        Ensure.Arg.NotNull(descriptorFactory, nameof(descriptorFactory));
-        Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
-        Ensure.Arg.NotNull(pipelineResolver, nameof(pipelineResolver));
+        Ensure.Arg.NotNull(descriptorFactory);
+        Ensure.Arg.NotNull(contextFactory);
+        Ensure.Arg.NotNull(pipelineResolver);
 
         _descriptorFactory = descriptorFactory;
         _contextFactory = contextFactory;
@@ -48,7 +48,7 @@ public class EventPublisher : IEventPublisher
     /// <inheritdoc />
     public async Task PublishAsync(IEvent @event, CancellationToken cancellationToken)
     {
-        Ensure.Arg.NotNull(@event, nameof(@event));
+        Ensure.Arg.NotNull(@event);
 
         Type eventType = @event.GetType();
 

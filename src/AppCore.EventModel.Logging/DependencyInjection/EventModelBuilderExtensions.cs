@@ -3,7 +3,6 @@
 
 using System;
 using AppCore.Diagnostics;
-using AppCore.EventModel;
 using AppCore.EventModel.Logging;
 using AppCore.EventModel.Pipeline;
 using Microsoft.Extensions.DependencyInjection;

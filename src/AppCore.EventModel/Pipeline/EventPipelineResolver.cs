@@ -24,7 +24,7 @@ public sealed class EventPipelineResolver : IEventPipelineResolver
     /// <param name="serviceProvider">The <see cref="IServiceProvider"/> used to resolve a <see cref="IEventPipeline{TEvent}"/>.</param>
     public EventPipelineResolver(IServiceProvider serviceProvider)
     {
-        Ensure.Arg.NotNull(serviceProvider, nameof(serviceProvider));
+        Ensure.Arg.NotNull(serviceProvider);
         _serviceProvider = serviceProvider;
     }
 
@@ -35,7 +35,7 @@ public sealed class EventPipelineResolver : IEventPipelineResolver
     /// <returns>The <see cref="IEventPipeline{TEvent}"/> instance.</returns>
     public IEventPipeline Resolve(Type eventType)
     {
-        Ensure.Arg.NotNull(eventType, nameof(eventType));
+        Ensure.Arg.NotNull(eventType);
 
         return _pipelines.GetOrAdd(
             eventType,

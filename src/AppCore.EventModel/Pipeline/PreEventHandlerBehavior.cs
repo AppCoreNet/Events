@@ -31,8 +31,8 @@ public class PreEventHandlerBehavior<TEvent> : IEventPipelineBehavior<TEvent>
         IEnumerable<IPreEventHandler<TEvent>> handlers,
         ILogger<PreEventHandlerBehavior<TEvent>> logger)
     {
-        Ensure.Arg.NotNull(handlers, nameof(handlers));
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(handlers);
+        Ensure.Arg.NotNull(logger);
 
         _handlers = handlers.ToList();
         _logger = logger;

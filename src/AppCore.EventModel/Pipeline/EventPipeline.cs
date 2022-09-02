@@ -37,9 +37,9 @@ public class EventPipeline<TEvent> : IEventPipeline<TEvent>
         ILogger<EventPipeline<TEvent>> logger,
         IEventContextAccessor? contextAccessor = null)
     {
-        Ensure.Arg.NotNull(behaviors, nameof(behaviors));
-        Ensure.Arg.NotNull(handlers, nameof(handlers));
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(behaviors);
+        Ensure.Arg.NotNull(handlers);
+        Ensure.Arg.NotNull(logger);
 
         _behaviors = behaviors.ToList();
         _handlers = handlers.ToList();
@@ -50,7 +50,7 @@ public class EventPipeline<TEvent> : IEventPipeline<TEvent>
     /// <inheritdoc />
     public async Task ProcessAsync(IEventContext<TEvent> eventContext, CancellationToken cancellationToken)
     {
-        Ensure.Arg.NotNull(eventContext, nameof(eventContext));
+        Ensure.Arg.NotNull(eventContext);
 
         bool handlerInvoked = false;
         async Task Handler(IEventContext<TEvent> c, CancellationToken ct)

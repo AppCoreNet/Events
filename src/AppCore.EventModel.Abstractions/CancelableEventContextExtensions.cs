@@ -18,7 +18,7 @@ public static class CancelableEventContextExtensions
     /// <returns><c>true</c> if the event can be canceled; <c>false</c> otherwise.</returns>
     public static bool IsCancelable(this IEventContext context)
     {
-        Ensure.Arg.NotNull(context, nameof(context));
+        Ensure.Arg.NotNull(context);
         return context.HasFeature<ICancelableEventFeature>();
     }
 
@@ -28,7 +28,7 @@ public static class CancelableEventContextExtensions
     /// <param name="context">The <see cref="IEventContext"/>.</param>
     public static void Cancel(this IEventContext context)
     {
-        Ensure.Arg.NotNull(context, nameof(context));
+        Ensure.Arg.NotNull(context);
         var feature = context.GetFeature<ICancelableEventFeature>();
         feature.Cancel();
     }

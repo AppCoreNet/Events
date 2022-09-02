@@ -20,8 +20,8 @@ public static class EventContextExtensions
     /// <exception cref="InvalidOperationException">The event context feature is already registered.</exception>
     public static void AddFeature<T>(this IEventContext context, T feature)
     {
-        Ensure.Arg.NotNull(context, nameof(context));
-        Ensure.Arg.NotNull(feature, nameof(feature));
+        Ensure.Arg.NotNull(context);
+        Ensure.Arg.NotNull(feature);
 
         try
         {
@@ -42,7 +42,7 @@ public static class EventContextExtensions
     /// <returns><c>true</c> if the feature was found; <c>false</c> otherwise.</returns>
     public static bool TryGetFeature<T>(this IEventContext context, out T? feature)
     {
-        Ensure.Arg.NotNull(context, nameof(context));
+        Ensure.Arg.NotNull(context);
 
         if (context.Features.TryGetValue(typeof(T), out object? tmp))
         {
@@ -77,7 +77,7 @@ public static class EventContextExtensions
     /// <returns><c>true</c> if the feature is available; <c>false</c> otherwise.</returns>
     public static bool HasFeature<T>(this IEventContext context)
     {
-        Ensure.Arg.NotNull(context, nameof(context));
+        Ensure.Arg.NotNull(context);
         return context.Features.ContainsKey(typeof(T));
     }
 }

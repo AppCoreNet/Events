@@ -4,10 +4,8 @@
 using System;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Formatters;
-using AppCore.EventModel.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 // ReSharper disable once CheckNamespace
 namespace AppCore.Extensions.DependencyInjection;
@@ -25,7 +23,7 @@ public static class EventModelBuilderExtensions
     /// <returns>The passed builder to allow chaining.</returns>
     public static IEventModelBuilder AddNewtonsoftJsonFormatter(this IEventModelBuilder builder, Action<NewtonsoftJsonFormatterOptions>? configure = null)
     {
-        Ensure.Arg.NotNull(builder, nameof(builder));
+        Ensure.Arg.NotNull(builder);
 
         IServiceCollection services = builder.Services;
 

@@ -27,8 +27,8 @@ public class EventStoreBehavior<TEvent> : IEventPipelineBehavior<TEvent>
     /// <param name="logger">The logger.</param>
     public EventStoreBehavior(IEventStore store, ILogger<EventStoreBehavior<TEvent>> logger)
     {
-        Ensure.Arg.NotNull(store, nameof(store));
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(store);
+        Ensure.Arg.NotNull(logger);
         _store = store;
         _logger = logger;
     }

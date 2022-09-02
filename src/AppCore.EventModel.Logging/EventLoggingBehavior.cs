@@ -23,9 +23,9 @@ public class EventLoggingBehavior<TEvent> : IEventPipelineBehavior<TEvent>
     /// Initializes a new instance of the <see cref="EventLoggingBehavior{TEvent}"/> class.
     /// </summary>
     /// <param name="logger">The logger instance used to log events.</param>
-    public EventLoggingBehavior(ILogger<IEventPublisher> logger)
+    public EventLoggingBehavior(ILogger<EventLoggingBehavior<TEvent>> logger)
     {
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(logger);
         _logger = logger;
     }
 

@@ -14,8 +14,7 @@ namespace AppCore.EventModel.Metadata;
 /// </summary>
 public class EventDescriptorFactory : IEventDescriptorFactory
 {
-    private readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, object>> _metadataCache =
-        new ConcurrentDictionary<Type, IReadOnlyDictionary<string, object>>();
+    private readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, object>> _metadataCache = new();
 
     private readonly IEnumerable<IEventMetadataProvider> _metadataProviders;
 
@@ -25,7 +24,7 @@ public class EventDescriptorFactory : IEventDescriptorFactory
     /// <param name="metadataProviders">The <see cref="IEnumerable{T}"/> of <see cref="IEventMetadataProvider"/>'s.</param>
     public EventDescriptorFactory(IEnumerable<IEventMetadataProvider> metadataProviders)
     {
-        Ensure.Arg.NotNull(metadataProviders, nameof(metadataProviders));
+        Ensure.Arg.NotNull(metadataProviders);
         _metadataProviders = metadataProviders;
     }
 
@@ -48,8 +47,8 @@ public class EventDescriptorFactory : IEventDescriptorFactory
     /// <inheritdoc />
     public EventDescriptor CreateDescriptor(Type eventType)
     {
-        Ensure.Arg.NotNull(eventType, nameof(eventType));
-        Ensure.Arg.OfType<IEvent>(eventType, nameof(eventType));
+        Ensure.Arg.NotNull(eventType);
+        Ensure.Arg.OfType<IEvent>(eventType);
 
         return new EventDescriptor(eventType, GetMetadata(eventType));
     }

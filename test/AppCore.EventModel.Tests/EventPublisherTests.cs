@@ -37,7 +37,7 @@ public class EventPublisherTests
 
         _pipelineResolver = Substitute.For<IEventPipelineResolver>();
         _pipelineResolver.Resolve(typeof(TestEvent))
-                         .Returns(ci => _pipeline);
+                         .Returns(_ => _pipeline);
     }
 
     [Fact]

@@ -37,9 +37,9 @@ public class EventContext<TEvent> : IEventContext<TEvent>
     /// <param name="event">The event that is being processed.</param>
     public EventContext(EventDescriptor descriptor, TEvent @event)
     {
-        Ensure.Arg.NotNull(descriptor, nameof(descriptor));
-        Ensure.Arg.OfType<TEvent>(descriptor.EventType, nameof(descriptor));
-        Ensure.Arg.NotNull(@event, nameof(@event));
+        Ensure.Arg.NotNull(descriptor);
+        Ensure.Arg.OfType<TEvent>(descriptor.EventType);
+        Ensure.Arg.NotNull(@event);
 
         EventDescriptor = descriptor;
         Event = @event;

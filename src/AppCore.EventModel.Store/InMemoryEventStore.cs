@@ -149,7 +149,7 @@ public class InMemoryEventStore : ICommittableEventStore
     /// <param name="contextFactory">The factory used to create instances of <see cref="IEventContext"/>.</param>
     public InMemoryEventStore(IEventContextFactory contextFactory)
     {
-        Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
+        Ensure.Arg.NotNull(contextFactory);
         _contextFactory = contextFactory;
     }
 
@@ -164,7 +164,7 @@ public class InMemoryEventStore : ICommittableEventStore
     /// <inheritdoc />
     public async Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
     {
-        Ensure.Arg.NotNull(events, nameof(events));
+        Ensure.Arg.NotNull(events);
 
         var eventsByStream =
             events.GroupBy(
@@ -193,7 +193,7 @@ public class InMemoryEventStore : ICommittableEventStore
         TimeSpan timeout,
         CancellationToken cancellationToken)
     {
-        Ensure.Arg.InRange(maxCount, 0, int.MaxValue, nameof(maxCount));
+        Ensure.Arg.InRange(maxCount, 0, int.MaxValue);
 
         EventDataStream queue = GetStream(streamName);
         return await queue.ReadAsync(offset, maxCount, timeout, cancellationToken)
@@ -203,7 +203,7 @@ public class InMemoryEventStore : ICommittableEventStore
     /// <inheritdoc />
     public async Task CommitAsync(string streamName, long offset, CancellationToken cancellationToken)
     {
-        Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
+        Ensure.Arg.InRange(offset, 0, long.MaxValue);
 
         EventDataStream queue = GetStream(streamName);
         await queue.CommitAsync(offset, cancellationToken)

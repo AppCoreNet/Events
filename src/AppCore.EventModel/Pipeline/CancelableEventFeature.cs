@@ -19,7 +19,7 @@ public class CancelableEventFeature : ICancelableEventFeature
     /// <param name="cancellationTokenSource">The <see cref="CancellationTokenSource"/>.</param>
     public CancelableEventFeature(CancellationTokenSource cancellationTokenSource)
     {
-        Ensure.Arg.NotNull(cancellationTokenSource, nameof(cancellationTokenSource));
+        Ensure.Arg.NotNull(cancellationTokenSource);
         _cancellationTokenSource = cancellationTokenSource;
     }
 

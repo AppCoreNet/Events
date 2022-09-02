@@ -33,10 +33,10 @@ public class EventStorePublisher : IEventStorePublisher
         IEventPipelineResolver pipelineResolver,
         ILogger<EventStorePublisher> logger)
     {
-        Ensure.Arg.NotNull(store, nameof(store));
-        Ensure.Arg.NotNull(storeOffset, nameof(storeOffset));
-        Ensure.Arg.NotNull(pipelineResolver, nameof(pipelineResolver));
-        Ensure.Arg.NotNull(logger, nameof(logger));
+        Ensure.Arg.NotNull(store);
+        Ensure.Arg.NotNull(storeOffset);
+        Ensure.Arg.NotNull(pipelineResolver);
+        Ensure.Arg.NotNull(logger);
 
         _store = store;
         _storeOffset = storeOffset;

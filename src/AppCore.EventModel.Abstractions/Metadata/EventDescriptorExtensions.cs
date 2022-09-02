@@ -23,8 +23,8 @@ public static class EventDescriptorExtensions
     /// <exception cref="InvalidCastException">The metadata value is not of the specified type.</exception>
     public static bool TryGetMetadata<T>(this EventDescriptor descriptor, string key, out T? value)
     {
-        Ensure.Arg.NotNull(descriptor, nameof(descriptor));
-        Ensure.Arg.NotEmpty(key, nameof(key));
+        Ensure.Arg.NotNull(descriptor);
+        Ensure.Arg.NotEmpty(key);
 
         if (!descriptor.Metadata.TryGetValue(key, out object tmp))
         {

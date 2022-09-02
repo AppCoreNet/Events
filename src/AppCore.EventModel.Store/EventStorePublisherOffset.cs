@@ -22,7 +22,7 @@ public class EventStorePublisherOffset : IEventStorePublisherOffset
     /// <inheritdoc />
     public Task CommitOffset(long offset, CancellationToken cancellationToken = default)
     {
-        Ensure.Arg.InRange(offset, 0, long.MaxValue, nameof(offset));
+        Ensure.Arg.InRange(offset, 0, long.MaxValue);
         _nextOffset = offset + 1;
         return _completedTask;
     }
