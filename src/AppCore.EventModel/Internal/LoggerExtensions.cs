@@ -10,43 +10,43 @@ namespace AppCore.EventModel
     internal static class LoggerExtensions
     {
         // EventPipeline
-        private static readonly Action<ILogger, string, Exception> _pipelineProcessing =
+        private static readonly Action<ILogger, string, Exception?> _pipelineProcessing =
             LoggerMessage.Define<string>(
                 LogLevel.Trace,
                 LogEventIds.PipelineProcessing,
                 "Processing event {eventType} ...");
 
-        private static readonly Action<ILogger, string, long, Exception> _pipelineProcessed =
+        private static readonly Action<ILogger, string, long, Exception?> _pipelineProcessed =
             LoggerMessage.Define<string, long>(
                 LogLevel.Debug,
                 LogEventIds.PipelineProcessed,
                 "Successfully processed event {eventType} in {elapsedTime} ms.");
 
-        private static readonly Action<ILogger, string, long, Exception> _pipelineFailed =
+        private static readonly Action<ILogger, string, long, Exception?> _pipelineFailed =
             LoggerMessage.Define<string, long>(
                 LogLevel.Error,
                 LogEventIds.PipelineFailed,
                 "Failed to process event {eventType} after {elapsedTime} ms.");
 
-        private static readonly Action<ILogger, string, string, long, Exception> _pipelineShortCircuited =
+        private static readonly Action<ILogger, string, string, long, Exception?> _pipelineShortCircuited =
             LoggerMessage.Define<string, string, long>(
                 LogLevel.Debug,
                 LogEventIds.PipelineShortCircuited,
                 "Processing of event {eventType} was short-circuited by behavior {eventPipelineBehaviorType} in {elapsedTime} ms.");
 
-        private static readonly Action<ILogger, string, string, Exception> _invokingBehavior =
+        private static readonly Action<ILogger, string, string, Exception?> _invokingBehavior =
             LoggerMessage.Define<string, string>(
                 LogLevel.Trace,
                 LogEventIds.InvokingBehavior,
                 "Invoking behavior {pipelineBehaviorType} for event {eventType} ...");
 
-        private static readonly Action<ILogger, string, string, Exception> _invokingPreEventHandler =
+        private static readonly Action<ILogger, string, string, Exception?> _invokingPreEventHandler =
             LoggerMessage.Define<string, string>(
                 LogLevel.Trace,
                 LogEventIds.InvokingPreEventHandler,
                 "Invoking pre-handler {preEventHandlerType} for event {eventType} ...");
 
-        private static readonly Action<ILogger, string, string, Exception> _invokingPostEventHandler =
+        private static readonly Action<ILogger, string, string, Exception?> _invokingPostEventHandler =
             LoggerMessage.Define<string, string>(
                 LogLevel.Trace,
                 LogEventIds.InvokingPostEventHandler,
@@ -94,7 +94,7 @@ namespace AppCore.EventModel
 
         // EventQueuePublisherService
 
-        private static readonly Action<ILogger, Exception> _publishingQueuedEventsFailed =
+        private static readonly Action<ILogger, Exception?> _publishingQueuedEventsFailed =
             LoggerMessage.Define(
                 LogLevel.Error,
                 LogEventIds.PublishingQueuedEventsFailed,
@@ -108,19 +108,19 @@ namespace AppCore.EventModel
 
         // EventQueuePublisher
 
-        private static readonly Action<ILogger, Exception> _dequeuingEvents =
+        private static readonly Action<ILogger, Exception?> _dequeuingEvents =
             LoggerMessage.Define(
                 LogLevel.Trace,
                 LogEventIds.DequeuingEvents,
                 "Reading events from queue ...");
 
-        private static readonly Action<ILogger, int, Exception> _publishingEvents =
+        private static readonly Action<ILogger, int, Exception?> _publishingEvents =
             LoggerMessage.Define<int>(
                 LogLevel.Trace,
                 LogEventIds.PublishingEvents,
                 "Publishing {eventCount} events ...");
 
-        private static readonly Action<ILogger, int, Exception> _publishedEvents =
+        private static readonly Action<ILogger, int, Exception?> _publishedEvents =
             LoggerMessage.Define<int>(
                 LogLevel.Debug,
                 LogEventIds.PublishedEvents,

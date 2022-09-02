@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Pipeline;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AppCore.EventModel.Queue
 {
@@ -17,31 +18,31 @@ namespace AppCore.EventModel.Queue
     {
         private readonly IEventQueue _queue;
         private readonly IEventPipelineResolver _pipelineResolver;
+        private readonly IOptionsMonitor<EventQueueOptions> _optionsMonitor;
         private readonly ILogger<EventQueuePublisher> _logger;
-
-        private const int _maxEventsToRead = 64;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventQueuePublisher"/> class.
         /// </summary>
         /// <param name="queue">The event queue.</param>
         /// <param name="pipelineResolver">The event pipeline resolver.</param>
+        /// <param name="optionsMonitor">The <see cref="IOptionsMonitor{TOptions}"/> of <see cref="EventQueueOptions"/>.</param>
         /// <param name="logger">The logger.</param>
         public EventQueuePublisher(
             IEventQueue queue,
             IEventPipelineResolver pipelineResolver,
+            IOptionsMonitor<EventQueueOptions> optionsMonitor,
             ILogger<EventQueuePublisher> logger)
         {
-            Ensure.Arg.NotNull(queue, nameof(queue));
-            Ensure.Arg.NotNull(pipelineResolver, nameof(pipelineResolver));
-            Ensure.Arg.NotNull(logger, nameof(logger));
+            Ensure.Arg.NotNull(queue);
+            Ensure.Arg.NotNull(pipelineResolver);
+            Ensure.Arg.NotNull(optionsMonitor);
+            Ensure.Arg.NotNull(logger);
 
             _queue = queue;
             _pipelineResolver = pipelineResolver;
+            _optionsMonitor = optionsMonitor;
             _logger = logger;
-
-            //TODO: retrieve from options
-            //_maxEventsToRead = 64;
         }
 
         /// <summary>
@@ -53,8 +54,10 @@ namespace AppCore.EventModel.Queue
         {
             _logger.DequeuingEvents();
 
+            EventQueueOptions options = _optionsMonitor.CurrentValue;
+
             IReadOnlyCollection<IEventContext> events =
-                await _queue.ReadAsync(64, cancellationToken)
+                await _queue.ReadAsync(options.BatchSize, cancellationToken)
                             .ConfigureAwait(false);
 
             _logger.PublishingEvents(events.Count);

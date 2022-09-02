@@ -21,7 +21,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// Adds logging of events to the pipeline.
         /// </summary>
         /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder UseLogging(this IEventModelBuilder builder)
+        public static IEventModelBuilder AddLogging(this IEventModelBuilder builder)
         {
             Ensure.Arg.NotNull(builder);
 

@@ -40,11 +40,11 @@ namespace AppCore.EventModel
         /// <param name="context">The <see cref="IEventContext"/>.</param>
         /// <param name="feature">The feature.</param>
         /// <returns><c>true</c> if the feature was found; <c>false</c> otherwise.</returns>
-        public static bool TryGetFeature<T>(this IEventContext context, out T feature)
+        public static bool TryGetFeature<T>(this IEventContext context, out T? feature)
         {
             Ensure.Arg.NotNull(context, nameof(context));
 
-            if (context.Features.TryGetValue(typeof(T), out object tmp))
+            if (context.Features.TryGetValue(typeof(T), out object? tmp))
             {
                 feature = (T) tmp;
                 return true;
@@ -63,10 +63,10 @@ namespace AppCore.EventModel
         /// <exception cref="InvalidOperationException">The event context feature is not available.</exception>
         public static T GetFeature<T>(this IEventContext context)
         {
-            if (!TryGetFeature(context, out T feature))
+            if (!TryGetFeature(context, out T? feature))
                 throw new InvalidOperationException($"Event context feature {typeof(T).GetDisplayName()} is not available.");
 
-            return feature;
+            return feature!;
         }
 
         /// <summary>

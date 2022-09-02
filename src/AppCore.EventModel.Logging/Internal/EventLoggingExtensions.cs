@@ -9,13 +9,13 @@ namespace AppCore.EventModel.Logging
 {
     internal static class EventLoggingExtensions
     {
-        private static readonly Action<ILogger, object, Exception> _eventHandled =
+        private static readonly Action<ILogger, object, Exception?> _eventHandled =
             LoggerMessage.Define<object>(
                 LogLevel.Information,
                 EventLoggingBehaviorLogEventIds.EventHandled,
                 "Successfully published event {event}");
 
-        private static readonly Action<ILogger, object, Exception> _eventFailed =
+        private static readonly Action<ILogger, object, Exception?> _eventFailed =
             LoggerMessage.Define<object>(
                 LogLevel.Error,
                 EventLoggingBehaviorLogEventIds.EventFailed,

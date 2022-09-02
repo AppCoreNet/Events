@@ -21,7 +21,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// Registers the <see cref="IEventContextAccessor"/> with the DI container.
         /// </summary>
         /// <returns>The <see cref="EventModelBuilderExtensions"/>.</returns>
-        public static IEventModelBuilder WithEventContext(this IEventModelBuilder builder)
+        public static IEventModelBuilder AddEventContextAccessor(this IEventModelBuilder builder)
         {
             Ensure.Arg.NotNull(builder);
 
@@ -37,7 +37,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="lifetime">The lifetime of the handler.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="handlerType"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithHandler(
+        public static IEventModelBuilder AddHandler(
             this IEventModelBuilder builder,
             Type handlerType,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
@@ -59,7 +59,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="defaultLifetime">The default handler lifetime.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithHandlersFrom(
+        public static IEventModelBuilder AddHandlersFrom(
             this IEventModelBuilder builder,
             Action<IServiceDescriptorReflectionBuilder> configure,
             ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
@@ -86,7 +86,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="lifetime">The lifetime of the handler.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="handlerType"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithPreHandler(
+        public static IEventModelBuilder AddPreHandler(
             this IEventModelBuilder builder,
             Type handlerType,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
@@ -108,7 +108,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="defaultLifetime">The default handler lifetime.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithPreHandlersFrom(
+        public static IEventModelBuilder AddPreHandlersFrom(
             this IEventModelBuilder builder,
             Action<IServiceDescriptorReflectionBuilder> configure,
             ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
@@ -135,7 +135,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="lifetime">The lifetime of the handler.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="handlerType"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithPostHandler(
+        public static IEventModelBuilder AddPostHandler(
             this IEventModelBuilder builder,
             Type handlerType,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
@@ -157,7 +157,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="defaultLifetime">The default handler lifetime.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithPostHandlersFrom(
+        public static IEventModelBuilder AddPostHandlersFrom(
             this IEventModelBuilder builder,
             Action<IServiceDescriptorReflectionBuilder> configure,
             ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
@@ -184,7 +184,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="lifetime">The lifetime of the handler.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="handlerType"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithBehavior(
+        public static IEventModelBuilder AddBehavior(
             this IEventModelBuilder builder,
             Type handlerType,
             ServiceLifetime lifetime = ServiceLifetime.Transient)
@@ -206,7 +206,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="defaultLifetime">The default handler lifetime.</param>
         /// <returns>The <see cref="IEventModelBuilder"/>.</returns>
         /// <exception cref="ArgumentNullException">Argument <paramref name="configure"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder WithBehaviorsFrom(
+        public static IEventModelBuilder AddBehaviorsFrom(
             this IEventModelBuilder builder,
             Action<IServiceDescriptorReflectionBuilder> configure,
             ServiceLifetime defaultLifetime = ServiceLifetime.Transient)
@@ -229,13 +229,18 @@ namespace AppCore.Extensions.DependencyInjection
         /// Registers event queueing services.
         /// </summary>
         /// <returns>The <see cref="IEventModelBuilder"/> to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithQueue(this IEventModelBuilder builder)
+        public static IEventModelQueueBuilder AddQueueing(this IEventModelBuilder builder, Action<EventQueueOptions>? configure = null)
         {
             Ensure.Arg.NotNull(builder);
 
             IServiceCollection services = builder.Services;
             services.TryAddTransient<EventQueuePublisher>();
             services.AddHostedService<EventQueuePublisherService>();
+
+            if (configure != null)
+            {
+                services.Configure(configure);
+            }
 
             return new EventModelQueueBuilder(services);
         }

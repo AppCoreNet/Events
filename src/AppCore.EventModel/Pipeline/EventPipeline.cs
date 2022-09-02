@@ -22,7 +22,7 @@ namespace AppCore.EventModel.Pipeline
         private readonly List<IEventPipelineBehavior<TEvent>> _behaviors;
         private readonly List<IEventHandler<TEvent>> _handlers;
         private readonly ILogger<EventPipeline<TEvent>> _logger;
-        private readonly IEventContextAccessor _contextAccessor;
+        private readonly IEventContextAccessor? _contextAccessor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventPipeline{TEvent}"/> class.
@@ -35,7 +35,7 @@ namespace AppCore.EventModel.Pipeline
             IEnumerable<IEventPipelineBehavior<TEvent>> behaviors,
             IEnumerable<IEventHandler<TEvent>> handlers,
             ILogger<EventPipeline<TEvent>> logger,
-            IEventContextAccessor contextAccessor = null)
+            IEventContextAccessor? contextAccessor = null)
         {
             Ensure.Arg.NotNull(behaviors, nameof(behaviors));
             Ensure.Arg.NotNull(handlers, nameof(handlers));
@@ -72,7 +72,7 @@ namespace AppCore.EventModel.Pipeline
 
             try
             {
-                IEventPipelineBehavior<TEvent> current = null;
+                IEventPipelineBehavior<TEvent>? current = null;
                 await ((IEnumerable<IEventPipelineBehavior<TEvent>>)_behaviors)
                       .Reverse()
                       .Aggregate(
@@ -92,7 +92,7 @@ namespace AppCore.EventModel.Pipeline
                 }
                 else
                 {
-                    _logger.PipelineShortCircuited(typeof(TEvent), current.GetType(), stopwatch.Elapsed);
+                    _logger.PipelineShortCircuited(typeof(TEvent), current!.GetType(), stopwatch.Elapsed);
                 }
             }
             catch (Exception error)

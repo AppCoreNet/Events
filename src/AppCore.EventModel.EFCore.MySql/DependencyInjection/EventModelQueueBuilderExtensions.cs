@@ -22,7 +22,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithMySqlQueue<TTag, TDbContext>(this IEventModelQueueBuilder builder)
+        public static IEventModelQueueBuilder AddMySql<TTag, TDbContext>(this IEventModelQueueBuilder builder)
             where TDbContext : DbContext
         {
             Ensure.Arg.NotNull(builder);
@@ -42,10 +42,10 @@ namespace AppCore.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithMySqlQueue<TDbContext>(this IEventModelQueueBuilder builder)
+        public static IEventModelQueueBuilder AddMySql<TDbContext>(this IEventModelQueueBuilder builder)
             where TDbContext : DbContext
         {
-            return builder.WithMySqlQueue<DefaultDataProvider, TDbContext>();
+            return builder.AddMySql<DefaultDataProvider, TDbContext>();
         }
     }
 }

@@ -11,6 +11,6 @@ namespace AppCore.EventModel.Pipeline
         /// <summary>
         /// Gets or sets the current <see cref="IEventContext"/>.
         /// </summary>
-        IEventContext EventContext { get; set; }
+        IEventContext? EventContext { get; set; }
     }
 }

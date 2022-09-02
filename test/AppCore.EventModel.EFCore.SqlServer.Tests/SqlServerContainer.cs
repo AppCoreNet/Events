@@ -1,17 +1,26 @@
+using System;
 using System.Threading.Tasks;
-using DotNet.Testcontainers.Containers.Builders;
-using DotNet.Testcontainers.Containers.Configurations.Databases;
-using DotNet.Testcontainers.Containers.Modules.Databases;
-using DotNet.Testcontainers.Containers.WaitStrategies;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
+using DotNet.Testcontainers.Containers;
 using Xunit;
 
 namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
 {
     public class SqlServerContainer : IAsyncLifetime
     {
-        private MsSqlTestcontainer _container;
+        private MsSqlTestcontainer? _container;
 
-        public string ConnectionString => _container.ConnectionString;
+        public string ConnectionString
+        {
+            get
+            {
+                if (_container == null)
+                    throw new InvalidOperationException("Container not initialized.");
+
+                return _container.ConnectionString;
+            }
+        }
 
         public async Task InitializeAsync()
         {
@@ -30,7 +39,10 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
 
         public async Task DisposeAsync()
         {
-            await _container.DisposeAsync();
+            if (_container != null)
+            {
+                await _container.DisposeAsync();
+            }
         }
     }
 }

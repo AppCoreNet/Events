@@ -23,7 +23,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// <param name="builder">The <see cref="IEventModelBuilder"/>.</param>
         /// <param name="configure">The settings configuration delegate.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelBuilder UseNewtonsoftJson(this IEventModelBuilder builder, Action<NewtonsoftJsonFormatterOptions>? configure = null)
+        public static IEventModelBuilder AddNewtonsoftJsonFormatter(this IEventModelBuilder builder, Action<NewtonsoftJsonFormatterOptions>? configure = null)
         {
             Ensure.Arg.NotNull(builder, nameof(builder));
 

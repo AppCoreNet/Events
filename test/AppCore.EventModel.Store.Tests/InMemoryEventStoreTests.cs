@@ -16,7 +16,7 @@ namespace AppCore.EventModel.Store
 {
     public class InMemoryEventStoreTests
     {
-        private IEventContext<TestEvent> CreateEventContext(TestEvent @event, EventDescriptor descriptor = null)
+        private IEventContext<TestEvent> CreateEventContext(TestEvent @event, EventDescriptor? descriptor = null)
         {
             var features = new Dictionary<Type, object>();
 
@@ -155,11 +155,11 @@ namespace AppCore.EventModel.Store
             var event1 = new TestEvent();
             IEventContext<TestEvent> eventContext1 = CreateEventContext(event1);
             await store.WriteAsync(new[] {eventContext1}, CancellationToken.None);
-            
+
             await Task.Delay(TimeSpan.FromMilliseconds(250));
             var event2 = new TestEvent();
             IEventContext<TestEvent> eventContext2 = CreateEventContext(event2);
-            
+
             await store.WriteAsync(new[] {eventContext2}, CancellationToken.None);
 
             IEnumerable<IEventContext> result = await readerTask;

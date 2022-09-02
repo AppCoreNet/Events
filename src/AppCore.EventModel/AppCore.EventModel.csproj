@@ -15,6 +15,7 @@
     <PackageReference Include="AppCore.Extensions.DependencyInjection.Abstractions" Version="$(AppCore_Extensions_Version)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(Microsoft_Extensions_Version)" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(Microsoft_Extensions_Version)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(Microsoft_Extensions_Version)" />
     <PackageReference Include="System.Threading.Channels" Version="4.5.0" />
   </ItemGroup>
 

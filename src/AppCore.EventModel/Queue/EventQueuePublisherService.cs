@@ -8,6 +8,7 @@ using AppCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace AppCore.EventModel.Queue
 {
@@ -17,19 +18,25 @@ namespace AppCore.EventModel.Queue
     public class EventQueuePublisherService : BackgroundService
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly IOptionsMonitor<EventQueueOptions> _optionsMonitor;
         private readonly ILogger<EventQueuePublisherService> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EventQueuePublisherService"/> class.
         /// </summary>
         /// <param name="serviceScopeFactory">The <see cref="IServiceScopeFactory"/>.</param>
+        /// <param name="optionsMonitor">The <see cref="IOptionsMonitor{TOptions}"/> of <see cref="EventQueueOptions"/>.</param>
         /// <param name="logger">The logger.</param>
-        public EventQueuePublisherService(IServiceScopeFactory serviceScopeFactory, ILogger<EventQueuePublisherService> logger)
+        public EventQueuePublisherService(
+            IServiceScopeFactory serviceScopeFactory,
+            IOptionsMonitor<EventQueueOptions> optionsMonitor,
+            ILogger<EventQueuePublisherService> logger)
         {
             Ensure.Arg.NotNull(serviceScopeFactory);
             Ensure.Arg.NotNull(logger);
 
             _serviceScopeFactory = serviceScopeFactory;
+            _optionsMonitor = optionsMonitor;
             _logger = logger;
         }
 
@@ -53,6 +60,8 @@ namespace AppCore.EventModel.Queue
         /// <returns>A task that represents the asynchronous operation.</returns>
         protected virtual async Task PublishAsync(CancellationToken cancellationToken)
         {
+            EventQueueOptions options = _optionsMonitor.CurrentValue;
+
             try
             {
                 using IServiceScope serviceScope = _serviceScopeFactory.CreateScope();
@@ -66,7 +75,7 @@ namespace AppCore.EventModel.Queue
             catch (Exception error)
             {
                 _logger.PublishingQueuedEventsFailed(error);
-                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+                await Task.Delay(options.RetryDelay, cancellationToken);
             }
         }
     }

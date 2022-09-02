@@ -8,7 +8,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
 {
     internal class SqlStmtBuilder
     {
-        private readonly StringBuilder _stmt = new StringBuilder();
+        private readonly StringBuilder _stmt = new();
         private readonly char _quoteNameStart = '"';
         private readonly char _quoteNameEnd = '"';
         private readonly IModel _model;
@@ -37,18 +37,24 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
                    .Append(_quoteNameEnd);
         }
 
-        public SqlStmtBuilder AppendTableName<TEntity>(string alias = null)
+        public SqlStmtBuilder AppendTableName<TEntity>(string? alias = null)
         {
-            IEntityType type = _model.FindEntityType(typeof(TEntity));
+            IEntityType? type = _model.FindEntityType(typeof(TEntity));
+            if (type == null)
+                throw new InvalidOperationException($"Unknown entity {typeof(TEntity).FullName}");
 
-            string schema = type.GetSchema();
+            string? schema = type.GetSchema();
             if (schema != null)
             {
                 AppendQuoted(schema);
                 Append('.');
             }
 
-            AppendQuoted(type.GetTableName());
+            string? tableName = type.GetTableName();
+            if (tableName == null)
+                throw new InvalidOperationException($"Entity {typeof(TEntity).FullName} is not mapped to a table.");
+
+            AppendQuoted(tableName);
 
             if (alias != null)
             {
@@ -59,11 +65,13 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
             return this;
         }
 
-        public SqlStmtBuilder AppendColumnName<TEntity>(string propertyName, string alias = null)
+        public SqlStmtBuilder AppendColumnName<TEntity>(string propertyName, string? alias = null)
         {
-            IEntityType type = _model.FindEntityType(typeof(TEntity));
+            IEntityType? type = _model.FindEntityType(typeof(TEntity));
+            if (type == null)
+                throw new InvalidOperationException($"Unknown entity {typeof(TEntity).FullName}");
 
-            IProperty property = type.FindProperty(propertyName);
+            IProperty? property = type.FindProperty(propertyName);
             if (property == null)
                 throw new ArgumentException($"Unknown property {propertyName}.");
 
@@ -73,10 +81,18 @@ namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql
                 Append(".");
             }
 
-            return AppendQuoted(property.GetColumnName());
+            string columnName =
+            #if NET6_0_OR_GREATER
+                property.GetColumnName(StoreObjectIdentifier.SqlQuery(type))
+                ?? property.GetDefaultColumnName(StoreObjectIdentifier.SqlQuery(type));
+            #else
+                property.GetColumnName();
+            #endif
+
+            return AppendQuoted(columnName);
         }
 
-        public SqlStmtBuilder AppendColumnNames<TEntity>(IEnumerable<string> propertyNames, string alias = null)
+        public SqlStmtBuilder AppendColumnNames<TEntity>(IEnumerable<string> propertyNames, string? alias = null)
         {
             int count = 0;
             foreach (string propertyName in propertyNames)

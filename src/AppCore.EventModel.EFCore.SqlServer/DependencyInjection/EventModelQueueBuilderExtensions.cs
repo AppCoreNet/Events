@@ -22,7 +22,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithSqlServerQueue<TTag, TDbContext>(this IEventModelQueueBuilder builder)
+        public static IEventModelQueueBuilder AddSqlServer<TTag, TDbContext>(this IEventModelQueueBuilder builder)
             where TDbContext : DbContext
         {
             Ensure.Arg.NotNull(builder);
@@ -42,10 +42,10 @@ namespace AppCore.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithSqlServerQueue<TDbContext>(this IEventModelQueueBuilder builder)
+        public static IEventModelQueueBuilder AddSqlServer<TDbContext>(this IEventModelQueueBuilder builder)
             where TDbContext : DbContext
         {
-            return builder.WithSqlServerQueue<DefaultDataProvider, TDbContext>();
+            return builder.AddSqlServer<DefaultDataProvider, TDbContext>();
         }
     }
 }

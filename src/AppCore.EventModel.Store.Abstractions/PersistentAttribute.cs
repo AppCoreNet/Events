@@ -14,6 +14,6 @@ namespace AppCore.EventModel.Store
         /// <summary>
         /// Gets or sets the name of the stream where the event is persisted.
         /// </summary>
-        public string StreamName { get; set; }
+        public string? StreamName { get; set; }
     }
 }

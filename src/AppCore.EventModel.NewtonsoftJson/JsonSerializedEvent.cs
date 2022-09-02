@@ -7,10 +7,15 @@ namespace AppCore.EventModel.Formatters
 {
     internal sealed class JsonSerializedEvent
     {
-        public IReadOnlyDictionary<string, object> Metadata { get; set; }
+        public IReadOnlyDictionary<string, object>? Metadata { get; set; }
 
-        public IDictionary<object, object> Items { get; set; }
+        public IDictionary<object, object>? Items { get; set; }
 
         public IEvent Event { get; set; }
+
+        public JsonSerializedEvent(IEvent @event)
+        {
+            Event = @event;
+        }
     }
 }

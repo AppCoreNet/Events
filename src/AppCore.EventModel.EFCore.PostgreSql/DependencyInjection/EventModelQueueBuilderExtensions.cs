@@ -22,7 +22,7 @@ namespace AppCore.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithPostgreSqlQueue<TTag, TDbContext>(this IEventModelQueueBuilder builder)
+        public static IEventModelQueueBuilder AddPostgreSql<TTag, TDbContext>(this IEventModelQueueBuilder builder)
             where TDbContext : DbContext
         {
             Ensure.Arg.NotNull(builder);
@@ -42,10 +42,10 @@ namespace AppCore.Extensions.DependencyInjection
         /// </summary>
         /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
         /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder WithPostgreSqlQueue<TDbContext>(this IEventModelQueueBuilder builder)
+        public static IEventModelQueueBuilder AddPostgreSql<TDbContext>(this IEventModelQueueBuilder builder)
             where TDbContext : DbContext
         {
-            return builder.WithPostgreSqlQueue<DefaultDataProvider, TDbContext>();
+            return builder.AddPostgreSql<DefaultDataProvider, TDbContext>();
         }
     }
 }

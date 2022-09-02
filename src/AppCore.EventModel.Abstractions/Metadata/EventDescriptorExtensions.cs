@@ -21,7 +21,7 @@ namespace AppCore.EventModel.Metadata
         /// <typeparam name="T">The type of the metadata value.</typeparam>
         /// <returns><c>true</c> if the metadata entry was found; <c>false</c> otherwise.</returns>
         /// <exception cref="InvalidCastException">The metadata value is not of the specified type.</exception>
-        public static bool TryGetMetadata<T>(this EventDescriptor descriptor, string key, out T value)
+        public static bool TryGetMetadata<T>(this EventDescriptor descriptor, string key, out T? value)
         {
             Ensure.Arg.NotNull(descriptor, nameof(descriptor));
             Ensure.Arg.NotEmpty(key, nameof(key));
@@ -51,9 +51,9 @@ namespace AppCore.EventModel.Metadata
         /// <typeparam name="T">The type of the metadata value.</typeparam>
         /// <returns>The metadata value if the entry was found; <paramref name="defaultValue"/> otherwise.</returns>
         /// <exception cref="InvalidCastException">The metadata value is not of the specified type.</exception>
-        public static T GetMetadata<T>(this EventDescriptor descriptor, string key, T defaultValue)
+        public static T? GetMetadata<T>(this EventDescriptor descriptor, string key, T? defaultValue)
         {
-            if (!TryGetMetadata(descriptor, key, out T result))
+            if (!TryGetMetadata(descriptor, key, out T? result))
                 result = defaultValue;
 
             return result;
@@ -70,10 +70,10 @@ namespace AppCore.EventModel.Metadata
         /// <exception cref="KeyNotFoundException">The metadata entry was not found.</exception>
         public static T GetMetadata<T>(this EventDescriptor descriptor, string key)
         {
-            if (!TryGetMetadata(descriptor, key, out T value))
+            if (!TryGetMetadata(descriptor, key, out T? value))
                 throw new InvalidOperationException($"Metadata value with key {key} is unknown.");
 
-            return value;
+            return value!;
         }
     }
 }

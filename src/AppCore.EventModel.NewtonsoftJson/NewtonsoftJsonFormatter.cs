@@ -41,11 +41,17 @@ namespace AppCore.EventModel.Formatters
             Ensure.Arg.NotNull(stream, nameof(stream));
             Ensure.Arg.NotNull(context, nameof(context));
 
-            var serializedEvent = new JsonSerializedEvent
+            IDictionary<object,object> items = context.Items;
+            IReadOnlyDictionary<string,object> metadata = context.EventDescriptor.Metadata;
+
+            var serializedEvent = new JsonSerializedEvent(context.Event)
             {
-                Event = context.Event,
-                Items = context.Items.Count > 0 ? context.Items : null,
-                Metadata = context.EventDescriptor.Metadata
+                Items = items.Count > 0
+                    ? items
+                    : null,
+                Metadata = metadata.Count > 0
+                    ? metadata
+                    : null
             };
 
             using (var writer = new StreamWriter(stream))
@@ -57,25 +63,25 @@ namespace AppCore.EventModel.Formatters
         {
             Ensure.Arg.NotNull(stream, nameof(stream));
 
-            JsonSerializedEvent serializedEvent;
+            JsonSerializedEvent @event;
             using (var reader = new StreamReader(stream))
             {
-                serializedEvent = (JsonSerializedEvent) _serializer.Deserialize(
-                    reader,
-                    typeof(JsonSerializedEvent));
+                @event = (JsonSerializedEvent) _serializer.Deserialize(reader, typeof(JsonSerializedEvent))!;
             }
 
-            IEventContext result = _contextFactory.CreateContext(
-                new EventDescriptor(serializedEvent.Event.GetType(), serializedEvent.Metadata),
-                serializedEvent.Event);
+            var descriptor = new EventDescriptor(
+                @event.Event.GetType(),
+                @event.Metadata ?? new Dictionary<string, object>());
 
-            if (serializedEvent.Items != null)
+            IEventContext context = _contextFactory.CreateContext(descriptor, @event.Event);
+
+            if (@event.Items != null)
             {
-                foreach (KeyValuePair<object, object> data in serializedEvent.Items)
-                    result.Items.Add(data);
+                foreach (KeyValuePair<object, object> data in @event.Items)
+                    context.Items.Add(data);
             }
 
-            return result;
+            return context;
         }
     }
 }

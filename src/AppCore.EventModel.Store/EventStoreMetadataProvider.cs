@@ -23,9 +23,9 @@ namespace AppCore.EventModel.Store
             {
                 metadata.Add(EventStoreMetadataKeys.PersistentMetadataKey, true);
 
-                if (!String.IsNullOrEmpty(persistentAttribute.StreamName))
+                if (!string.IsNullOrEmpty(persistentAttribute.StreamName))
                 {
-                    metadata.Add(EventStoreMetadataKeys.StreamNameMetadataKey, persistentAttribute.StreamName);
+                    metadata.Add(EventStoreMetadataKeys.StreamNameMetadataKey, persistentAttribute.StreamName!);
                 }
             }
         }

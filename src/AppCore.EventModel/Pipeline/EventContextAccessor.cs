@@ -25,7 +25,7 @@ namespace AppCore.EventModel.Pipeline
         private static readonly string _logicalDataKey = "__EventContext__" + AppDomain.CurrentDomain.Id;
 
         /// <inheritdoc />
-        public IEventContext EventContext
+        public IEventContext? EventContext
         {
             get
             {
@@ -40,10 +40,10 @@ namespace AppCore.EventModel.Pipeline
 #endif
 
 #if NETSTANDARD1_3 || NETSTANDARD2_0
-        private readonly AsyncLocal<IEventContext> _eventContext = new AsyncLocal<IEventContext>();
+        private readonly AsyncLocal<IEventContext?> _eventContext = new AsyncLocal<IEventContext?>();
 
         /// <inheritdoc />
-        public IEventContext EventContext
+        public IEventContext? EventContext
         {
             get => _eventContext.Value;
             set => _eventContext.Value = value;

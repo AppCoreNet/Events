@@ -14,6 +14,6 @@ namespace AppCore.EventModel
         /// <summary>
         /// Gets or sets the event topic.
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
     }
 }

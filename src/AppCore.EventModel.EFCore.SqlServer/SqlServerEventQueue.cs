@@ -34,7 +34,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.SqlServer
         }
 
         /// <inheritdoc />
-        protected override IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
+        protected override IAsyncEnumerable<Event> ReadCoreAsync(int maxEventsToRead, CancellationToken cancellationToken)
         {
             FormattableString query = $@"
                 SELECT TOP({maxEventsToRead}) Q.Offset,Q.Topic,Q.ContentType,Q.Data

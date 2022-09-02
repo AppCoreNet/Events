@@ -18,10 +18,10 @@ namespace AppCore.EventModel.Metadata
             TypeInfo eventTypeInfo = eventType.GetTypeInfo();
 
             var topicAttribute = eventTypeInfo.GetCustomAttribute<TopicAttribute>();
-            string topic = topicAttribute?.Name;
-            if (!String.IsNullOrEmpty(topic))
+            string? topic = topicAttribute?.Name;
+            if (!string.IsNullOrEmpty(topic))
             {
-                metadata.Add(EventMetadataKeys.TopicMetadataKey, topic);
+                metadata.Add(EventMetadataKeys.TopicMetadataKey, topic!);
             }
         }
     }

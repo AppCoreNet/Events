@@ -34,7 +34,7 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
         }
 
         /// <inheritdoc />
-        protected override IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
+        protected override IAsyncEnumerable<Event> ReadCoreAsync(int maxEventsToRead, CancellationToken cancellationToken)
         {
             FormattableString query = $@"
                 select

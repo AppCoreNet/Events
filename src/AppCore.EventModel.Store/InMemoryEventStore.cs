@@ -153,7 +153,7 @@ namespace AppCore.EventModel.Store
             _contextFactory = contextFactory;
         }
 
-        private EventDataStream GetStream(string streamName)
+        private EventDataStream GetStream(string? streamName)
         {
             if (streamName == null)
                 streamName = string.Empty;

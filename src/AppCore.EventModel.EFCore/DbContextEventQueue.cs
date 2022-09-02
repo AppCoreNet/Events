@@ -73,6 +73,14 @@ namespace AppCore.EventModel.EntityFrameworkCore
             EventHistory = dbContext.Set<EventHistory>();
         }
 
+        /// <summary>
+        /// Cleans up unmanaged resources.
+        /// </summary>
+        ~DbContextEventQueue()
+        {
+            Dispose(false);
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
@@ -88,6 +96,10 @@ namespace AppCore.EventModel.EntityFrameworkCore
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Can be overridden to cleanup managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">Whether to dispose also managed resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -98,6 +110,9 @@ namespace AppCore.EventModel.EntityFrameworkCore
             _transaction = null;
         }
 
+        /// <summary>
+        /// Can be overridden to cleanup managed resources.
+        /// </summary>
         protected virtual async ValueTask DisposeAsyncCore()
         {
             if (_transaction is not null)
@@ -111,7 +126,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
 
         private static string GetEventTopic(IEventContext @event)
         {
-            return @event.EventDescriptor.GetMetadata(EventMetadataKeys.TopicMetadataKey, String.Empty);
+            return @event.EventDescriptor.GetMetadata(EventMetadataKeys.TopicMetadataKey, string.Empty)!;
         }
 
         private IEventContextFormatter GetFormatter(string contentType)
@@ -122,6 +137,12 @@ namespace AppCore.EventModel.EntityFrameworkCore
             return formatter;
         }
 
+        /// <summary>
+        /// Can be overridden to write events to the queue.
+        /// </summary>
+        /// <param name="events">The event to enqueue.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous write operation.</returns>
         protected virtual async Task WriteCoreAsync(
             IEnumerable<Event> events,
             CancellationToken cancellationToken)
@@ -147,11 +168,9 @@ namespace AppCore.EventModel.EntityFrameworkCore
                             stream.SetLength(0);
                             stream.Seek(0, SeekOrigin.Begin);
                             formatter.Write(stream, e);
-                            return new Event
+                            return new Event(formatter.ContentType, stream.ToArray())
                             {
-                                Topic = topic,
-                                ContentType = formatter.ContentType,
-                                Data = stream.ToArray()
+                                Topic = topic
                             };
                         }).ToArray(),
                     cancellationToken);
@@ -160,12 +179,18 @@ namespace AppCore.EventModel.EntityFrameworkCore
             }
         }
 
-        protected virtual IAsyncEnumerable<Event> ReadCore(int maxEventsToRead)
+        /// <summary>
+        /// Can be overridden to read pending events from the queue.
+        /// </summary>
+        /// <param name="maxEventsToRead">The maximum number of events to read.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous read operation.</returns>
+        protected virtual IAsyncEnumerable<Event> ReadCoreAsync(int maxEventsToRead, CancellationToken cancellationToken)
         {
             return Events
                    .Where(
-                       e => e.Topic == Events.OrderBy(e => e.Offset)
-                                             .GroupBy(e => e.Topic)
+                       e => e.Topic == Events.OrderBy(oe => oe.Offset)
+                                             .GroupBy(ge => ge.Topic)
                                              .Select(g => g.Key)
                                              .FirstOrDefault())
                    .OrderBy(e => e.Offset)
@@ -196,7 +221,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
                 var result = new List<IEventContext>(maxEventsToRead);
                 do
                 {
-                    IAsyncEnumerable<Event> events = ReadCore(maxEventsToRead);
+                    IAsyncEnumerable<Event> events = ReadCoreAsync(maxEventsToRead, cancellationToken);
                     await foreach (Event @event in events.WithCancellation(cancellationToken))
                     {
                         using var stream = new MemoryStream(@event.Data);
@@ -223,6 +248,13 @@ namespace AppCore.EventModel.EntityFrameworkCore
             }
         }
 
+        /// <summary>
+        /// Can be overridden to commit the last processed read event.
+        /// </summary>
+        /// <param name="topic">The topic of the event.</param>
+        /// <param name="offset">The offset to commit.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous read operation.</returns>
         protected virtual async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
         {
             Event[] events = await Events.Where(e => e.Topic == topic && e.Offset <= offset)
@@ -232,12 +264,10 @@ namespace AppCore.EventModel.EntityFrameworkCore
 
             EventHistory.AddRange(
                 events.Select(
-                    e => new EventHistory
+                    e => new EventHistory(e.ContentType, e.Data)
                     {
                         Offset = e.Offset,
-                        Topic = e.Topic,
-                        ContentType = e.ContentType,
-                        Data = e.Data
+                        Topic = e.Topic
                     }));
 
             await Provider.GetContext()
@@ -263,7 +293,14 @@ namespace AppCore.EventModel.EntityFrameworkCore
             _transaction = null;
         }
 
-        protected IAsyncEnumerable<EventHistory> ReadHistoryCore(long offset, int maxEventsToRead)
+        /// <summary>
+        /// Can be overridden to reads the event history from the queue.
+        /// </summary>
+        /// <param name="offset">The starting offset.</param>
+        /// <param name="maxEventsToRead">The maximum number of events to read.</param>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous read operation.</returns>
+        protected IAsyncEnumerable<EventHistory> ReadHistoryCoreAsync(long offset, int maxEventsToRead, CancellationToken cancellationToken)
         {
             return EventHistory.Where(e => e.Offset >= offset)
                                .OrderBy(e => e.Offset)
@@ -279,7 +316,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
             Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
 
             var result = new List<IEventContext>(maxEventsToRead);
-            IAsyncEnumerable<EventHistory> eventHistory = ReadHistoryCore(offset, maxEventsToRead);
+            IAsyncEnumerable<EventHistory> eventHistory = ReadHistoryCoreAsync(offset, maxEventsToRead, cancellationToken);
             await foreach(EventHistory @event in eventHistory.WithCancellation(cancellationToken))
             {
                 using var stream = new MemoryStream(@event.Data);

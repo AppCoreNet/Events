@@ -65,7 +65,7 @@ namespace AppCore.EventModel.EntityFrameworkCore
                              var stream = ci.ArgAt<Stream>(0);
                              var eventContext = ci.ArgAt<IEventContext>(1);
                              var @event = (TestEvent) eventContext.Event;
-                             byte[] buffer = Encoding.UTF8.GetBytes(@event.Value);
+                             byte[] buffer = @event.Value != null ? Encoding.UTF8.GetBytes(@event.Value) : Array.Empty<byte>();
                              stream.Write(buffer, 0, buffer.Length);
                          });
 
@@ -102,18 +102,14 @@ namespace AppCore.EventModel.EntityFrameworkCore
                  .Set<Event>()
                  .Should()
                  .BeEquivalentTo(
-                     new Event
+                     new Event(contentType, new[] { (byte)'1' })
                      {
-                         ContentType = contentType,
-                         Data = new[] {(byte) '1'},
                          Offset = 1,
                          Topic = "test-topic"
                      },
-                     new Event
+                     new Event(contentType, new[] { (byte)'2' })
                      {
-                         ContentType = contentType,
                          Offset = 2,
-                         Data = new[] {(byte) '2'},
                          Topic = "test-topic"
                      }
                  );
@@ -129,16 +125,12 @@ namespace AppCore.EventModel.EntityFrameworkCore
             dbContext
                  .Set<Event>()
                  .AddRange(
-                     new Event
+                     new Event(contentType, new[] {(byte) '1'})
                      {
-                         ContentType = contentType,
-                         Data = new[] {(byte) '1'},
                          Topic = "topic1"
                      },
-                     new Event
+                     new Event(contentType, new[] {(byte) '2'})
                      {
-                         ContentType = contentType,
-                         Data = new[] {(byte) '2'},
                          Topic = "topic2"
                      });
 
@@ -161,16 +153,12 @@ namespace AppCore.EventModel.EntityFrameworkCore
             dbContext
                 .Set<Event>()
                 .AddRange(
-                    new Event
+                    new Event(contentType, new[] { (byte)'1' })
                     {
-                        ContentType = contentType,
-                        Data = new[] { (byte)'1' },
                         Topic = "test-topic"
                     },
-                    new Event
+                    new Event(contentType, new[] { (byte)'2' })
                     {
-                        ContentType = contentType,
-                        Data = new[] { (byte)'2' },
                         Topic = "test-topic"
                     });
 
@@ -193,18 +181,14 @@ namespace AppCore.EventModel.EntityFrameworkCore
                  .Set<EventHistory>()
                  .Should()
                  .BeEquivalentTo(
-                     new Event
+                     new Event(contentType,  new[] { (byte)'1' })
                      {
-                         ContentType = contentType,
-                         Data = new[] { (byte)'1' },
                          Offset = 1,
                          Topic = "test-topic"
                      },
-                     new Event
+                     new Event(contentType,  new[] { (byte)'2' })
                      {
-                         ContentType = contentType,
                          Offset = 2,
-                         Data = new[] { (byte)'2' },
                          Topic = "test-topic"
                      }
                  );

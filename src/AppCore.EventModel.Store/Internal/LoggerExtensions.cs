@@ -9,37 +9,37 @@ namespace AppCore.EventModel.Store
 {
     internal static class LoggerExtensions
     {
-        private static readonly Action<ILogger, string, long, Exception> _readingEvents =
+        private static readonly Action<ILogger, string, long, Exception?> _readingEvents =
             LoggerMessage.Define<string, long>(
                 LogLevel.Trace,
                 LogEventIds.ReadingEvents,
                 "Reading events from stream '{streamName}' at offset #{streamOffset} ...");
 
-        private static readonly Action<ILogger, int, string, long, long, Exception> _publishingEvents =
+        private static readonly Action<ILogger, int, string, long, long, Exception?> _publishingEvents =
             LoggerMessage.Define<int, string, long, long>(
                 LogLevel.Trace,
                 LogEventIds.PublishingEvents,
                 "Publishing {eventCount} events from stream '{streamName}' offset #{firstOffset}-#{lastOffset} ...");
 
-        private static readonly Action<ILogger, int, string, Exception> _publishedEvents =
+        private static readonly Action<ILogger, int, string, Exception?> _publishedEvents =
             LoggerMessage.Define<int, string>(
                 LogLevel.Debug,
                 LogEventIds.PublishedEvents,
                 "Successfully published {eventCount} events from stream '{streamName}'.");
 
-        private static readonly Action<ILogger, string, Exception> _storingEvent =
+        private static readonly Action<ILogger, string, Exception?> _storingEvent =
             LoggerMessage.Define<string>(
                 LogLevel.Trace,
                 LogEventIds.StoringEvent,
                 "Writing event {eventType} to store and skipping remaining pipeline ...");
 
-        private static readonly Action<ILogger, Exception> _publishingStoredEvents =
+        private static readonly Action<ILogger, Exception?> _publishingStoredEvents =
             LoggerMessage.Define(
                 LogLevel.Trace,
                 LogEventIds.PublishingStoredEvents,
                 "Publishing events from event store ...");
 
-        private static readonly Action<ILogger, Exception> _publishingStoredEventsFailed =
+        private static readonly Action<ILogger, Exception?> _publishingStoredEventsFailed =
             LoggerMessage.Define(
                 LogLevel.Error,
                 LogEventIds.PublishingStoredEventsFailed,

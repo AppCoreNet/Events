@@ -18,7 +18,7 @@ public static class EventModelQueueBuilderExtensions
     /// Registers in-memory event queue.
     /// </summary>
     /// <returns>The <see cref="IEventModelQueueBuilder"/> to allow chaining.</returns>
-    public static IEventModelQueueBuilder WithInMemoryQueue(this IEventModelQueueBuilder builder)
+    public static IEventModelQueueBuilder AddInMemoryQueue(this IEventModelQueueBuilder builder)
     {
         Ensure.Arg.NotNull(builder);
 
