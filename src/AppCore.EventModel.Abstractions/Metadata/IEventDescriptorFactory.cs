@@ -3,18 +3,17 @@
 
 using System;
 
-namespace AppCore.EventModel.Metadata
+namespace AppCore.EventModel.Metadata;
+
+/// <summary>
+/// Represents a type which instantiates <see cref="EventDescriptor"/> objects.
+/// </summary>
+public interface IEventDescriptorFactory
 {
     /// <summary>
-    /// Represents a type which instantiates <see cref="EventDescriptor"/> objects.
+    /// Creates a new instance of <see cref="EventDescriptor"/> for the specified <paramref name="eventType"/>.
     /// </summary>
-    public interface IEventDescriptorFactory
-    {
-        /// <summary>
-        /// Creates a new instance of <see cref="EventDescriptor"/> for the specified <paramref name="eventType"/>.
-        /// </summary>
-        /// <param name="eventType">The type of the event.</param>
-        /// <returns>The <see cref="EventDescriptor"/>.</returns>
-        EventDescriptor CreateDescriptor(Type eventType);
-    }
+    /// <param name="eventType">The type of the event.</param>
+    /// <returns>The <see cref="EventDescriptor"/>.</returns>
+    EventDescriptor CreateDescriptor(Type eventType);
 }

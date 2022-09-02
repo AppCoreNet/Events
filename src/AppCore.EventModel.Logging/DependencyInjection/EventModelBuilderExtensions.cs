@@ -10,27 +10,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Extensions.DependencyInjection
+namespace AppCore.Extensions.DependencyInjection;
+
+/// <summary>
+/// Provides extension methods to register logging with the event model.
+/// </summary>
+public static class EventModelBuilderExtensions
 {
     /// <summary>
-    /// Provides extension methods to register logging with the event model.
+    /// Adds logging of events to the pipeline.
     /// </summary>
-    public static class EventModelBuilderExtensions
+    /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
+    public static IEventModelBuilder AddLogging(this IEventModelBuilder builder)
     {
-        /// <summary>
-        /// Adds logging of events to the pipeline.
-        /// </summary>
-        /// <exception cref="ArgumentNullException">Argument <paramref name="builder"/> is <c>null</c>.</exception>
-        public static IEventModelBuilder AddLogging(this IEventModelBuilder builder)
-        {
-            Ensure.Arg.NotNull(builder);
+        Ensure.Arg.NotNull(builder);
 
-            builder.Services.TryAddEnumerable(
-                ServiceDescriptor.Singleton(
-                    typeof(IEventPipelineBehavior<>),
-                    typeof(EventLoggingBehavior<>)));
+        builder.Services.TryAddEnumerable(
+            ServiceDescriptor.Singleton(
+                typeof(IEventPipelineBehavior<>),
+                typeof(EventLoggingBehavior<>)));
 
-            return builder;
-        }
+        return builder;
     }
 }

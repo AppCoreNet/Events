@@ -6,28 +6,27 @@ using AppCore.EventModel.Metadata;
 using FluentAssertions;
 using Xunit;
 
-namespace AppCore.EventModel.Pipeline
+namespace AppCore.EventModel.Pipeline;
+
+public class EventContextFactoryTests
 {
-    public class EventContextFactoryTests
+    [Fact]
+    public void CreatesEventContext()
     {
-        [Fact]
-        public void CreatesEventContext()
-        {
-            var eventDescriptor = new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>());
+        var eventDescriptor = new EventDescriptor(typeof(TestEvent), new Dictionary<string, object>());
             
-            var factory = new EventContextFactory();
+        var factory = new EventContextFactory();
 
-            var @event = new TestEvent();
-            IEventContext context = factory.CreateContext(eventDescriptor, @event);
+        var @event = new TestEvent();
+        IEventContext context = factory.CreateContext(eventDescriptor, @event);
 
-            context.Should()
-                   .BeOfType<EventContext<TestEvent>>();
+        context.Should()
+               .BeOfType<EventContext<TestEvent>>();
 
-            context.Event.Should()
-                   .Be(@event);
+        context.Event.Should()
+               .Be(@event);
 
-            context.EventDescriptor.Should()
-                   .Be(eventDescriptor);
-        }
+        context.EventDescriptor.Should()
+               .Be(eventDescriptor);
     }
 }

@@ -6,49 +6,48 @@ using System.Collections.Concurrent;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Metadata;
 
-namespace AppCore.EventModel.Pipeline
+namespace AppCore.EventModel.Pipeline;
+
+using EventContextFactoryDelegate = Func<EventDescriptor, IEvent, IEventContext>;
+
+/// <inheritdoc />
+public class EventContextFactory : IEventContextFactory
 {
-    using EventContextFactoryDelegate = Func<EventDescriptor, IEvent, IEventContext>;
+    private static readonly Type _eventContextType = typeof(EventContext<>);
+
+    private static readonly ConcurrentDictionary<Type, EventContextFactoryDelegate> _eventContextFactories =
+        new ConcurrentDictionary<Type, EventContextFactoryDelegate>();
+
+    private static EventContextFactoryDelegate GetEventContextFactory(Type eventType)
+    {
+        return _eventContextFactories.GetOrAdd(
+            eventType,
+            t =>
+            {
+                Type eventContextType = _eventContextType.MakeGenericType(t);
+
+                return TypeActivator.GetFactoryDelegate<EventContextFactoryDelegate>(
+                    eventContextType,
+                    typeof(EventDescriptor),
+                    eventType);
+            });
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="EventContextFactory"/> class.
+    /// </summary>
+    public EventContextFactory()
+    {
+    }
 
     /// <inheritdoc />
-    public class EventContextFactory : IEventContextFactory
+    public IEventContext CreateContext(EventDescriptor descriptor, IEvent @event)
     {
-        private static readonly Type _eventContextType = typeof(EventContext<>);
+        Ensure.Arg.NotNull(descriptor, nameof(descriptor));
+        Ensure.Arg.NotNull(@event, nameof(@event));
 
-        private static readonly ConcurrentDictionary<Type, EventContextFactoryDelegate> _eventContextFactories =
-            new ConcurrentDictionary<Type, EventContextFactoryDelegate>();
-
-        private static EventContextFactoryDelegate GetEventContextFactory(Type eventType)
-        {
-            return _eventContextFactories.GetOrAdd(
-                eventType,
-                t =>
-                {
-                    Type eventContextType = _eventContextType.MakeGenericType(t);
-
-                    return TypeActivator.GetFactoryDelegate<EventContextFactoryDelegate>(
-                        eventContextType,
-                        typeof(EventDescriptor),
-                        eventType);
-                });
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventContextFactory"/> class.
-        /// </summary>
-        public EventContextFactory()
-        {
-        }
-
-        /// <inheritdoc />
-        public IEventContext CreateContext(EventDescriptor descriptor, IEvent @event)
-        {
-            Ensure.Arg.NotNull(descriptor, nameof(descriptor));
-            Ensure.Arg.NotNull(@event, nameof(@event));
-
-            Type eventType = @event.GetType();
-            EventContextFactoryDelegate factory = GetEventContextFactory(eventType);
-            return factory(descriptor, @event);
-        }
+        Type eventType = @event.GetType();
+        EventContextFactoryDelegate factory = GetEventContextFactory(eventType);
+        return factory(descriptor, @event);
     }
 }

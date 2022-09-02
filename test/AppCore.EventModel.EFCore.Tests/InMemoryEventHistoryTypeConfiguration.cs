@@ -1,8 +1,7 @@
 ﻿using AppCore.EventModel.EntityFrameworkCore.Configuration;
 
-namespace AppCore.EventModel.EntityFrameworkCore
+namespace AppCore.EventModel.EntityFrameworkCore;
+
+public class InMemoryEventHistoryTypeConfiguration : EventHistoryTypeConfigurationBase
 {
-    public class InMemoryEventHistoryTypeConfiguration : EventHistoryTypeConfigurationBase
-    {
-    }
 }

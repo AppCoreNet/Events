@@ -6,27 +6,26 @@ using AppCore.EventModel.EntityFrameworkCore.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.EventModel.EntityFrameworkCore.MySql.Configuration
+namespace AppCore.EventModel.EntityFrameworkCore.MySql.Configuration;
+
+/// <summary>
+/// Event entity type configuration for MySql.
+/// </summary>
+public class EventTypeConfiguration : EventTypeConfigurationBase
 {
     /// <summary>
-    /// Event entity type configuration for MySql.
+    /// The name of the event queue table.
     /// </summary>
-    public class EventTypeConfiguration : EventTypeConfigurationBase
+    public const string TableName = "EventQueue";
+
+    /// <inheritdoc />
+    public override void Configure(EntityTypeBuilder<Event> builder)
     {
-        /// <summary>
-        /// The name of the event queue table.
-        /// </summary>
-        public const string TableName = "EventQueue";
+        base.Configure(builder);
 
-        /// <inheritdoc />
-        public override void Configure(EntityTypeBuilder<Event> builder)
-        {
-            base.Configure(builder);
+        builder.ToTable(TableName);
 
-            builder.ToTable(TableName);
-
-            builder.Property(e => e.Offset)
-                   .UseMySqlIdentityColumn();
-        }
+        builder.Property(e => e.Offset)
+               .UseMySqlIdentityColumn();
     }
 }

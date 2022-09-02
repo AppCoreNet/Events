@@ -10,33 +10,32 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Extensions.DependencyInjection
+namespace AppCore.Extensions.DependencyInjection;
+
+/// <summary>
+/// Provides extension methods to register
+/// </summary>
+public static class EventModelBuilderExtensions
 {
     /// <summary>
-    /// Provides extension methods to register
+    /// Registers Newtonsoft.Json event formatter.
     /// </summary>
-    public static class EventModelBuilderExtensions
+    /// <param name="builder">The <see cref="IEventModelBuilder"/>.</param>
+    /// <param name="configure">The settings configuration delegate.</param>
+    /// <returns>The passed builder to allow chaining.</returns>
+    public static IEventModelBuilder AddNewtonsoftJsonFormatter(this IEventModelBuilder builder, Action<NewtonsoftJsonFormatterOptions>? configure = null)
     {
-        /// <summary>
-        /// Registers Newtonsoft.Json event formatter.
-        /// </summary>
-        /// <param name="builder">The <see cref="IEventModelBuilder"/>.</param>
-        /// <param name="configure">The settings configuration delegate.</param>
-        /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelBuilder AddNewtonsoftJsonFormatter(this IEventModelBuilder builder, Action<NewtonsoftJsonFormatterOptions>? configure = null)
+        Ensure.Arg.NotNull(builder, nameof(builder));
+
+        IServiceCollection services = builder.Services;
+
+        if (configure != null)
         {
-            Ensure.Arg.NotNull(builder, nameof(builder));
-
-            IServiceCollection services = builder.Services;
-
-            if (configure != null)
-            {
-                services.Configure(configure);
-            }
-
-            services.TryAddEnumerable(ServiceDescriptor.Transient<IEventContextFormatter, NewtonsoftJsonFormatter>());
-
-            return builder;
+            services.Configure(configure);
         }
+
+        services.TryAddEnumerable(ServiceDescriptor.Transient<IEventContextFormatter, NewtonsoftJsonFormatter>());
+
+        return builder;
     }
 }

@@ -8,73 +8,72 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Extensions.DependencyInjection
+namespace AppCore.Extensions.DependencyInjection;
+
+/*
+/// <summary>
+/// Represents extension for the <see cref="EventModelFacility"/> which registers event store behavior.
+/// </summary>
+public class EventStoreFacilityExtension : FacilityExtension
 {
-    /*
+    private bool _registerBackgroundPublisher;
+
     /// <summary>
-    /// Represents extension for the <see cref="EventModelFacility"/> which registers event store behavior.
+    /// Sets a value indicating whether to register background publishes.
     /// </summary>
-    public class EventStoreFacilityExtension : FacilityExtension
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public EventStoreFacilityExtension WithBackgroundPublisher(bool value = true)
     {
-        private bool _registerBackgroundPublisher;
+        _registerBackgroundPublisher = value;
+        return this;
+    }
 
-        /// <summary>
-        /// Sets a value indicating whether to register background publishes.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public EventStoreFacilityExtension WithBackgroundPublisher(bool value = true)
+    /// <summary>
+    /// Registers in-memory event queue.
+    /// </summary>
+    /// <returns>The facility to allow chaining.</returns>
+    public EventStoreFacilityExtension WithInMemoryQueue()
+    {
+        ConfigureServices(services => { services.TryAddSingleton<IEventStore, InMemoryEventStore>(); });
+        return this;
+    }
+
+    /// <inheritdoc />
+    protected override void ConfigureServices(IServiceCollection registry)
+    {
+        base.ConfigureServices(registry);
+
+        ServiceLifetime lifetime = ((EventModelFacility) Facility).Lifetime;
+
+        registry.TryAddEnumerable(
+            new[]
+            {
+                ServiceDescriptor.Singleton<IEventMetadataProvider, EventStoreMetadataProvider>(),
+                ServiceDescriptor.Describe(
+                    typeof(IEventPipelineBehavior<>),
+                    typeof(EventStoreBehavior<>),
+                    lifetime)
+            });
+
+        if (_registerBackgroundPublisher)
         {
-            _registerBackgroundPublisher = value;
-            return this;
-        }
-
-        /// <summary>
-        /// Registers in-memory event queue.
-        /// </summary>
-        /// <returns>The facility to allow chaining.</returns>
-        public EventStoreFacilityExtension WithInMemoryQueue()
-        {
-            ConfigureServices(services => { services.TryAddSingleton<IEventStore, InMemoryEventStore>(); });
-            return this;
-        }
-
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection registry)
-        {
-            base.ConfigureServices(registry);
-
-            ServiceLifetime lifetime = ((EventModelFacility) Facility).Lifetime;
-
-            registry.TryAddEnumerable(
+            registry.TryAdd(
                 new[]
                 {
-                    ServiceDescriptor.Singleton<IEventMetadataProvider, EventStoreMetadataProvider>(),
-                    ServiceDescriptor.Describe(
-                        typeof(IEventPipelineBehavior<>),
-                        typeof(EventStoreBehavior<>),
-                        lifetime)
+                    ServiceDescriptor.Scoped<IEventStorePublisherOffset, EventStorePublisherOffset>(),
+                    ServiceDescriptor.Describe(typeof(IEventStorePublisher), typeof(EventStorePublisher), lifetime)
                 });
 
-            if (_registerBackgroundPublisher)
+            if (lifetime == ServiceLifetime.Singleton)
             {
-                registry.TryAdd(
-                    new[]
-                    {
-                        ServiceDescriptor.Scoped<IEventStorePublisherOffset, EventStorePublisherOffset>(),
-                        ServiceDescriptor.Describe(typeof(IEventStorePublisher), typeof(EventStorePublisher), lifetime)
-                    });
-
-                if (lifetime == ServiceLifetime.Singleton)
-                {
-                    registry.AddHostedService<EventStorePublisherService>();
-                }
-                else
-                {
-                    registry.AddHostedService<EventStorePublisherService.Scoped>();
-                }
+                registry.AddHostedService<EventStorePublisherService>();
+            }
+            else
+            {
+                registry.AddHostedService<EventStorePublisherService.Scoped>();
             }
         }
     }
-    */
 }
+*/

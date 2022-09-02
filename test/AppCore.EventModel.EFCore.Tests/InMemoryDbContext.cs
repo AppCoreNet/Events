@@ -3,28 +3,27 @@ using AppCore.EventModel.EntityFrameworkCore.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace AppCore.EventModel.EntityFrameworkCore
+namespace AppCore.EventModel.EntityFrameworkCore;
+
+public class InMemoryDbContext : DbContext
 {
-    public class InMemoryDbContext : DbContext
+    public DbSet<Event> Events => Set<Event>();
+
+    public DbSet<EventHistory> EventHistory => Set<EventHistory>();
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        public DbSet<Event> Events => Set<Event>();
+        base.OnConfiguring(optionsBuilder);
 
-        public DbSet<EventHistory> EventHistory => Set<EventHistory>();
+        optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString("N"))
+                      .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+    }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-            optionsBuilder.UseInMemoryDatabase(Guid.NewGuid().ToString("N"))
-                          .ConfigureWarnings(w => w.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.ApplyConfiguration(new InMemoryEventTypeConfiguration());
-            modelBuilder.ApplyConfiguration(new InMemoryEventHistoryTypeConfiguration());
-        }
+        modelBuilder.ApplyConfiguration(new InMemoryEventTypeConfiguration());
+        modelBuilder.ApplyConfiguration(new InMemoryEventHistoryTypeConfiguration());
     }
 }

@@ -10,42 +10,41 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable once CheckNamespace
-namespace AppCore.Extensions.DependencyInjection
+namespace AppCore.Extensions.DependencyInjection;
+
+/// <summary>
+/// Provides extensions methods to register SQL Server event queue.
+/// </summary>
+public static class EventModelQueueBuilderExtensions
 {
     /// <summary>
-    /// Provides extensions methods to register SQL Server event queue.
+    /// Registers SQL Server event queue.
     /// </summary>
-    public static class EventModelQueueBuilderExtensions
+    /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
+    /// <returns>The passed builder to allow chaining.</returns>
+    public static IEventModelQueueBuilder AddSqlServer<TTag, TDbContext>(this IEventModelQueueBuilder builder)
+        where TDbContext : DbContext
     {
-        /// <summary>
-        /// Registers SQL Server event queue.
-        /// </summary>
-        /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
-        /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder AddSqlServer<TTag, TDbContext>(this IEventModelQueueBuilder builder)
-            where TDbContext : DbContext
-        {
-            Ensure.Arg.NotNull(builder);
+        Ensure.Arg.NotNull(builder);
 
-            IServiceCollection services = builder.Services;
+        IServiceCollection services = builder.Services;
 
-            services.AddAppCore()
-                    .AddDataProvider(d => d.AddDbContext<TTag, TDbContext>());
+        services.AddAppCore()
+                .AddDataProvider(d => d.AddDbContext<TTag, TDbContext>());
 
-            services.TryAddScoped<IEventQueue, SqlServerEventQueue<TDbContext>>();
+        services.TryAddScoped<IEventQueue, SqlServerEventQueue<TDbContext>>();
 
-            return builder;
-        }
+        return builder;
+    }
 
-        /// <summary>
-        /// Registers SQL Server event queue.
-        /// </summary>
-        /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
-        /// <returns>The passed builder to allow chaining.</returns>
-        public static IEventModelQueueBuilder AddSqlServer<TDbContext>(this IEventModelQueueBuilder builder)
-            where TDbContext : DbContext
-        {
-            return builder.AddSqlServer<DefaultDataProvider, TDbContext>();
-        }
+    /// <summary>
+    /// Registers SQL Server event queue.
+    /// </summary>
+    /// <param name="builder">The <see cref="IEventModelQueueBuilder"/>.</param>
+    /// <returns>The passed builder to allow chaining.</returns>
+    public static IEventModelQueueBuilder AddSqlServer<TDbContext>(this IEventModelQueueBuilder builder)
+        where TDbContext : DbContext
+    {
+        return builder.AddSqlServer<DefaultDataProvider, TDbContext>();
     }
 }

@@ -12,31 +12,31 @@ using AppCore.EventModel.Queue;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace AppCore.EventModel.EntityFrameworkCore.MySql
+namespace AppCore.EventModel.EntityFrameworkCore.MySql;
+
+/// <summary>
+/// Represents an <see cref="IEventQueue"/> targeting MySql.
+/// </summary>
+/// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
+public class MySqlEventQueue<TDbContext> : DbContextEventQueue<TDbContext>
+    where TDbContext : DbContext
 {
     /// <summary>
-    /// Represents an <see cref="IEventQueue"/> targeting MySql.
+    /// Initializes a new instance of the <see cref="MySqlEventQueue{TDbContext}"/> class.
     /// </summary>
-    /// <typeparam name="TDbContext">The type of the <see cref="DbContext"/>.</typeparam>
-    public class MySqlEventQueue<TDbContext> : DbContextEventQueue<TDbContext>
-        where TDbContext : DbContext
+    /// <param name="dataProvider">The data provider.</param>
+    /// <param name="formatters">An enumerable of event formatters.</param>
+    public MySqlEventQueue(
+        IDbContextDataProvider<TDbContext> dataProvider,
+        IEnumerable<IEventContextFormatter> formatters)
+        : base(dataProvider, formatters)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MySqlEventQueue{TDbContext}"/> class.
-        /// </summary>
-        /// <param name="dataProvider">The data provider.</param>
-        /// <param name="formatters">An enumerable of event formatters.</param>
-        public MySqlEventQueue(
-            IDbContextDataProvider<TDbContext> dataProvider,
-            IEnumerable<IEventContextFormatter> formatters)
-            : base(dataProvider, formatters)
-        {
-        }
+    }
 
-        /// <inheritdoc />
-        protected override IAsyncEnumerable<Event> ReadCoreAsync(int maxEventsToRead, CancellationToken cancellationToken)
-        {
-            FormattableString query = $@"
+    /// <inheritdoc />
+    protected override IAsyncEnumerable<Event> ReadCoreAsync(int maxEventsToRead, CancellationToken cancellationToken)
+    {
+        FormattableString query = $@"
                 select
                   Q.Offset,
                   Q.Topic,
@@ -55,28 +55,27 @@ namespace AppCore.EventModel.EntityFrameworkCore.MySql
                 limit {maxEventsToRead}
                 for update skip locked";
 
-            return Events.FromSqlInterpolated(query)
-                         .AsNoTracking()
-                         .AsAsyncEnumerable();
-        }
+        return Events.FromSqlInterpolated(query)
+                     .AsNoTracking()
+                     .AsAsyncEnumerable();
+    }
 
-        /// <inheritdoc />
-        protected override async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
-        {
-            DatabaseFacade database = Provider.GetContext().Database;
+    /// <inheritdoc />
+    protected override async Task CommitReadCoreAsync(string topic, long offset, CancellationToken cancellationToken)
+    {
+        DatabaseFacade database = Provider.GetContext().Database;
 
-            // copy events to history
-            FormattableString copyStmt = $@"
+        // copy events to history
+        FormattableString copyStmt = $@"
                 insert into EventHistory (Offset,Topic,ContentType,Data)
                 select Offset,Topic,ContentType,Data
                 from EventQueue
                 where Offset <= {offset} and Topic={topic}";
 
-            await database.ExecuteSqlInterpolatedAsync(copyStmt, cancellationToken);
+        await database.ExecuteSqlInterpolatedAsync(copyStmt, cancellationToken);
 
-            // delete events
-            FormattableString deleteStmt = $"delete from EventQueue where Offset <= {offset} and Topic={topic}";
-            await database.ExecuteSqlInterpolatedAsync(deleteStmt, cancellationToken);
-        }
+        // delete events
+        FormattableString deleteStmt = $"delete from EventQueue where Offset <= {offset} and Topic={topic}";
+        await database.ExecuteSqlInterpolatedAsync(deleteStmt, cancellationToken);
     }
 }

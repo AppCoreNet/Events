@@ -5,45 +5,44 @@ using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Xunit;
 
-namespace AppCore.EventModel.EntityFrameworkCore.MySql
+namespace AppCore.EventModel.EntityFrameworkCore.MySql;
+
+public class MySqlContainer : IAsyncLifetime
 {
-    public class MySqlContainer : IAsyncLifetime
+    private MySqlTestcontainer? _container;
+
+    public string ConnectionString
     {
-        private MySqlTestcontainer? _container;
-
-        public string ConnectionString
+        get
         {
-            get
-            {
-                if (_container == null)
-                    throw new InvalidOperationException("Container not initialized.");
+            if (_container == null)
+                throw new InvalidOperationException("Container not initialized.");
 
-                return _container.ConnectionString;
-            }
+            return _container.ConnectionString;
         }
+    }
 
-        public async Task InitializeAsync()
+    public async Task InitializeAsync()
+    {
+        _container = new TestcontainersBuilder<MySqlTestcontainer>()
+                     .WithDatabase(
+                         new MySqlTestcontainerConfiguration
+                         {
+                             Database = "test",
+                             Username = "user",
+                             Password = "password"
+                         })
+                     .WithPortBinding(13306, 3306)
+                     .Build();
+
+        await _container.StartAsync();
+    }
+
+    public async Task DisposeAsync()
+    {
+        if (_container != null)
         {
-            _container = new TestcontainersBuilder<MySqlTestcontainer>()
-                         .WithDatabase(
-                             new MySqlTestcontainerConfiguration
-                             {
-                                 Database = "test",
-                                 Username = "user",
-                                 Password = "password"
-                             })
-                         .WithPortBinding(13306, 3306)
-                         .Build();
-
-            await _container.StartAsync();
-        }
-
-        public async Task DisposeAsync()
-        {
-            if (_container != null)
-            {
-                await _container.DisposeAsync();
-            }
+            await _container.DisposeAsync();
         }
     }
 }

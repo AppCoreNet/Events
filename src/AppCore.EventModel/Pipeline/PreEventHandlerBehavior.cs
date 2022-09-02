@@ -9,51 +9,50 @@ using System.Threading.Tasks;
 using AppCore.Diagnostics;
 using Microsoft.Extensions.Logging;
 
-namespace AppCore.EventModel.Pipeline
+namespace AppCore.EventModel.Pipeline;
+
+/// <summary>
+/// Pipeline behavior which invokes <see cref="IPreEventHandler{TEvent}"/>s.
+/// </summary>
+/// <typeparam name="TEvent">The type of the event that is handled.</typeparam>
+public class PreEventHandlerBehavior<TEvent> : IEventPipelineBehavior<TEvent>
+    where TEvent : IEvent
 {
+    private readonly List<IPreEventHandler<TEvent>> _handlers;
+    private readonly ILogger<PreEventHandlerBehavior<TEvent>> _logger;
+
     /// <summary>
-    /// Pipeline behavior which invokes <see cref="IPreEventHandler{TEvent}"/>s.
+    /// Initializes a new instance of the <see cref="PreEventHandlerBehavior{TEvent}"/> class.
     /// </summary>
-    /// <typeparam name="TEvent">The type of the event that is handled.</typeparam>
-    public class PreEventHandlerBehavior<TEvent> : IEventPipelineBehavior<TEvent>
-        where TEvent : IEvent
+    /// <param name="handlers">An <see cref="IEnumerable{T}"/> of <see cref="IPreEventHandler{TEvent}"/>s.</param>
+    /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
+    /// <exception cref="ArgumentNullException">Argument <paramref name="handlers"/> is <c>null</c>.</exception>
+    public PreEventHandlerBehavior(
+        IEnumerable<IPreEventHandler<TEvent>> handlers,
+        ILogger<PreEventHandlerBehavior<TEvent>> logger)
     {
-        private readonly List<IPreEventHandler<TEvent>> _handlers;
-        private readonly ILogger<PreEventHandlerBehavior<TEvent>> _logger;
+        Ensure.Arg.NotNull(handlers, nameof(handlers));
+        Ensure.Arg.NotNull(logger, nameof(logger));
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PreEventHandlerBehavior{TEvent}"/> class.
-        /// </summary>
-        /// <param name="handlers">An <see cref="IEnumerable{T}"/> of <see cref="IPreEventHandler{TEvent}"/>s.</param>
-        /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
-        /// <exception cref="ArgumentNullException">Argument <paramref name="handlers"/> is <c>null</c>.</exception>
-        public PreEventHandlerBehavior(
-            IEnumerable<IPreEventHandler<TEvent>> handlers,
-            ILogger<PreEventHandlerBehavior<TEvent>> logger)
+        _handlers = handlers.ToList();
+        _logger = logger;
+    }
+
+    /// <inheritdoc />
+    public async Task HandleAsync(
+        IEventContext<TEvent> context,
+        EventPipelineDelegate<TEvent> next,
+        CancellationToken cancellationToken)
+    {
+        foreach (IPreEventHandler<TEvent> handler in _handlers)
         {
-            Ensure.Arg.NotNull(handlers, nameof(handlers));
-            Ensure.Arg.NotNull(logger, nameof(logger));
+            _logger.InvokingPreEventHandler(typeof(TEvent), handler.GetType());
 
-            _handlers = handlers.ToList();
-            _logger = logger;
+            await handler.OnHandlingAsync(context, cancellationToken)
+                         .ConfigureAwait(false);
         }
 
-        /// <inheritdoc />
-        public async Task HandleAsync(
-            IEventContext<TEvent> context,
-            EventPipelineDelegate<TEvent> next,
-            CancellationToken cancellationToken)
-        {
-            foreach (IPreEventHandler<TEvent> handler in _handlers)
-            {
-                _logger.InvokingPreEventHandler(typeof(TEvent), handler.GetType());
-
-                await handler.OnHandlingAsync(context, cancellationToken)
-                             .ConfigureAwait(false);
-            }
-
-            await next(context, cancellationToken)
-                .ConfigureAwait(false);
-        }
+        await next(context, cancellationToken)
+            .ConfigureAwait(false);
     }
 }

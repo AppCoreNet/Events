@@ -3,18 +3,17 @@
 
 using System;
 
-namespace AppCore.EventModel.Pipeline
+namespace AppCore.EventModel.Pipeline;
+
+/// <summary>
+/// Represents a resolver for <see cref="IEventPipeline"/> instances.
+/// </summary>
+public interface IEventPipelineResolver
 {
     /// <summary>
-    /// Represents a resolver for <see cref="IEventPipeline"/> instances.
+    /// Resolves an <see cref="IEventPipeline{TEvent}"/> for the specified <paramref name="eventType"/>.
     /// </summary>
-    public interface IEventPipelineResolver
-    {
-        /// <summary>
-        /// Resolves an <see cref="IEventPipeline{TEvent}"/> for the specified <paramref name="eventType"/>.
-        /// </summary>
-        /// <param name="eventType">The type of the event.</param>
-        /// <returns>The <see cref="IEventPipeline{TEvent}"/> instance.</returns>
-        IEventPipeline Resolve(Type eventType);
-    }
+    /// <param name="eventType">The type of the event.</param>
+    /// <returns>The <see cref="IEventPipeline{TEvent}"/> instance.</returns>
+    IEventPipeline Resolve(Type eventType);
 }
