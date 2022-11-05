@@ -5,22 +5,21 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
 
-namespace AppCore.EventModel.Store
+namespace AppCore.EventModel.Store;
+
+public class EventStoreMetadataProviderTests
 {
-    public class EventStoreMetadataProviderTests
+    [Fact]
+    public void GetMetadataAddsPersistentMetadataKey()
     {
-        [Fact]
-        public void GetMetadataAddsPersistentMetadataKey()
-        {
-            var provider = new EventStoreMetadataProvider();
-            var metadata = new Dictionary<string, object>();
-            provider.GetMetadata(typeof(TestEvent), metadata);
+        var provider = new EventStoreMetadataProvider();
+        var metadata = new Dictionary<string, object>();
+        provider.GetMetadata(typeof(TestEvent), metadata);
 
-            metadata.Should()
-                    .Contain(EventStoreMetadataKeys.PersistentMetadataKey, true);
+        metadata.Should()
+                .Contain(EventStoreMetadataKeys.PersistentMetadataKey, true);
 
-            metadata.Should()
-                    .Contain(EventStoreMetadataKeys.StreamNameMetadataKey, "test");
-        }
+        metadata.Should()
+                .Contain(EventStoreMetadataKeys.StreamNameMetadataKey, "test");
     }
 }

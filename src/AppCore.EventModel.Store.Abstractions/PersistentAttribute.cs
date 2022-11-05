@@ -3,17 +3,16 @@
 
 using System;
 
-namespace AppCore.EventModel.Store
+namespace AppCore.EventModel.Store;
+
+/// <summary>
+/// Decorates an event to be persisted.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public class PersistentAttribute : Attribute
 {
     /// <summary>
-    /// Decorates an event to be persisted.
+    /// Gets or sets the name of the stream where the event is persisted.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public class PersistentAttribute : Attribute
-    {
-        /// <summary>
-        /// Gets or sets the name of the stream where the event is persisted.
-        /// </summary>
-        public string StreamName { get; set; }
-    }
+    public string? StreamName { get; set; }
 }

@@ -3,17 +3,16 @@
 
 using System;
 
-namespace AppCore.EventModel
+namespace AppCore.EventModel;
+
+/// <summary>
+/// Decorates an event with a topic.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class)]
+public class TopicAttribute : Attribute
 {
     /// <summary>
-    /// Decorates an event with a topic.
+    /// Gets or sets the event topic.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class)]
-    public class TopicAttribute : Attribute
-    {
-        /// <summary>
-        /// Gets or sets the event topic.
-        /// </summary>
-        public string Name { get; set; }
-    }
+    public string? Name { get; set; }
 }

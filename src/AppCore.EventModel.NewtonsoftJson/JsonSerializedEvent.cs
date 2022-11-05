@@ -3,14 +3,18 @@
 
 using System.Collections.Generic;
 
-namespace AppCore.EventModel.Formatters
+namespace AppCore.EventModel.Formatters;
+
+internal sealed class JsonSerializedEvent
 {
-    internal class JsonSerializedEvent
+    public IReadOnlyDictionary<string, object>? Metadata { get; set; }
+
+    public IDictionary<object, object>? Items { get; set; }
+
+    public IEvent Event { get; set; }
+
+    public JsonSerializedEvent(IEvent @event)
     {
-        public IReadOnlyDictionary<string, object> Metadata { get; set; }
-
-        public IDictionary<object, object> Items { get; set; }
-
-        public IEvent Event { get; set; }
+        Event = @event;
     }
 }

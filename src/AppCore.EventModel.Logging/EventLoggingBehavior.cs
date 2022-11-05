@@ -8,45 +8,44 @@ using AppCore.Diagnostics;
 using AppCore.EventModel.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace AppCore.EventModel.Logging
+namespace AppCore.EventModel.Logging;
+
+/// <summary>
+/// Provides a event pipeline behavior which logs events.
+/// </summary>
+/// <typeparam name="TEvent">The type of the event that is handled.</typeparam>
+public class EventLoggingBehavior<TEvent> : IEventPipelineBehavior<TEvent>
+    where TEvent : IEvent
 {
+    private readonly ILogger _logger;
+
     /// <summary>
-    /// Provides a event pipeline behavior which logs events.
+    /// Initializes a new instance of the <see cref="EventLoggingBehavior{TEvent}"/> class.
     /// </summary>
-    /// <typeparam name="TEvent">The type of the event that is handled.</typeparam>
-    public class EventLoggingBehavior<TEvent> : IEventPipelineBehavior<TEvent>
-        where TEvent : IEvent
+    /// <param name="logger">The logger instance used to log events.</param>
+    public EventLoggingBehavior(ILogger<EventLoggingBehavior<TEvent>> logger)
     {
-        private readonly ILogger _logger;
+        Ensure.Arg.NotNull(logger);
+        _logger = logger;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="EventLoggingBehavior{TEvent}"/> class.
-        /// </summary>
-        /// <param name="logger">The logger instance used to log events.</param>
-        public EventLoggingBehavior(ILogger<IEventPublisher> logger)
+    /// <inheritdoc />
+    public async Task HandleAsync(
+        IEventContext<TEvent> context,
+        EventPipelineDelegate<TEvent> next,
+        CancellationToken cancellationToken)
+    {
+        try
         {
-            Ensure.Arg.NotNull(logger, nameof(logger));
-            _logger = logger;
+            await next(context, cancellationToken)
+                .ConfigureAwait(false);
+
+            _logger.EventHandled(context);
         }
-
-        /// <inheritdoc />
-        public async Task HandleAsync(
-            IEventContext<TEvent> context,
-            EventPipelineDelegate<TEvent> next,
-            CancellationToken cancellationToken)
+        catch (Exception exception)
         {
-            try
-            {
-                await next(context, cancellationToken)
-                    .ConfigureAwait(false);
-
-                _logger.EventHandled(context);
-            }
-            catch (Exception exception)
-            {
-                _logger.EventFailed(context, exception);
-                throw;
-            }
+            _logger.EventFailed(context, exception);
+            throw;
         }
     }
 }

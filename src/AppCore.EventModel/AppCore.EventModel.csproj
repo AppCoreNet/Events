@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
     <Description>Provides default AppCore .NET event model implementations.</Description>
   </PropertyGroup>
 
@@ -12,9 +12,11 @@
     <PackageReference Include="AppCore.TypeHelpers.Sources" Version="$(AppCore_Shared_Version)">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="AppCore.Hosting" Version="$(AppCore_Hosting_Version)" />
-    <PackageReference Include="System.Threading.Channels" Version="4.5.0" />
+    <PackageReference Include="AppCore.Extensions.DependencyInjection.Abstractions" Version="$(AppCore_Extensions_Version)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(Microsoft_Extensions_Version)" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="$(Microsoft_Extensions_Version)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(Microsoft_Extensions_Version)" />
+    <PackageReference Include="System.Threading.Channels" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

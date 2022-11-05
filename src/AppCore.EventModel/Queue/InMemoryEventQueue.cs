@@ -8,70 +8,69 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using AppCore.Diagnostics;
 
-namespace AppCore.EventModel.Queue
+namespace AppCore.EventModel.Queue;
+
+/// <summary>
+/// Provides in-memory event queue.
+/// </summary>
+public class InMemoryEventQueue : IEventQueue
 {
+    private const int DefaultCapacity = 1024;
+    private readonly Channel<IEventContext> _channel;
+
     /// <summary>
-    /// Provides in-memory event queue.
+    /// Initializes a new instance of the <see cref="InMemoryEventQueue"/> class.
     /// </summary>
-    public class InMemoryEventQueue : IEventQueue
+    public InMemoryEventQueue()
     {
-        private const int DefaultCapacity = 1024;
-        private readonly Channel<IEventContext> _channel;
+        _channel = Channel.CreateBounded<IEventContext>(
+            new BoundedChannelOptions(DefaultCapacity) {SingleReader = true});
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InMemoryEventQueue"/> class.
-        /// </summary>
-        public InMemoryEventQueue()
+    /// <inheritdoc />
+    public async Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
+    {
+        Ensure.Arg.NotNull(events);
+
+        ChannelWriter<IEventContext> writer = _channel.Writer;
+        foreach (IEventContext @event in events)
         {
-            _channel = Channel.CreateBounded<IEventContext>(
-                new BoundedChannelOptions(DefaultCapacity) {SingleReader = true});
+            await writer.WriteAsync(@event, cancellationToken)
+                        .ConfigureAwait(false);
         }
+    }
 
-        /// <inheritdoc />
-        public async Task WriteAsync(IEnumerable<IEventContext> events, CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(int maxEventsToRead, CancellationToken cancellationToken)
+    {
+        Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue);
+
+        ChannelReader<IEventContext> reader = _channel.Reader;
+        bool eventAvailable = await reader.WaitToReadAsync(cancellationToken)
+                                          .ConfigureAwait(false);
+
+        var result = new List<IEventContext>();
+        if (eventAvailable)
         {
-            Ensure.Arg.NotNull(events, nameof(events));
-
-            ChannelWriter<IEventContext> writer = _channel.Writer;
-            foreach (IEventContext @event in events)
+            while (result.Count < maxEventsToRead
+                   && reader.TryRead(out IEventContext @event))
             {
-                await writer.WriteAsync(@event, cancellationToken)
-                            .ConfigureAwait(false);
+                result.Add(@event);
             }
         }
 
-        /// <inheritdoc />
-        public async Task<IReadOnlyCollection<IEventContext>> ReadAsync(int maxEventsToRead, CancellationToken cancellationToken)
-        {
-            Ensure.Arg.InRange(maxEventsToRead, 1, int.MaxValue, nameof(maxEventsToRead));
+        return result.AsReadOnly();
+    }
 
-            ChannelReader<IEventContext> reader = _channel.Reader;
-            bool eventAvailable = await reader.WaitToReadAsync(cancellationToken)
-                                              .ConfigureAwait(false);
+    /// <inheritdoc />
+    public Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 
-            var result = new List<IEventContext>();
-            if (eventAvailable)
-            {
-                while (result.Count < maxEventsToRead
-                       && reader.TryRead(out IEventContext @event))
-                {
-                    result.Add(@event);
-                }
-            }
-
-            return result.AsReadOnly();
-        }
-
-        /// <inheritdoc />
-        public Task CommitReadAsync(IEventContext @event, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        /// <inheritdoc />
-        public Task<IReadOnlyCollection<IEventContext>> ReadHistoryAsync(long offset, int maxEventsToRead, CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException();
-        }
+    /// <inheritdoc />
+    public Task<IReadOnlyCollection<IEventContext>> ReadHistoryAsync(long offset, int maxEventsToRead, CancellationToken cancellationToken)
+    {
+        throw new NotSupportedException();
     }
 }

@@ -3,30 +3,29 @@
 
 using System.IO;
 
-namespace AppCore.EventModel.Formatters
+namespace AppCore.EventModel.Formatters;
+
+/// <summary>
+/// Represents a formatter for <see cref="IEventContext"/>.
+/// </summary>
+public interface IEventContextFormatter
 {
     /// <summary>
-    /// Represents a formatter for <see cref="IEventContext"/>.
+    /// Gets the content type supported by the formatter.
     /// </summary>
-    public interface IEventContextFormatter
-    {
-        /// <summary>
-        /// Gets the content type supported by the formatter.
-        /// </summary>
-        string ContentType { get; }
+    string ContentType { get; }
 
-        /// <summary>
-        /// Serializes the specified <paramref name="context"/>.
-        /// </summary>
-        /// <param name="stream">The <see cref="Stream"/> where the context is serialized to.</param>
-        /// <param name="context">The <see cref="IEventContext"/> to serialize.</param>
-        void Write(Stream stream, IEventContext context);
+    /// <summary>
+    /// Serializes the specified <paramref name="context"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> where the context is serialized to.</param>
+    /// <param name="context">The <see cref="IEventContext"/> to serialize.</param>
+    void Write(Stream stream, IEventContext context);
 
-        /// <summary>
-        /// Deserializes a <see cref="IEventContext"/> from the specified <paramref name="stream"/>.
-        /// </summary>
-        /// <param name="stream">The <see cref="Stream"/> where the context is deserialized from.</param>
-        /// <returns>The <see cref="IEventContext"/>.</returns>
-        IEventContext Read(Stream stream);
-    }
+    /// <summary>
+    /// Deserializes a <see cref="IEventContext"/> from the specified <paramref name="stream"/>.
+    /// </summary>
+    /// <param name="stream">The <see cref="Stream"/> where the context is deserialized from.</param>
+    /// <returns>The <see cref="IEventContext"/>.</returns>
+    IEventContext Read(Stream stream);
 }

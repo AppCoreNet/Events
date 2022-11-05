@@ -5,15 +5,16 @@
     <Product>AppCore .NET event model</Product>
     <Copyright>Copyright (c) 2018-2020 the AppCore .NET project</Copyright>
     <Version>1.0.0</Version>
-    <PackageLicenseUrl>https://github.com/AppCoreNet/Events/blob/dev/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/AppCoreNet/Events</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <LangVersion>latest</LangVersion>
-    <NoWarn>$(NoWarn);NU5105</NoWarn>
+    <Nullable>enable</Nullable>
     <!--
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <RestoreLockedMode Condition="'$(CI)' == 'true'">true</RestoreLockedMode>
     -->
+    <DefineConstants>$(DefineConstants);ENABLE_NULLABLE</DefineConstants>
   </PropertyGroup>
 
   <Import Project="./build/shared/dotnet/common.props" />

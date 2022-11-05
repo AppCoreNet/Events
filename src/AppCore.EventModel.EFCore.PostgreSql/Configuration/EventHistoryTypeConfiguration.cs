@@ -3,24 +3,23 @@ using AppCore.EventModel.EntityFrameworkCore.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql.Configuration
+namespace AppCore.EventModel.EntityFrameworkCore.PostgreSql.Configuration;
+
+/// <summary>
+/// EventHistory entity type configuration for PostgreSql.
+/// </summary>
+public class EventHistoryTypeConfiguration : EventHistoryTypeConfigurationBase
 {
     /// <summary>
-    /// EventHistory entity type configuration for PostgreSql.
+    /// The name of the event history table.
     /// </summary>
-    public class EventHistoryTypeConfiguration : EventHistoryTypeConfigurationBase
+    public const string TableName = "EventHistory";
+
+    /// <inheritdoc />
+    public override void Configure(EntityTypeBuilder<EventHistory> builder)
     {
-        /// <summary>
-        /// The name of the event history table.
-        /// </summary>
-        public const string TableName = "EventHistory";
+        base.Configure(builder);
 
-        /// <inheritdoc />
-        public override void Configure(EntityTypeBuilder<EventHistory> builder)
-        {
-            base.Configure(builder);
-
-            builder.ToTable(TableName);
-        }
+        builder.ToTable(TableName);
     }
 }

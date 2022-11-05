@@ -6,80 +6,81 @@ using System.IO;
 using AppCore.Diagnostics;
 using AppCore.EventModel.Metadata;
 using AppCore.EventModel.Pipeline;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace AppCore.EventModel.Formatters
+namespace AppCore.EventModel.Formatters;
+
+/// <summary>
+/// Provides a Newtonsoft.Json based event context formatter.
+/// </summary>
+public class NewtonsoftJsonFormatter : IEventContextFormatter
 {
+    private readonly IEventContextFactory _contextFactory;
+    private readonly JsonSerializer _serializer;
+
+    /// <inheritdoc />
+    public string ContentType => "application/json";
+
     /// <summary>
-    /// Provides a Newtonsoft.Json based event context formatter.
+    /// Initializes a new instance of the <see cref="NewtonsoftJsonFormatter"/> class.
     /// </summary>
-    public class NewtonsoftJsonFormatter : IEventContextFormatter
+    /// <param name="contextFactory">The <see cref="IEventContextFactory"/>.</param>
+    /// <param name="options">The <see cref="NewtonsoftJsonFormatterOptions"/>.</param>
+    public NewtonsoftJsonFormatter(IEventContextFactory contextFactory, IOptionsMonitor<NewtonsoftJsonFormatterOptions> options)
     {
-        private readonly IEventContextFactory _contextFactory;
-        private readonly JsonSerializer _serializer;
+        Ensure.Arg.NotNull(contextFactory);
 
-        /// <inheritdoc />
-        public string ContentType => "application/json";
+        _contextFactory = contextFactory;
+        _serializer = JsonSerializer.Create(options.CurrentValue.SerializerSettings);
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NewtonsoftJsonFormatter"/> class.
-        /// </summary>
-        /// <param name="contextFactory">The <see cref="IEventContextFactory"/>.</param>
-        /// <param name="settings">The <see cref="JsonSerializerSettings"/>.</param>
-        public NewtonsoftJsonFormatter(IEventContextFactory contextFactory, JsonSerializerSettings settings = null)
+    /// <inheritdoc />
+    public void Write(Stream stream, IEventContext context)
+    {
+        Ensure.Arg.NotNull(stream);
+        Ensure.Arg.NotNull(context);
+
+        IDictionary<object,object> items = context.Items;
+        IReadOnlyDictionary<string,object> metadata = context.EventDescriptor.Metadata;
+
+        var serializedEvent = new JsonSerializedEvent(context.Event)
         {
-            Ensure.Arg.NotNull(contextFactory, nameof(contextFactory));
+            Items = items.Count > 0
+                ? items
+                : null,
+            Metadata = metadata.Count > 0
+                ? metadata
+                : null
+        };
 
-            _contextFactory = contextFactory;
-            _serializer = JsonSerializer.Create(
-                settings ?? new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.Auto,
-                    NullValueHandling = NullValueHandling.Ignore
-                });
+        using (var writer = new StreamWriter(stream))
+            _serializer.Serialize(writer, serializedEvent);
+    }
+
+    /// <inheritdoc />
+    public IEventContext Read(Stream stream)
+    {
+        Ensure.Arg.NotNull(stream);
+
+        JsonSerializedEvent @event;
+        using (var reader = new StreamReader(stream))
+        {
+            @event = (JsonSerializedEvent) _serializer.Deserialize(reader, typeof(JsonSerializedEvent))!;
         }
 
-        /// <inheritdoc />
-        public void Write(Stream stream, IEventContext context)
+        var descriptor = new EventDescriptor(
+            @event.Event.GetType(),
+            @event.Metadata ?? new Dictionary<string, object>());
+
+        IEventContext context = _contextFactory.CreateContext(descriptor, @event.Event);
+
+        if (@event.Items != null)
         {
-            Ensure.Arg.NotNull(stream, nameof(stream));
-            Ensure.Arg.NotNull(context, nameof(context));
-
-            var serializedEvent = new JsonSerializedEvent
-            {
-                Event = context.Event,
-                Items = context.Items.Count > 0 ? context.Items : null,
-                Metadata = context.EventDescriptor.Metadata
-            };
-
-            using (var writer = new StreamWriter(stream))
-                _serializer.Serialize(writer, serializedEvent);
+            foreach (KeyValuePair<object, object> data in @event.Items)
+                context.Items.Add(data);
         }
 
-        /// <inheritdoc />
-        public IEventContext Read(Stream stream)
-        {
-            Ensure.Arg.NotNull(stream, nameof(stream));
-
-            JsonSerializedEvent serializedEvent;
-            using (var reader = new StreamReader(stream))
-            {
-                serializedEvent = (JsonSerializedEvent) _serializer.Deserialize(
-                    reader,
-                    typeof(JsonSerializedEvent));
-            }
-
-            IEventContext result = _contextFactory.CreateContext(
-                new EventDescriptor(serializedEvent.Event.GetType(), serializedEvent.Metadata),
-                serializedEvent.Event);
-
-            if (serializedEvent.Items != null)
-            {
-                foreach (KeyValuePair<object, object> data in serializedEvent.Items)
-                    result.Items.Add(data);
-            }
-
-            return result;
-        }
+        return context;
     }
 }

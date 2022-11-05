@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5;netcoreapp3.1;net461</TargetFrameworks>
+    <TargetFrameworks>net6;netstandard2.0;net462</TargetFrameworks>
     <Description>Provides AppCore .NET PostgreSQL event queue.</Description>
     <RootNamespace>AppCore.EventModel.EntityFrameworkCore.PostgreSql</RootNamespace>
     <PackageId>AppCore.EventModel.EntityFrameworkCore.PostgreSql</PackageId>
@@ -14,16 +14,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[3.1.0,4.0.0)" />
+  <ItemGroup Condition="'$(TargetFramework)'=='net462' OR '$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[3.1.18,4.0.0)" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[3.1.0,4.0.0)" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'=='net5'">
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[5.0.0,7.0.0)" />
+  <ItemGroup Condition="'$(TargetFramework)'=='net6'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="[6.0.6,7.0.0)" />
   </ItemGroup>
 
   <ItemGroup>

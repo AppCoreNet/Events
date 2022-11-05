@@ -4,32 +4,31 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AppCore.EventModel.Pipeline
+namespace AppCore.EventModel.Pipeline;
+
+/// <summary>
+/// Represents an event pipeline.
+/// </summary>
+public interface IEventPipeline
 {
     /// <summary>
-    /// Represents an event pipeline.
+    /// Processes an event.
     /// </summary>
-    public interface IEventPipeline
-    {
-        /// <summary>
-        /// Processes an event.
-        /// </summary>
-        /// <param name="context">The event context.</param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous event operation.</returns>
-        Task ProcessAsync(IEventContext context, CancellationToken cancellationToken);
-    }
+    /// <param name="context">The event context.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous event operation.</returns>
+    Task ProcessAsync(IEventContext context, CancellationToken cancellationToken);
+}
 
-    /// <inheritdoc />
-    public interface IEventPipeline<in TEvent> : IEventPipeline
-        where TEvent : IEvent
-    {
-        /// <summary>
-        /// Processes an event.
-        /// </summary>
-        /// <param name="context">The event context.</param>
-        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
-        /// <returns>A task that represents the asynchronous event operation.</returns>
-        Task ProcessAsync(IEventContext<TEvent> context, CancellationToken cancellationToken);
-    }
+/// <inheritdoc />
+public interface IEventPipeline<in TEvent> : IEventPipeline
+    where TEvent : IEvent
+{
+    /// <summary>
+    /// Processes an event.
+    /// </summary>
+    /// <param name="context">The event context.</param>
+    /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+    /// <returns>A task that represents the asynchronous event operation.</returns>
+    Task ProcessAsync(IEventContext<TEvent> context, CancellationToken cancellationToken);
 }
