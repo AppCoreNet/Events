@@ -19,5 +19,5 @@ internal class LogEventIds
     public static readonly EventId PublishingStoredEvents = new EventId(4, nameof(PublishingStoredEvents));
 
     public static readonly EventId PublishingStoredEventsFailed =
-        new EventId(4, nameof(PublishingStoredEventsFailed));
+        new EventId(5, nameof(PublishingStoredEventsFailed));
 }

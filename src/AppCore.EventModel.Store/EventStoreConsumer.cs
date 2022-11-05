@@ -13,25 +13,25 @@ using Microsoft.Extensions.Logging;
 namespace AppCore.EventModel.Store;
 
 /// <inheritdoc />
-public class EventStorePublisher : IEventStorePublisher
+public class EventStoreConsumer : IEventStoreConsumer
 {
     private readonly IEventStore _store;
-    private readonly IEventStorePublisherOffset _storeOffset;
-    private readonly ILogger<EventStorePublisher> _logger;
+    private readonly IEventStoreConsumerOffset _storeOffset;
+    private readonly ILogger<EventStoreConsumer> _logger;
     private readonly IEventPipelineResolver _pipelineResolver;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventStorePublisher"/> class.
+    /// Initializes a new instance of the <see cref="EventStoreConsumer"/> class.
     /// </summary>
     /// <param name="store">The event store to use.</param>
     /// <param name="storeOffset">Used to load/save the current event offset.</param>
     /// <param name="pipelineResolver">The <see cref="IEventPipelineResolver"/> used to resolve <see cref="IEventPipeline"/>'s.</param>
     /// <param name="logger">The <see cref="ILogger{TCategory}"/>.</param>
-    public EventStorePublisher(
+    public EventStoreConsumer(
         IEventStore store,
-        IEventStorePublisherOffset storeOffset,
+        IEventStoreConsumerOffset storeOffset,
         IEventPipelineResolver pipelineResolver,
-        ILogger<EventStorePublisher> logger)
+        ILogger<EventStoreConsumer> logger)
     {
         Ensure.Arg.NotNull(store);
         Ensure.Arg.NotNull(storeOffset);

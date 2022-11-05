@@ -234,8 +234,8 @@ public static class EventModelBuilderExtensions
         Ensure.Arg.NotNull(builder);
 
         IServiceCollection services = builder.Services;
-        services.TryAddTransient<EventQueuePublisher>();
-        services.AddHostedService<EventQueuePublisherService>();
+        services.TryAddTransient<EventQueueConsumer>();
+        services.AddHostedService<EventQueueConsumerService>();
 
         if (configure != null)
         {

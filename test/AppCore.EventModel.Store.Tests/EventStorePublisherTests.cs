@@ -16,20 +16,20 @@ namespace AppCore.EventModel.Store;
 public class EventStorePublisherTests
 {
     private readonly IEventStore _store;
-    private readonly IEventStorePublisherOffset _storeOffset;
+    private readonly IEventStoreConsumerOffset _storeOffset;
     private readonly IEventPipelineResolver _pipelineResolver;
-    private readonly ILogger<EventStorePublisher> _logger;
-    private readonly EventStorePublisher _publisher;
+    private readonly ILogger<EventStoreConsumer> _logger;
+    private readonly EventStoreConsumer _consumer;
     private readonly IEventPipeline<TestEvent> _pipeline;
 
     public EventStorePublisherTests()
     {
         _store = Substitute.For<IEventStore>();
-        _storeOffset = Substitute.For<IEventStorePublisherOffset>();
+        _storeOffset = Substitute.For<IEventStoreConsumerOffset>();
         _pipelineResolver = Substitute.For<IEventPipelineResolver>();
-        _logger = Substitute.For<ILogger<EventStorePublisher>>();
+        _logger = Substitute.For<ILogger<EventStoreConsumer>>();
         _pipeline = Substitute.For<IEventPipeline<TestEvent>>();
-        _publisher = new EventStorePublisher(_store, _storeOffset, _pipelineResolver, _logger);
+        _consumer = new EventStoreConsumer(_store, _storeOffset, _pipelineResolver, _logger);
 
         _pipelineResolver.Resolve(typeof(TestEvent))
                          .Returns(_pipeline);
@@ -62,7 +62,7 @@ public class EventStorePublisherTests
                   Arg.Any<CancellationToken>())
               .Returns(events);
 
-        await _publisher.PublishPendingAsync(CancellationToken.None);
+        await _consumer.PublishPendingAsync(CancellationToken.None);
 
         await _pipeline.Received(1)
                        .ProcessAsync(events[0], Arg.Any<CancellationToken>());
@@ -79,7 +79,7 @@ public class EventStorePublisherTests
         _storeOffset.GetNextOffset(Arg.Any<CancellationToken>())
                     .Returns(offset);
             
-        await _publisher.PublishPendingAsync(CancellationToken.None);
+        await _consumer.PublishPendingAsync(CancellationToken.None);
 
         await _store.Received(1)
                     .ReadAsync(
@@ -116,7 +116,7 @@ public class EventStorePublisherTests
                   Arg.Any<CancellationToken>())
               .Returns(events);
 
-        await _publisher.PublishPendingAsync(CancellationToken.None);
+        await _consumer.PublishPendingAsync(CancellationToken.None);
 
         await _storeOffset.Received(1)
                           .CommitOffset(offset, Arg.Any<CancellationToken>());

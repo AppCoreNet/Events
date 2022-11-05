@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace AppCore.EventModel.Store;
 
 /// <summary>
-/// Represents a type which publishes events from the store.
+/// Represents a type which consumes events from the store and publishes them to the event pipeline.
 /// </summary>
-public interface IEventStorePublisher
+public interface IEventStoreConsumer
 {
     /// <summary>
     /// Published pending events from the store.
     /// </summary>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous publish operation.</returns>
-    Task PublishPendingAsync(CancellationToken cancellationToken);
+    Task PublishPendingAsync(CancellationToken cancellationToken = default);
 }

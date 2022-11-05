@@ -8,7 +8,7 @@ using AppCore.Diagnostics;
 namespace AppCore.EventModel.Store;
 
 /// <inheritdoc />
-public class EventStorePublisherOffset : IEventStorePublisherOffset
+public class EventStoreConsumerOffset : IEventStoreConsumerOffset
 {
     private static readonly Task _completedTask = Task.FromResult(true);
     private EventOffset _nextOffset = EventOffset.Next;

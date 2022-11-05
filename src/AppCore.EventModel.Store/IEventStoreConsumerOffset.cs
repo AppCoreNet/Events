@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 namespace AppCore.EventModel.Store;
 
 /// <summary>
-/// Stores the offset of the last event processed by <see cref="IEventStorePublisher"/>.
+/// Stores the offset of the last event processed by <see cref="IEventStoreConsumer"/>.
 /// </summary>
-public interface IEventStorePublisherOffset
+public interface IEventStoreConsumerOffset
 {
     /// <summary>
-    /// Gets the next offset of the next event to read from the <see cref="IEventStore"/>.
+    /// Gets the offset of the next event to read from the <see cref="IEventStore"/>.
     /// </summary>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>

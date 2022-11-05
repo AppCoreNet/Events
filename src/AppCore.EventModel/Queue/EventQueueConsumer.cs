@@ -12,27 +12,27 @@ using Microsoft.Extensions.Options;
 namespace AppCore.EventModel.Queue;
 
 /// <summary>
-/// Publishes events by reading from the queue and processing the pipeline.
+/// Publishes events by consuming them from the queue and publishing them to the event pipeline.
 /// </summary>
-public class EventQueuePublisher
+public class EventQueueConsumer
 {
     private readonly IEventQueue _queue;
     private readonly IEventPipelineResolver _pipelineResolver;
     private readonly IOptionsMonitor<EventQueueOptions> _optionsMonitor;
-    private readonly ILogger<EventQueuePublisher> _logger;
+    private readonly ILogger<EventQueueConsumer> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventQueuePublisher"/> class.
+    /// Initializes a new instance of the <see cref="EventQueueConsumer"/> class.
     /// </summary>
     /// <param name="queue">The event queue.</param>
     /// <param name="pipelineResolver">The event pipeline resolver.</param>
     /// <param name="optionsMonitor">The <see cref="IOptionsMonitor{TOptions}"/> of <see cref="EventQueueOptions"/>.</param>
     /// <param name="logger">The logger.</param>
-    public EventQueuePublisher(
+    public EventQueueConsumer(
         IEventQueue queue,
         IEventPipelineResolver pipelineResolver,
         IOptionsMonitor<EventQueueOptions> optionsMonitor,
-        ILogger<EventQueuePublisher> logger)
+        ILogger<EventQueueConsumer> logger)
     {
         Ensure.Arg.NotNull(queue);
         Ensure.Arg.NotNull(pipelineResolver);

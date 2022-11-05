@@ -13,24 +13,24 @@ using Microsoft.Extensions.Options;
 namespace AppCore.EventModel.Queue;
 
 /// <summary>
-/// The <see cref="BackgroundService"/> used to publish queued events.
+/// The <see cref="BackgroundService"/> used to consume and publish queued events.
 /// </summary>
-public class EventQueuePublisherService : BackgroundService
+public class EventQueueConsumerService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IOptionsMonitor<EventQueueOptions> _optionsMonitor;
-    private readonly ILogger<EventQueuePublisherService> _logger;
+    private readonly ILogger<EventQueueConsumerService> _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EventQueuePublisherService"/> class.
+    /// Initializes a new instance of the <see cref="EventQueueConsumerService"/> class.
     /// </summary>
     /// <param name="serviceScopeFactory">The <see cref="IServiceScopeFactory"/>.</param>
     /// <param name="optionsMonitor">The <see cref="IOptionsMonitor{TOptions}"/> of <see cref="EventQueueOptions"/>.</param>
     /// <param name="logger">The logger.</param>
-    public EventQueuePublisherService(
+    public EventQueueConsumerService(
         IServiceScopeFactory serviceScopeFactory,
         IOptionsMonitor<EventQueueOptions> optionsMonitor,
-        ILogger<EventQueuePublisherService> logger)
+        ILogger<EventQueueConsumerService> logger)
     {
         Ensure.Arg.NotNull(serviceScopeFactory);
         Ensure.Arg.NotNull(logger);
@@ -66,7 +66,7 @@ public class EventQueuePublisherService : BackgroundService
         {
             using IServiceScope serviceScope = _serviceScopeFactory.CreateScope();
             IServiceProvider serviceProvider = serviceScope.ServiceProvider;
-            var publisher = serviceProvider.GetRequiredService<EventQueuePublisher>();
+            var publisher = serviceProvider.GetRequiredService<EventQueueConsumer>();
             await publisher.PublishPendingAsync(cancellationToken)
                            .ConfigureAwait(false);
         }
